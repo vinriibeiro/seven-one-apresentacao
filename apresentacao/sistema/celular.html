@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../prototipos/assets/icone-192.png">
+<title>Seven · app do vendedor</title>
+<!-- O app do vendedor na demonstração, num tamanho de celular. No celular, abre direto em tela cheia. -->
+<script>if (matchMedia("(max-width: 540px)").matches) location.replace("demo/?perfil=vendedor&app#/meu");</script>
+<style>
+:root{--fundo:#0c1322;--tx:#c3cad6}
+html,body{margin:0;min-height:100%}
+body{background:var(--fundo);color:var(--tx);font:14px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;align-items:center;padding:24px 16px}
+.aparelho{border:10px solid #1d2638;border-radius:44px;overflow:hidden;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.45);width:390px;max-width:100%}
+iframe{display:block;border:0;width:100%;height:min(844px,calc(100vh - 110px))}
+p{margin:14px 0 0;text-align:center}
+a{color:#fff}
+</style>
+</head>
+<body>
+<div class="aparelho"><iframe src="demo/?perfil=vendedor&amp;app#/meu" title="App do vendedor (demonstração)"></iframe></div>
+<p>Dados fictícios · <a href="demo/?perfil=vendedor&amp;app#/meu" target="_blank" rel="noopener">abrir em tela cheia</a></p>
+</body>
+</html>

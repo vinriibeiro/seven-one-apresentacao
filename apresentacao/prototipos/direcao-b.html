@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direção B · Fluxo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   DIREÇÃO B · FLUXO
+   Organizada em torno do trabalho em andamento: módulos no topo, páginas e ações do módulo na lateral,
+   cartões com hierarquia clara, filas em quadro por situação e a venda como um dossiê com linha do processo.
+   ===================================================================== */
+:root{
+  color-scheme:light;
+  --fundo:#eef1f4; --cartao:#ffffff; --cartao-2:#f7f9fb; --cartao-3:#eef2f6;
+  --borda:#dde3ea; --borda-2:#c6cfda;
+  --texto:#0e1726; --texto-2:#3d4b60; --texto-3:#5f6e84;
+  --marca:#c9202e; --marca-2:#a3161f; --marca-bg:#fdeced;
+  --ok:#0f7b46; --ok-bg:#e5f4eb; --at:#91560b; --at-bg:#fcf2df; --cr:#b42318; --cr-bg:#fdebe9; --in:#1f5aa6; --in-bg:#e8f0fb;
+  --g-real:#2a64ad; --g-proj:#a7c2e6; --g-meta:#0e1726; --g-grade:#e8edf2; --g-eixo:#c6cfda;
+  --st-inst:#22975a; --st-pend:#5b86c4; --st-canc:#d0393b;
+  /* lateral: o azul-marinho do sistema atual (ui.css --menu-bg), mantido a pedido do cliente */
+  --lat:#0c1322; --lat-linha:rgba(255,255,255,.08);
+  --lat-tx:#aab4c5; --lat-tx-2:#8794a8; --lat-forte:#ffffff;
+  --lat-hov:rgba(255,255,255,.06); --lat-on:rgba(255,255,255,.1); --lat-destaque:#ff6b77;
+  --sombra:0 1px 2px rgba(14,23,38,.06),0 2px 8px rgba(14,23,38,.04); --sombra-2:0 18px 48px rgba(14,23,38,.18);
+  --raio:12px; --fonte:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --foco:0 0 0 3px color-mix(in srgb,var(--in) 40%,transparent);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--fundo);color:var(--texto);font:15px/1.5 var(--fonte);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:0;box-shadow:var(--foco);border-radius:8px}
+.num{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------------- topo com os módulos ---------------- */
+.topo{position:sticky;top:0;z-index:20;height:64px;display:flex;align-items:center;gap:20px;padding:0 24px;background:var(--cartao);border-bottom:1px solid var(--borda)}
+.topo .logo{height:26px;display:block}
+/* canto do logo na cor da lateral: a coluna azul-marinho vai do topo ao rodapé, como no sistema atual (versão branca do logo) */
+.marca-b{align-self:stretch;flex:none;width:256px;margin-left:-24px;padding-left:24px;display:flex;align-items:center;background:var(--lat);border-right:1px solid var(--lat-linha);box-shadow:0 1px 0 var(--lat)}
+.marca-b .logo.c,.marca-b .logo.i{display:none}
+.modulos{display:flex;align-self:stretch;gap:4px;margin-left:12px;flex:none}
+.modulos a{display:flex;align-items:center;padding:0 14px;font-size:15px;font-weight:500;color:var(--texto-2);position:relative}
+.modulos a:hover{color:var(--texto)}
+.modulos a.on{color:var(--texto);font-weight:600}
+.modulos a.on::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--marca)}
+.topo .dir{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:0}
+.pres,.ib,.eu{flex:none}.modulos a,.pres,.eu b,.eu small{white-space:nowrap}
+.busca-b span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.busca-b{display:flex;align-items:center;gap:10px;height:38px;flex:0 1 300px;min-width:170px;border:1px solid var(--borda);border-radius:10px;background:var(--cartao-2);padding:0 12px;color:var(--texto-3);font-size:14px;cursor:text}
+.busca-b svg{width:17px;height:17px;flex:none}.busca-b kbd{margin-left:auto;flex:none;white-space:nowrap;font:600 11px var(--fonte);border:1px solid var(--borda-2);border-radius:5px;padding:1px 6px}
+.pres{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--texto-2);background:var(--cartao-2);cursor:pointer;padding:4px 10px 4px 4px;border-radius:999px;border:1px solid var(--borda)}
+.pres .pilha{display:flex}.pres .pilha span{width:26px;height:26px;border-radius:50%;border:2px solid var(--cartao);margin-left:-8px;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff}
+.pres .pilha span:first-child{margin-left:0}
+.ib{width:38px;height:38px;border-radius:10px;border:1px solid var(--borda);background:var(--cartao);display:inline-flex;align-items:center;justify-content:center;color:var(--texto-2);cursor:pointer}
+.ib svg{width:18px;height:18px}
+.eu{display:flex;align-items:center;gap:10px;padding:3px 4px 3px 3px;border-radius:999px}
+.eu .av{width:36px;height:36px;border-radius:50%;background:var(--marca-bg);color:var(--marca-2);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.eu b{display:block;font-size:14px;line-height:1.2}.eu small{display:block;font-size:12.5px;color:var(--texto-3);line-height:1.2}
+
+/* ---------------- lateral do módulo ---------------- */
+.casca{display:grid;grid-template-columns:256px minmax(0,1fr);min-height:calc(100vh - 64px)}
+.lateral{position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto;background:var(--lat);border-right:1px solid var(--lat-linha);padding:20px 14px;display:flex;flex-direction:column;gap:4px;color:var(--lat-tx);scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent}
+.lateral .mod{padding:0 8px 14px}
+.lateral .mod b{display:block;font-size:17px;font-weight:700;letter-spacing:-.01em;color:var(--lat-forte)}
+.lateral .mod small{display:block;font-size:13px;color:var(--lat-tx-2);line-height:1.4;margin-top:2px}
+.lateral .acao{margin:0 4px 14px}
+.lateral .grp{font-size:12.5px;font-weight:600;color:var(--lat-tx-2);margin:14px 10px 6px}
+.lateral a{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;color:var(--lat-tx);font-size:14.5px;font-weight:500;position:relative}
+.lateral a svg{width:19px;height:19px;flex:none;opacity:.78}
+.lateral a:hover{background:var(--lat-hov);color:var(--lat-forte)}
+.lateral a.on{background:var(--lat-on);color:var(--lat-forte);font-weight:600}
+.lateral a.on svg{opacity:1;color:var(--lat-destaque)}
+.lateral a.on::before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--marca)}
+.lateral a .qt{margin-left:auto;font-size:12.5px;font-weight:600;background:rgba(255,255,255,.08);color:var(--lat-tx);border-radius:999px;padding:1px 8px}
+.lateral a.on .qt{background:rgba(255,255,255,.14);color:var(--lat-forte)}
+.lateral a .qt.quente{background:rgba(224,82,82,.2);color:#ff9c9c}
+.lateral :focus-visible{box-shadow:inset 0 0 0 2px var(--lat-forte)}
+.lateral .fim{margin-top:auto;padding-top:14px;border-top:1px solid var(--lat-linha)}
+.lateral .fim button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:9px 10px;border-radius:9px;color:var(--lat-tx-2);cursor:pointer;font-size:14px}
+.lateral .fim button:hover{background:var(--lat-hov);color:var(--lat-forte)}
+.lateral .fim svg{width:18px;height:18px;flex:none}
+.lateral .acao{position:relative}
+.lateral .menu-novo{display:none;position:absolute;left:0;right:0;top:46px;background:var(--cartao);border:1px solid var(--borda-2);border-radius:10px;box-shadow:var(--sombra-2);padding:6px;z-index:30}
+.lateral .acao.aberto .menu-novo{display:block}
+.menu-novo a{display:block;padding:9px 10px;border-radius:8px}
+.lateral .menu-novo a:hover{background:var(--cartao-3)}
+.lateral .menu-novo :focus-visible{box-shadow:var(--foco)}
+.menu-novo a b{display:block;font-size:14.5px;color:var(--texto)}
+.menu-novo a small{display:block;font-size:12.5px;color:var(--texto-3);line-height:1.35}
+.lateral a .bol{display:none}
+/* menu recolhido: só existe em tela larga (no celular a lateral é uma gaveta) */
+@media (min-width:901px){
+  body.recolhido .casca{grid-template-columns:72px minmax(0,1fr)}
+  body.recolhido .marca-b{width:72px;padding-left:0;justify-content:center}
+  body.recolhido .marca-b .logo.e{display:none}
+  body.recolhido .marca-b .logo.i{display:block;width:34px;height:34px;border-radius:8px}
+  body.recolhido .lateral{padding:20px 10px}
+  body.recolhido .lateral .mod,body.recolhido .lateral .grp,body.recolhido .lateral a span,body.recolhido .lateral a .qt,body.recolhido .lateral .acao .txt,body.recolhido .lateral .fim span{display:none}
+  body.recolhido .lateral a{justify-content:center}
+  body.recolhido .lateral a.on::before{left:-10px}
+  body.recolhido .lateral a .bol{display:block;position:absolute;top:4px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--marca)}
+  body.recolhido .lateral .acao .btn{width:44px;padding:0;justify-content:center}
+  body.recolhido .lateral .fim button{justify-content:center}
+}
+
+.area{padding:26px 32px 72px;min-width:0;max-width:1440px}
+.cab{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.cab .mig{font-size:13.5px;color:var(--texto-3);margin-bottom:4px}
+.cab .mig a:hover{text-decoration:underline}
+.cab h1{margin:0;font-size:28px;line-height:1.15;font-weight:700;letter-spacing:-.02em}
+.cab .sub{font-size:14.5px;color:var(--texto-3);margin-top:4px}
+.cab .acoes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* ---------------- botões, campos, pílulas ---------------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 16px;border-radius:9px;border:1px solid var(--borda-2);background:var(--cartao);font-weight:600;font-size:14.5px;cursor:pointer;white-space:nowrap;color:var(--texto)}
+.btn:hover{background:var(--cartao-2)}
+.btn svg{width:17px;height:17px}
+.btn.pri{background:var(--marca);border-color:var(--marca);color:#fff}
+.btn.pri:hover{background:var(--marca-2);border-color:var(--marca-2)}
+.btn.bloco{width:100%}
+.btn.peq{height:32px;padding:0 12px;font-size:13.5px}
+.btn.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--borda-2))}
+.btn.cr{color:var(--cr);border-color:color-mix(in srgb,var(--cr) 45%,var(--borda-2))}
+.pilula{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid var(--borda);border-radius:999px;background:var(--cartao);font-size:14px;color:var(--texto-2);cursor:pointer;white-space:nowrap}
+.pilula b{color:var(--texto);font-weight:600}
+.pilula.on{border-color:var(--texto);color:var(--texto)}
+.pilula .x{color:var(--texto-3)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.at{background:var(--at-bg);color:var(--at)}.chip.cr{background:var(--cr-bg);color:var(--cr)}.chip.in{background:var(--in-bg);color:var(--in)}.chip.nt{background:var(--cartao-3);color:var(--texto-2)}
+.chip.at::before{border-radius:1px;transform:rotate(45deg)}
+.chip.cr::before{border-radius:0;width:0;height:0;background:none;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:8px solid currentColor}
+.chip.in::before{background:none;border:2px solid currentColor;width:5px;height:5px}
+.prop{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--in);border:1px dashed var(--in);border-radius:5px;padding:0 5px;margin-left:6px;vertical-align:middle;white-space:nowrap;letter-spacing:.01em}
+.campo{display:flex;flex-direction:column;gap:5px}
+.campo label{font-size:13.5px;font-weight:600;color:var(--texto-2)}
+.campo label small{font-weight:400;color:var(--texto-3)}
+.campo input,.campo select,.campo textarea{height:40px;border:1px solid var(--borda-2);border-radius:9px;background:var(--cartao);padding:0 12px;font-size:15px}
+.campo textarea{height:78px;padding:9px 12px;resize:vertical}
+
+/* ---------------- cartões ---------------- */
+.cartao{background:var(--cartao);border:1px solid var(--borda);border-radius:var(--raio);box-shadow:var(--sombra)}
+.cartao>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px 0}
+.cartao>header h2{margin:0;font-size:16.5px;font-weight:700;letter-spacing:-.01em}
+.cartao>header h2 small{display:block;font-size:13.5px;font-weight:400;color:var(--texto-3);margin-top:2px;letter-spacing:0}
+.cartao>header a.ver{font-size:14px;font-weight:600;color:var(--in);white-space:nowrap}
+.cartao>header a.ver:hover{text-decoration:underline}
+.cartao .dentro{padding:16px 20px 20px}
+.grade{display:grid;gap:18px;margin-bottom:18px}
+.g-3-1{grid-template-columns:minmax(0,2fr) minmax(320px,1fr);align-items:start}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+
+/* faixa da meta (destaque do painel) */
+.faixa-meta{display:grid;grid-template-columns:1.2fr 1fr 1fr;margin-bottom:18px}
+.faixa-meta>div{padding:20px 24px}
+.faixa-meta>div+div{border-left:1px solid var(--borda)}
+.rot{font-size:14px;font-weight:600;color:var(--texto-2)}
+.grande{font-size:46px;font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:8px 0 6px}
+.grande small{font-size:18px;font-weight:600;color:var(--texto-3);letter-spacing:0}
+.det{font-size:14px;color:var(--texto-3)}.det b{color:var(--texto-2);font-weight:600}
+.medidor{position:relative;height:12px;border-radius:6px;background:var(--cartao-3);margin-top:14px;overflow:visible}
+.medidor i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--g-real)}
+.medidor u{position:absolute;top:-5px;bottom:-5px;width:3px;border-radius:2px;background:var(--texto)}
+.med-leg{display:flex;justify-content:space-between;font-size:12.5px;color:var(--texto-3);margin-top:8px}
+.ritmos{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.ritmo-l{display:grid;grid-template-columns:96px minmax(0,1fr) 52px;gap:10px;align-items:center;font-size:13.5px;color:var(--texto-2)}
+.ritmo-l .tr{height:10px;border-radius:5px;background:var(--cartao-3);position:relative}
+.ritmo-l .tr i{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.ritmo-l b{text-align:right;font-size:15px;color:var(--texto)}
+
+/* indicadores */
+.ind{padding:16px 18px}
+.ind .r{font-size:13.5px;font-weight:600;color:var(--texto-2);display:flex;align-items:center;gap:8px}
+.ind .r i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.ind .v{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.15;margin:6px 0 2px}
+.ind .d{font-size:13.5px;color:var(--texto-3)}
+
+/* gráficos (compartilhados) */
+.legenda{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--texto-2);margin:4px 0 6px}
+.legenda span{display:inline-flex;align-items:center;gap:8px}
+.chv{display:inline-block;width:18px;border-top:2.5px solid var(--g-real)}.chv.proj{border-top:2.5px dashed var(--g-real);opacity:.6}.chv.meta{border-top:1.5px solid var(--g-meta)}
+.chv.barra{height:10px;width:14px;border:0;border-radius:3px;background:var(--g-real)}.chv.barra.proj{background:var(--g-proj);opacity:1}.chv.tick{width:3px;height:14px;border:0;border-radius:2px;background:var(--g-meta)}
+.g-svg{width:100%;height:auto;display:block;overflow:visible}
+.g-grade{stroke:var(--g-grade);stroke-width:1}.g-base{stroke:var(--g-eixo);stroke-width:1}
+.g-tick{fill:var(--texto-3);font-size:12px;font-family:var(--fonte)}
+.g-meta{stroke:var(--g-meta);stroke-width:1.3}.g-rot-meta{fill:var(--texto);font-size:13px;font-weight:700}
+.g-hoje{stroke:var(--borda-2);stroke-width:1}
+.g-real{fill:none;stroke:var(--g-real);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.g-real-area{fill:var(--g-real);opacity:.1}
+.g-proj{fill:none;stroke:var(--g-real);stroke-opacity:.55;stroke-width:2.5;stroke-dasharray:6 6;stroke-linecap:round}
+.g-pt-real{fill:var(--g-real);stroke:var(--cartao);stroke-width:2}.g-pt-proj{fill:var(--cartao);stroke:var(--g-real);stroke-width:2}
+.g-rot-fim{fill:var(--texto);font-size:13.5px;font-weight:700}
+.g-cruz{stroke:var(--texto-3);stroke-width:1}.g-capa{cursor:crosshair}.g-capa:focus{outline:none}
+.g-dica{position:fixed;display:none;z-index:60;min-width:200px;background:var(--cartao);border:1px solid var(--borda-2);border-radius:10px;box-shadow:var(--sombra-2);padding:10px 12px;font-size:13.5px;pointer-events:none}
+.g-dica-t{font-weight:700;margin-bottom:6px}
+.g-dica-l{display:grid;grid-template-columns:16px auto 1fr;gap:8px;align-items:center;color:var(--texto-3);line-height:1.6}
+.g-dica-l b{color:var(--texto);font-weight:700;font-variant-numeric:tabular-nums}
+.g-chave{display:block;width:14px;border-top:2.5px solid var(--k)}.g-chave.tracejada{border-top-style:dashed}.g-chave.regua{border-top-width:1.5px}.g-chave.fina{opacity:.45}
+.g-bullet{position:relative;height:22px;border-radius:6px;background:var(--cartao-3)}
+.g-bullet .g-b-proj{position:absolute;left:0;top:5px;bottom:5px;background:var(--g-proj);border-radius:0 6px 6px 0}
+.g-bullet .g-b-real{position:absolute;left:0;top:5px;bottom:5px;background:var(--g-real);border-radius:0 6px 6px 0}
+.g-bullet .g-b-meta{position:absolute;top:1px;bottom:1px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--g-meta)}
+.g-pilha{display:flex;gap:2px;height:12px;border-radius:6px;overflow:hidden;margin-top:12px}
+.g-pilha-p{display:block;min-width:3px}.g-pilha-p.inst{background:var(--st-inst)}.g-pilha-p.pend{background:var(--st-pend)}.g-pilha-p.canc{background:var(--st-canc)}
+
+/* atenção agora */
+.alertas{display:flex;flex-direction:column;gap:10px;padding:14px 16px 16px}
+.alerta{display:block;border:1px solid var(--borda);border-left:4px solid var(--at);border-radius:10px;padding:11px 13px;background:var(--cartao-2)}
+.alerta.cr{border-left-color:var(--cr)}
+.alerta b{display:block;font-size:14.5px;font-weight:700;line-height:1.35}
+.alerta p{margin:3px 0 0;font-size:13.5px;color:var(--texto-2);line-height:1.45}
+.alerta .base{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;font-size:12.5px;color:var(--texto-3)}
+.alerta .base a{font-weight:700;color:var(--in);white-space:nowrap}
+
+/* quadro de situação das equipes */
+.classes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:16px 20px 20px}
+.classe{border-radius:10px;background:var(--cartao-2);border:1px solid var(--borda);padding:12px 14px}
+.classe h3{margin:0 0 10px;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.classe ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.classe li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;font-size:14px}
+.classe li b{font-weight:600;line-height:1.3}
+.classe li span{color:var(--texto-3);font-size:13px;grid-column:1/-1}
+.classe li em{font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+
+/* filas da operação */
+.fases{display:grid;grid-template-columns:2fr 3fr;gap:18px}
+.fase>h3{font-size:13.5px;font-weight:700;color:var(--texto-3);margin:0 0 10px;letter-spacing:.01em}
+.fase .tiles{display:grid;gap:12px}
+.fase:first-child .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fase:last-child .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tile{display:block;padding:14px 16px;border-radius:var(--raio);background:var(--cartao);border:1px solid var(--borda);box-shadow:var(--sombra);position:relative}
+.tile:hover{border-color:var(--borda-2)}
+.tile .n{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.tile b{display:block;font-size:15px;margin-top:2px}
+.tile small{display:block;font-size:13.5px;color:var(--texto-3);margin-top:4px;line-height:1.4}
+.tile .seta{position:absolute;right:14px;top:14px;color:var(--texto-3)}
+.tile .quente{color:var(--cr);font-weight:600}
+
+/* tabela em cartão */
+.tabela{width:100%;border-collapse:collapse}
+.tabela th{font-size:13px;font-weight:600;color:var(--texto-3);text-align:left;padding:11px 16px;border-bottom:1px solid var(--borda);white-space:nowrap;background:var(--cartao-2)}
+.tabela td{padding:12px 16px;border-bottom:1px solid var(--borda);vertical-align:middle;font-size:14.5px}
+.tabela tbody tr:hover td{background:var(--cartao-2)}
+.tabela tbody tr.sel td{background:var(--in-bg)}
+.tabela tbody tr{cursor:pointer}
+.tabela .sub{display:block;font-size:13px;color:var(--texto-3)}
+.tabela .c{font-variant-numeric:tabular-nums;color:var(--texto-2);font-size:14px}
+.vend{display:flex;align-items:center;gap:10px}
+.vend i{width:28px;height:28px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700;color:var(--texto-2);background:var(--cartao-3)}
+.tags{display:flex;gap:4px;flex-wrap:wrap}.tags span{font-size:12.5px;font-weight:600;background:var(--cartao-3);color:var(--texto-2);border-radius:6px;padding:1px 7px;white-space:nowrap}
+.alerta-txt{color:var(--at);font-weight:600}.atraso-txt{color:var(--cr);font-weight:600}
+.visoes{display:flex;gap:4px;border-bottom:1px solid var(--borda);margin-bottom:14px}
+.visoes button{border:0;background:none;padding:10px 14px;font-weight:600;color:var(--texto-3);cursor:pointer;position:relative;font-size:15px}
+.visoes button .q{font-weight:600;color:var(--texto-3);font-size:13px;background:var(--cartao-3);border-radius:999px;padding:0 7px;margin-left:6px}
+.visoes button.on{color:var(--texto)}
+.visoes button.on::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:3px;border-radius:3px;background:var(--marca)}
+.barra-filtros{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.barra-filtros .buscar{margin-left:auto;width:300px}
+.barra-filtros .buscar input{width:100%;height:36px;border:1px solid var(--borda-2);border-radius:999px;padding:0 14px;background:var(--cartao);font-size:14px}
+.rodape-tab{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-size:14px;color:var(--texto-3)}
+
+/* espiada (gaveta lateral) */
+.com-gaveta{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.com-gaveta .tabela td:first-child{min-width:210px}
+.com-gaveta .tabela td,.com-gaveta .tabela th{padding-left:14px;padding-right:12px}
+.gaveta{position:sticky;top:84px}
+.gaveta .dentro{display:flex;flex-direction:column;gap:14px}
+.gaveta dl{margin:0;display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px 12px;font-size:14px}
+.gaveta dt{color:var(--texto-3)}.gaveta dd{margin:0}
+.gaveta .fechar{border:0;background:none;color:var(--texto-3);font-size:22px;cursor:pointer;line-height:1}
+
+/* cartões de equipe */
+.equipes{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+.eqc{display:flex;flex-direction:column}
+.eqc header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:16px 18px 0}
+.eqc h3{margin:0;font-size:17px;font-weight:700;line-height:1.25}
+.eqc header small{display:block;font-size:13.5px;color:var(--texto-3);margin-top:2px}
+.eqc .corpo{padding:12px 18px 14px}
+.eqc .num-g{font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.eqc .num-g small{font-size:15px;font-weight:600;color:var(--texto-3);letter-spacing:0}
+.eqc .proj{font-size:14px;color:var(--texto-2);margin-top:8px;display:flex;justify-content:space-between;gap:8px}
+.eqc .proj b{color:var(--texto)}
+.eqc footer{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--borda)}
+.eqc footer div{padding:10px 12px 12px 18px;font-size:12.5px;color:var(--texto-3)}
+.eqc footer div+div{border-left:1px solid var(--borda);padding-left:12px}
+.eqc footer b{display:block;font-size:15px;color:var(--texto);font-weight:700}
+.eqc footer b.at{color:var(--at)}.eqc footer b.cr{color:var(--cr)}
+
+/* quadro da fila */
+.quadro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.coluna{background:var(--cartao-3);border-radius:var(--raio);padding:12px;min-height:520px}
+.coluna h3{margin:2px 4px 12px;font-size:14.5px;display:flex;justify-content:space-between;align-items:center}
+.coluna h3 .q{background:var(--cartao);border-radius:999px;padding:0 9px;font-size:13px}
+.pedido{display:block;width:100%;text-align:left;background:var(--cartao);border:1px solid var(--borda);border-radius:10px;padding:12px 13px;margin-bottom:10px;box-shadow:var(--sombra);cursor:pointer}
+.pedido.sel{border-color:var(--in);box-shadow:0 0 0 2px var(--in-bg),var(--sombra)}
+.pedido .l1{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--texto-3)}
+.pedido .idade{font-weight:700;color:var(--texto-2)}
+.pedido .idade.fora{color:var(--cr)}
+.pedido b{display:block;font-size:15px;margin-top:6px;line-height:1.3}
+.pedido .onde{display:block;font-size:13.5px;color:var(--texto-2)}
+.pedido .quem{display:block;font-size:13px;color:var(--texto-3);margin-top:6px}
+.pedido .tags{margin-top:8px}
+.contestado{font-size:12px;font-weight:700;color:var(--at);background:var(--at-bg);border-radius:6px;padding:1px 7px}
+.painel-lado{position:fixed;top:64px;right:0;bottom:0;width:520px;background:var(--cartao);box-shadow:var(--sombra-2);z-index:15;display:flex;flex-direction:column;border-left:1px solid var(--borda)}
+.painel-lado .cab-p{padding:18px 22px 14px;border-bottom:1px solid var(--borda)}
+.painel-lado .cab-p .l1{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;color:var(--texto-3)}
+.painel-lado h2{margin:6px 0 2px;font-size:20px;font-weight:700;letter-spacing:-.01em}
+.painel-lado .corpo-p{flex:1;overflow:auto;padding:4px 22px 18px}
+.painel-lado section{padding:14px 0;border-bottom:1px solid var(--borda)}
+.painel-lado section:last-child{border-bottom:0}
+.painel-lado h3{margin:0 0 10px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+.painel-lado h3 small{font-weight:400;color:var(--texto-3);font-size:13px}
+.painel-lado dl{margin:0;display:grid;grid-template-columns:150px minmax(0,1fr);gap:7px 12px;font-size:14px}
+.painel-lado dt{color:var(--texto-3)}.painel-lado dd{margin:0}
+.painel-lado .rod-p{padding:14px 22px;border-top:1px solid var(--borda);display:flex;gap:10px;background:var(--cartao-2)}
+.painel-lado .rod-p .btn{flex:1}
+.dois-campos{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px}
+.botoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.veu{position:fixed;inset:64px 0 0 0;background:rgba(14,23,38,.18);z-index:14}
+
+/* dossiê da venda */
+.dossie-cab{padding:20px 24px;margin-bottom:18px}
+.dossie-cab .l0{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--texto-3)}
+.dossie-cab h1{margin:6px 0 4px;font-size:30px;font-weight:700;letter-spacing:-.02em}
+.dossie-cab .meta{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:14.5px;color:var(--texto-3)}
+.dossie-cab .meta b{color:var(--texto-2);font-weight:600}
+.dossie-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.processo{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;margin-top:20px;padding-top:18px;border-top:1px solid var(--borda)}
+.passo{position:relative;padding-right:10px}
+.passo::before{content:"";position:absolute;top:12px;left:28px;right:4px;height:3px;border-radius:2px;background:var(--borda)}
+.passo:last-child::before{display:none}
+.passo.feito::before{background:var(--ok)}
+.passo .pt{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--cartao);border:2px solid var(--borda-2);color:var(--texto-3);position:relative;z-index:1}
+.passo.feito .pt{background:var(--ok);border-color:var(--ok);color:#fff}
+.passo.agora .pt{border-color:var(--in);color:var(--in);box-shadow:0 0 0 4px var(--in-bg)}
+.passo.prop-p .pt{border-style:dashed}
+.passo b{display:block;font-size:14px;margin-top:8px;line-height:1.3}
+.passo small{display:block;font-size:13px;color:var(--texto-3);line-height:1.35}
+.duas{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+.compor{display:flex;gap:10px;padding:14px 20px;border-bottom:1px solid var(--borda)}
+.compor input{flex:1;height:40px;border:1px solid var(--borda-2);border-radius:9px;padding:0 12px;background:var(--cartao)}
+.filtro-feed{display:flex;gap:6px;padding:12px 20px 0;flex-wrap:wrap}
+.feed{list-style:none;margin:0;padding:8px 20px 16px}
+.feed li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid var(--borda)}
+.feed li:last-child{border-bottom:0}
+.feed .ic{width:36px;height:36px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+.ic.rota{background:var(--in-bg);color:var(--in)}.ic.confirmacao{background:var(--ok-bg);color:var(--ok)}.ic.status{background:var(--cartao-3);color:var(--texto-2)}.ic.externa,.ic.viab{background:var(--at-bg);color:var(--at)}.ic.obs{background:var(--marca-bg);color:var(--marca-2)}
+.feed b{font-weight:600}
+.feed .quando{display:block;font-size:13px;color:var(--texto-3);margin-top:2px}
+.ficha-sec{padding:14px 20px;border-top:1px solid var(--borda)}
+.ficha-sec:first-of-type{border-top:0}
+.ficha-sec h3{margin:0 0 10px;font-size:14.5px}
+.ficha-sec dl{margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:7px 12px;font-size:14px}
+.ficha-sec dt{color:var(--texto-3)}.ficha-sec dd{margin:0;overflow-wrap:anywhere}
+.prods{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.prods li{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.prods li span{color:var(--texto-3)}
+
+.vazio{border:2px dashed var(--borda-2);border-radius:var(--raio);padding:48px;text-align:center;color:var(--texto-3)}
+
+/* barra de controle do protótipo */
+.prev{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:6px;background:#111317;color:#e8e9eb;border-radius:999px;padding:6px 8px 6px 14px;box-shadow:0 14px 40px rgba(0,0,0,.35);font:500 12.5px/1 system-ui,sans-serif;max-width:calc(100vw - 24px);overflow-x:auto}
+.prev b{font-weight:600;white-space:nowrap;margin-right:6px;color:#fff}
+.prev button{border:0;background:none;color:#c9ccd1;padding:7px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;font:inherit}
+.prev button:hover{background:#262a31;color:#fff}
+.prev button.on{background:#fff;color:#111317}
+.prev .sep{width:1px;height:18px;background:#33373e;margin:0 4px}
+.prev .demo{color:#f0b24a;white-space:nowrap;padding:0 6px}
+
+@media (max-width:1280px){
+  .modulos a{padding:0 9px;font-size:14px}.busca-b{flex-basis:200px}.eu div{display:none}
+  .g5{grid-template-columns:repeat(3,minmax(0,1fr))}.g-3-1,.duas,.com-gaveta{grid-template-columns:1fr}.faixa-meta{grid-template-columns:1fr}.faixa-meta>div+div{border-left:0;border-top:1px solid var(--borda)}
+  .fases{grid-template-columns:1fr}.processo{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:18px}
+}
+/* telas médias: com o menu aberto, o logo volta para o topo claro e sobra espaço para as abas dos módulos */
+@media (min-width:901px) and (max-width:1180px){
+  body:not(.recolhido) .marca-b{width:auto;margin-left:0;padding-left:0;background:none;box-shadow:none;border-right:0}
+  body:not(.recolhido) .marca-b .logo.c{display:block}body:not(.recolhido) .marca-b .logo.e{display:none}
+}
+@media (max-width:1100px){.busca-b{flex:none;width:38px;min-width:0;padding:0;justify-content:center}.busca-b span,.busca-b kbd{display:none}}
+@media (min-width:901px) and (max-width:980px){.pres .pilha{display:none}.pres{padding:4px 10px}}
+.menu-b{display:none}
+.mods-cel{display:none}
+@media (max-width:900px){
+  .menu-b{display:inline-flex}
+  .lateral{display:flex!important;position:fixed;left:0;top:64px;bottom:0;width:300px;transform:translateX(-100%);transition:transform .2s;z-index:40;box-shadow:var(--sombra-2)}
+  body.gaveta .lateral{transform:none}
+  .mods-cel{display:flex;flex-direction:column;gap:2px;padding:0 0 12px;margin-bottom:8px;border-bottom:1px solid var(--lat-linha)}
+  .lateral .fim{display:none}
+  /* topo estreito: o logo volta para o fundo do topo (a gaveta continua azul-marinho) */
+  .marca-b{width:auto;margin-left:0;padding-left:0;background:none;box-shadow:none;border-right:0}
+  .marca-b .logo.c{display:block}.marca-b .logo.e{display:none}
+  .mods-cel a{font-weight:600}
+  .eu div{display:none}
+  .casca{grid-template-columns:1fr}.lateral{display:none}.modulos{display:none}.busca-b{display:none}.area{padding:18px 16px 100px}
+  .classes,.quadro{grid-template-columns:1fr}.painel-lado{width:100%}
+}
+@media (max-width:760px){
+  .topo{padding:0 12px;gap:10px}.topo .logo{height:22px}.pres{padding:3px}.pres .pilha span:nth-child(n+2){display:none}.pres{font-size:0}.pres .pilha span{font-size:10.5px}
+  .cab{flex-direction:column;align-items:stretch}.cab h1{font-size:24px}
+  .g5{grid-template-columns:repeat(2,minmax(0,1fr))}.grande{font-size:38px}
+  .fase .tiles,.fase:first-child .tiles,.fase:last-child .tiles{grid-template-columns:1fr}
+  .visoes{overflow-x:auto;scrollbar-width:none}
+  .barra-filtros .buscar{width:100%;margin-left:0}
+  .com-gaveta{grid-template-columns:1fr}.gaveta{position:static}
+  .processo{grid-template-columns:repeat(2,minmax(0,1fr))}.passo::before{display:none}
+  .dois-campos{grid-template-columns:1fr}.painel-lado dl{grid-template-columns:1fr}
+  .equipes{grid-template-columns:1fr}
+  /* tabelas: linhas empilhadas, rótulo à esquerda e valor à direita (a página nunca rola para os lados) */
+  .tabela,.tabela tbody,.tabela tr,.tabela td{display:block;width:100%}
+  .tabela thead{display:none}
+  .tabela tr{padding:12px 16px;border-bottom:1px solid var(--borda)}
+  .tabela td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 0;border:0;text-align:right;min-width:0!important}
+  .tabela td::before{content:attr(data-l);color:var(--texto-3);font-size:13px;text-align:left;flex:none}
+  .tabela td:first-child{display:block;text-align:left;padding-bottom:6px}.tabela td:first-child::before{display:none}
+  .com-gaveta .tabela td:first-child{min-width:0}
+}
+</style>
+</head>
+<body>
+<header class="topo">
+  <button class="ib menu-b" id="menu-b" aria-label="Abrir o menu" aria-expanded="false">☰</button>
+  <div class="marca-b"><img class="logo c" src="assets/logo.png" alt="Seven Telecom"><img class="logo e" src="assets/logo_escuro.png" alt="Seven Telecom"><img class="logo i" src="assets/icone-192.png" alt="Seven Telecom"></div>
+  <nav class="modulos" id="modulos" aria-label="Módulos"></nav>
+  <div class="dir">
+    <label class="busca-b" title="Buscar contrato, cliente ou CPF (Ctrl K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Buscar contrato, cliente ou CPF</span><kbd>Ctrl K</kbd></label>
+    <button class="pres" title="Quem está online"><span class="pilha"><span style="background:#2a64ad">JC</span><span style="background:#0f7b46">PH</span><span style="background:#91560b">CM</span></span>23 online</button>
+    <button class="ib" title="Ajuda e manual" aria-label="Ajuda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 014.8.9c0 1.7-2.4 2.2-2.4 3.6M12 17.2v.1"/></svg></button>
+    <button class="eu" title="Conta: perfil, notificações, senha e sair" style="border:0;background:none;cursor:pointer;text-align:left"><span class="av">VR</span><div><b>Vinícius Ribeiro</b><small>Gerente</small></div></button>
+  </div>
+</header>
+<div class="casca">
+  <aside class="lateral" id="lateral" aria-label="Páginas do módulo"></aside>
+  <main class="area" id="tela"></main>
+</div>
+
+<nav class="prev" aria-label="Controles do protótipo">
+  <b>Direção B · Fluxo</b>
+  <button data-ir="painel">1 Painel</button>
+  <button data-ir="vendas">2 Módulo: Vendas</button>
+  <button data-ir="equipes">3 Equipes</button>
+  <button data-ir="viabilidade">4 Fila</button>
+  <button data-ir="venda">5 Detalhe</button>
+  <button data-ir="app">6–7 App</button>
+  <span class="sep"></span>
+  <span class="demo">dados de demonstração</span>
+</nav>
+
+<script src="dados-demo.js"></script>
+<script src="graficos-demo.js"></script>
+<script>
+"use strict";
+const D = window.DEMO, G = window.GRAF, nf = G.nf;
+const pct = (x, c = 0) => (x * 100).toFixed(c).replace(".", ",") + "%";
+const dec = (x, c = 1) => x.toFixed(c).replace(".", ",");
+const ic = (p) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const IC = {
+  painel: '<rect x="3.5" y="3.5" width="7" height="8" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.5"/>',
+  doc: '<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/>',
+  vendas: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+  cal: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  equipes: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.2a3.2 3.2 0 010 5.6M18.5 14.4c1.6.8 2.5 2.6 2.5 5.6"/>',
+  relogio: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', barras: '<path d="M4 19h16"/><path d="M7 16V10M12 16V6M17 16v-4"/>',
+  pino: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', envio: '<path d="M4 12l16-8-6 16-2.5-6.5z"/>',
+  fone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2"/>', rota: '<circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H16a3.5 3.5 0 000-7H8a3.5 3.5 0 010-7h7.5"/>',
+  alerta: '<path d="M12 3l9.5 16.5h-19z"/><path d="M12 10v4M12 17.2v.1"/>', analise: '<path d="M4 19h16"/><path d="M6 15l4-4 3 3 5-6"/>', premio: '<circle cx="12" cy="9" r="5.5"/><path d="M8.6 13.6L7.5 21l4.5-2.5 4.5 2.5-1.1-7.4"/>',
+  meta: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>', extrato: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+  usuario: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>', online: '<circle cx="12" cy="12" r="3"/><path d="M5.5 5.5a9 9 0 0113 0M18.5 18.5a9 9 0 01-13 0"/>', recolher: '<path d="M15 6l-6 6 6 6"/>',
+};
+/* Mesma arquitetura da direção A; muda a forma de apresentar. */
+const MODULOS = [
+  { k: "visao", n: "Visão geral", d: "Resultado, meta e o que pede atenção agora", grupos: [["", [["painel", "Painel", IC.painel], ["fechamento", "Fechamento do dia", IC.doc]]]] },
+  { k: "comercial", n: "Comercial", d: "Vendas, equipes e acompanhamento dos vendedores", acao: "Nova venda", grupos: [["Vendas", [["vendas", "Vendas", IC.vendas, nf.format(D.empresa.vendas)], ["crm", "CRM · agenda e clientes", IC.cal]]], ["Equipes e vendedores", [["equipes", "Equipes", IC.equipes, "7"], ["semvenda", "Sem venda hoje", IC.relogio, String(D.empresa.semVenda)], ["produtividade", "Produtividade por vendedor", IC.barras]]]] },
+  { k: "operacao", n: "Operação", d: "Filas de trabalho do backoffice de Cadastro", grupos: [["Antes do lançamento", [["viabilidade", "Viabilidade", IC.pino, "12", true], ["conexao", "Conexão / Solar", IC.envio, "7"]]], ["Depois do lançamento", [["confirmacao", "Confirmação D+1 / D+15", IC.fone, "58"], ["rota", "Rota de instalação", IC.rota, "46"], ["pendencias", "Pendências", IC.alerta, "64"]]]] },
+  { k: "gestao", n: "Gestão", d: "Análises, metas, premiação e financeiro", grupos: [["Análises", [["a-vendas", "Vendas", IC.analise], ["a-qualidade", "Qualidade (FPD)", IC.analise], ["a-operacao", "Operação", IC.analise], ["a-vendedores", "Vendedores", IC.analise], ["a-geografia", "Geografia", IC.analise]]], ["Metas e premiação", [["premiacao", "Premiação do mês", IC.premio], ["plano", "Plano do mês (metas)", IC.meta]]], ["Financeiro", [["extrato", "Extrato Claro", IC.extrato]]]] },
+  { k: "admin", n: "Administração", d: "Pessoas, acessos, calendário e auditoria", grupos: [["", [["usuarios", "Usuários e equipes", IC.usuario], ["feriados", "Feriados e dias úteis", IC.cal], ["central", "Central de alterações", IC.doc], ["online", "Quem está online", IC.online, "23"]]]] },
+];
+const moduloDe = (pg) => (pg === "venda" ? MODULOS[1] : MODULOS.find((m) => m.grupos.some(([, it]) => it.some(([k]) => k === pg))) || MODULOS[0]);
+const nomeDe = (pg) => { for (const m of MODULOS) for (const [, it] of m.grupos) for (const [k, n] of it) if (k === pg) return n; return ""; };
+
+function pintarNavegacao(pg) {
+  const mod = moduloDe(pg), ativo = pg === "venda" ? "vendas" : pg;
+  document.getElementById("modulos").innerHTML = MODULOS.map((m) => `<a href="#" data-ir="${m.grupos[0][1][0][0]}" class="${m === mod ? "on" : ""}" ${m === mod ? 'aria-current="page"' : ""}>${m.n}</a>`).join("");
+  document.getElementById("lateral").innerHTML = `<div class="mod"><b>${mod.n}</b><small>${mod.d}</small></div>`
+    + (mod.acao ? `<div class="acao" id="acao-mod"><button class="btn pri bloco" id="acao-b" aria-haspopup="menu" aria-expanded="false" title="Nova venda, lançamento em lote ou importar planilha">${ic('<path d="M12 5v14M5 12h14"/>')}<span class="txt">${mod.acao} ▾</span></button>
+        <div class="menu-novo" role="menu"><a href="#" role="menuitem"><b>Nova venda</b><small>Uma venda: cliente, produtos, pagamento e agendamento</small></a><a href="#" role="menuitem"><b>Lançamento em lote</b><small>Várias vendas coladas de uma planilha (até 500)</small></a><a href="#" role="menuitem"><b>Importar planilha da Claro</b><small>Cria as vendas novas e atualiza situações</small></a></div></div>` : "")
+    + mod.grupos.map(([g, it]) => (g ? `<div class="grp">${g}</div>` : "") + it.map(([k, n, svg, q, quente]) => `<a href="#" data-ir="${k}" class="${k === ativo ? "on" : ""}" title="${n}">${ic(svg)}<span>${n}</span>${q ? `<span class="qt ${quente ? "quente" : ""}">${q}</span><i class="bol"></i>` : ""}</a>`).join("")).join("")
+    + `<div class="fim"><button id="recolher">${ic(IC.recolher)}<span>Recolher menu</span></button></div>`;
+  document.getElementById("recolher").onclick = () => { document.body.classList.toggle("recolhido"); const r = document.body.classList.contains("recolhido"); document.querySelector("#recolher span").textContent = r ? "Expandir menu" : "Recolher menu"; document.querySelector("#recolher svg").style.transform = r ? "scaleX(-1)" : ""; };
+  // telas estreitas: os módulos (que somem do topo) aparecem no começo da gaveta
+  document.getElementById("lateral").insertAdjacentHTML("afterbegin", `<nav class="mods-cel" aria-label="Módulos">${MODULOS.map((m) => `<a href="#" data-ir="${m.grupos[0][1][0][0]}" class="${m === mod ? "on" : ""}">${m.n}</a>`).join("")}</nav>`);
+  document.body.classList.remove("gaveta"); document.getElementById("menu-b").setAttribute("aria-expanded", "false");
+}
+document.getElementById("menu-b").onclick = () => { const ab = document.body.classList.toggle("gaveta"); document.getElementById("menu-b").setAttribute("aria-expanded", ab); };
+
+/* ====================== 1 · PAINEL ====================== */
+function telaPainel() {
+  const E = D.empresa, DU = D.DU, esperado = Math.round((E.meta / DU.total) * DU.decorridos);
+  const por = { abaixo: [], atencao: [], ok: [] };
+  [...D.equipes].sort((a, b) => a.atinge - b.atinge).forEach((e) => por[e.status].push(e));
+  const classe = (k, tit, ch) => `<div class="classe"><h3>${tit} <span class="chip ${ch}">${por[k].length} ${por[k].length === 1 ? "equipe" : "equipes"}</span></h3><ul>${por[k].map((e) => `<li><b>${e.nome}</b><em>${pct(e.atinge)}</em><span>${e.bl} vendidas · projeção ${e.proj} de ${e.meta}</span></li>`).join("")}</ul></div>`;
+  return `
+  <div class="cab"><div><div class="mig">Visão geral</div><h1>Painel</h1><div class="sub">Outubro de 2026 · dia útil 18 de 23,5 (escala 6x1) · atualizado sáb, 24/10 às 14:20</div></div>
+    <div class="acoes"><button class="pilula">Equipes: <b>todas</b> ▾</button><button class="pilula">Mês: <b>outubro de 2026</b> ▾</button><button class="btn">${ic('<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/>')}Exportar</button></div></div>
+
+  <section class="cartao faixa-meta" aria-label="Meta de banda larga do mês">
+    <div><div class="rot">BL vendida no mês</div><div class="grande num">${nf.format(E.bl)} <small>de ${nf.format(E.meta)}</small></div>
+      <div class="det"><b>${pct(E.bl / E.meta)}</b> da meta · instaladas ou pendentes (canceladas não contam)</div>
+      <div class="medidor" aria-hidden="true"><i style="width:${(E.bl / E.meta) * 100}%"></i><u style="left:${(esperado / E.meta) * 100}%"></u></div>
+      <div class="med-leg"><span>esperado até hoje: <b>${nf.format(esperado)}</b></span><span>meta ${nf.format(E.meta)}</span></div></div>
+    <div><div class="rot">Projeção de fechamento</div><div class="grande num">${nf.format(E.proj)} <small>BL</small></div>
+      <div style="margin:6px 0 8px"><span class="chip at">Atenção · ${pct(E.atinge)} da meta</span></div>
+      <div class="det">No ritmo atual, faltariam <b>${nf.format(E.meta - E.proj)} BL</b> para a meta do mês.</div></div>
+    <div><div class="rot">Ritmo por dia útil</div>
+      <div class="ritmos"><div class="ritmo-l"><span>Atual</span><span class="tr"><i style="width:${(E.ritmoAtual / E.ritmoNec) * 100}%;background:var(--g-real)"></i></span><b class="num">${dec(E.ritmoAtual)}</b></div>
+        <div class="ritmo-l"><span>Para a meta</span><span class="tr"><i style="width:100%;background:var(--texto)"></i></span><b class="num">${dec(E.ritmoNec)}</b></div></div>
+      <div class="det" style="margin-top:12px">BL vendidas por dia útil · faltam <b>${dec(DU.restantes)} dias úteis</b> (sábado vale meio dia)</div></div>
+  </section>
+
+  <div class="grade g5">
+    <div class="cartao ind"><div class="r">Vendas válidas</div><div class="v num">${nf.format(E.validas)}</div><div class="d">de ${nf.format(E.vendas)} lançadas no mês</div></div>
+    <div class="cartao ind"><div class="r"><i style="background:var(--st-inst)"></i>Instaladas</div><div class="v num">${nf.format(E.inst)}</div><div class="d">${pct(E.inst / E.vendas)} das lançadas</div></div>
+    <div class="cartao ind"><div class="r"><i style="background:var(--st-pend)"></i>Pendentes</div><div class="v num">${nf.format(E.pend)}</div><div class="d">${pct(E.pend / E.vendas)} das lançadas</div></div>
+    <div class="cartao ind"><div class="r"><i style="background:var(--st-canc)"></i>Canceladas</div><div class="v num">${nf.format(E.canc)}</div><div class="d">${pct(E.canc / E.vendas, 1)} das lançadas</div></div>
+    <div class="cartao ind"><div class="r">FPD · 3 últimas safras</div><div class="v num">${dec(E.fpd * 100)}%</div><div class="d">alerta acima de 20% · jul a set</div></div>
+  </div>
+
+  <div class="grade g-3-1">
+    <section class="cartao"><header><h2>Evolução da BL vendida em outubro<small>Acumulado por dia, projeção pelo ritmo atual e meta do mês</small></h2></header>
+      <div class="dentro"><div class="legenda"><span><i class="chv"></i>Vendida (acumulado)</span><span><i class="chv proj"></i>Projeção</span><span><i class="chv meta"></i>Meta</span></div><div id="g-acum"></div></div></section>
+    <section class="cartao"><header><h2>Atenção agora<small>Com a base de cada número</small></h2></header>
+      <div class="alertas">
+        <a class="alerta cr" href="#" data-ir="equipes"><b>2 equipes abaixo de 75% da meta</b><p>Recanto das Emas e Riacho Fundo (64%) e Valparaíso de Goiás (74%).</p><span class="base"><span>Projeção pelo ritmo · 1º a 24/10</span><span class="ver">Ver equipes →</span></span></a>
+        <a class="alerta cr" href="#"><b>FPD crítico em Valparaíso de Goiás</b><p>26,8% em 257 faturas resolvidas (limite 25%). Recanto das Emas e Riacho Fundo em alerta: 22,7%.</p><span class="base"><span>3 últimas safras · set em maturação</span><span class="ver">Ver qualidade →</span></span></a>
+        <a class="alerta" href="#"><b>6 instalações atrasadas</b><p>Agendadas para dias anteriores e ainda pendentes. A mais antiga é de 21/10.</p><span class="base"><span>Rota de instalação</span><span class="ver">Abrir →</span></span></a>
+        <a class="alerta" href="#"><b>14 vendedores sem venda hoje</b><p>De 58 em operação. Vanessa Pires (4 dias) e Diego Cardoso (3 dias) estão parados.</p><span class="base"><span>Hoje até 14:20</span><span class="ver">Ver lista →</span></span></a>
+      </div></section>
+  </div>
+
+  <section class="cartao" style="margin-bottom:18px"><header><h2>Equipes pelo ritmo da meta<small>Projeção de BL ÷ meta do mês · abaixo de 75%, de 75% a 99% e a partir de 100%</small></h2><a class="ver" href="#" data-ir="equipes">Comparar equipes →</a></header>
+    <div class="classes">${classe("abaixo", "Abaixo do ritmo", "cr")}${classe("atencao", "Atenção", "at")}${classe("ok", "No ritmo da meta", "ok")}</div></section>
+
+  <section aria-labelledby="ff"><h2 id="ff" class="sr">Filas da operação</h2>
+    <div class="fases">
+      <div class="fase"><h3>ANTES DO LANÇAMENTO</h3><div class="tiles">
+        <a class="tile" href="#" data-ir="viabilidade"><span class="seta">→</span><span class="n num">12</span><b>Viabilidade</b><small>9 aguardando · 3 em análise<br><span class="quente">mais antigo há 1h33</span></small></a>
+        <a class="tile" href="#"><span class="seta">→</span><span class="n num">7</span><b>Conexão / Solar</b><small>em tratamento<br><span class="quente">prazo de HP vence em 1h40</span></small></a></div></div>
+      <div class="fase"><h3>DEPOIS DO LANÇAMENTO</h3><div class="tiles">
+        <a class="tile" href="#"><span class="seta">→</span><span class="n num">58</span><b>Confirmação D+1 / D+15</b><small>37 de D+1 e 21 de D+15 para ligar hoje</small></a>
+        <a class="tile" href="#"><span class="seta">→</span><span class="n num">46</span><b>Rota de instalação</b><small>agendadas hoje · 9 sem confirmação<br><span class="quente">6 atrasadas</span></small></a>
+        <a class="tile" href="#"><span class="seta">→</span><span class="n num">64</span><b>Pendências</b><small>abertas · 18 chips a ativar · 11 cadastros em andamento</small></a></div></div>
+    </div></section>`;
+}
+
+/* ====================== 2 · COMERCIAL › VENDAS ====================== */
+function telaVendas() {
+  const e = D.equipes.find((x) => x.nome === "Samambaia"), V = D.venda;
+  const CH = { inst: ["Instalada", "ok"], pend: ["Pendente", "in"], canc: ["Cancelada", "cr"] };
+  const ini = (n) => n.split(" ").filter(Boolean).slice(0, 2).map((p) => p[0]).join("");
+  return `
+  <div class="cab"><div><div class="mig">Comercial</div><h1>Vendas</h1><div class="sub">${e.vendas} lançadas em outubro · equipe Samambaia · situação de hoje de cada venda</div></div>
+    <div class="acoes"><button class="btn">${ic('<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/>')}Exportar ${e.vendas} (CSV)</button></div></div>
+  <div class="visoes" role="tablist"><button class="on">Todas<span class="q">${e.vendas}</span></button><button>Pendentes<span class="q">${e.pend}</span></button><button>Instaladas<span class="q">${e.inst}</span></button><button>Canceladas<span class="q">${e.canc}</span></button></div>
+  <div class="barra-filtros"><button class="pilula on">Mês: <b>outubro de 2026</b> ▾</button><button class="pilula on">Equipe: <b>Samambaia</b> <span class="x">×</span></button><button class="pilula">Vendedor ▾</button><button class="pilula">Origem ▾</button><button class="pilula">+ Mais filtros</button>
+    <label class="buscar"><span class="sr">Buscar</span><input placeholder="Buscar cliente, contrato ou CPF"></label></div>
+  <div class="com-gaveta">
+    <section class="cartao" style="overflow:hidden"><table class="tabela"><thead><tr><th>Cliente</th><th>Vendedor</th><th>Produtos <span class="prop" title="A consulta da lista ainda não traz os produtos; o dado existe.">◆ proposta</span></th><th>Situação</th><th>Instalação <span class="prop" title="A lista ainda não traz o agendamento; o dado existe na venda e na rota.">◆</span></th></tr></thead>
+      <tbody>${D.vendasLista.map((v) => `<tr class="${v.contrato === V.contrato ? "sel" : ""}"><td><b>${v.cliente}</b><span class="sub">${v.contrato} · ${v.data} · ${v.bairro}</span></td>
+        <td><span class="vend"><i>${ini(v.vendedor)}</i>${v.vendedor}</span></td><td><span class="tags">${v.prods.map((p) => `<span>${p}</span>`).join("")}</span></td>
+        <td><span class="chip ${CH[v.st][1]}">${CH[v.st][0]}</span></td><td class="c ${v.alerta ? "alerta-txt" : ""} ${v.atrasada ? "atraso-txt" : ""}">${v.inst}</td></tr>`).join("")}</tbody></table>
+      <div class="rodape-tab"><span>1–10 de ${e.vendas} · por data da venda</span><span><button class="btn peq">‹ Anterior</button> <button class="btn peq">Próxima ›</button></span></div></section>
+    <aside class="cartao gaveta" aria-label="Espiada da venda selecionada"><header><h2>${V.cliente}<small>Contrato ${V.contrato} · ${V.dataVenda}</small></h2><button class="fechar" aria-label="Fechar">×</button></header>
+      <div class="dentro"><div><span class="chip in">Pendente de instalação</span></div>
+        <dl><dt>Próximo passo</dt><dd><b>Instalação 26/10, manhã</b><br><span style="color:var(--texto-3)">confirmada com a cliente <span class="prop">◆</span></span></dd>
+          <dt>Produtos</dt><dd>Internet 500 Mega, Claro TV+ Box, 2 chips (portabilidade)</dd><dt>Vendedor</dt><dd>${V.vendedor} · ${V.equipe}</dd><dt>Pagamento</dt><dd>DCC · vencimento dia 10</dd><dt>Origem</dt><dd>${V.origem} · finalizada no ${V.canal}</dd></dl>
+        <div style="display:flex;gap:8px"><button class="btn pri" data-ir="venda" style="flex:1">Abrir venda completa</button><button class="btn">Editar</button></div></div></aside>
+  </div>`;
+}
+
+/* ====================== 3 · EQUIPES ====================== */
+function telaEquipes() {
+  const max = G.escalaComum(D.equipes), E = D.empresa;
+  const ST = { ok: ["No ritmo", "ok"], atencao: ["Atenção", "at"], abaixo: ["Abaixo do ritmo", "cr"] };
+  return `
+  <div class="cab"><div><div class="mig">Comercial</div><h1>Equipes</h1><div class="sub">Outubro de 2026 · dia útil 18 de 23,5 · 58 vendedores em 7 equipes · mesma escala em todos os cartões</div></div>
+    <div class="acoes"><div class="visoes" style="margin:0;border:0"><button class="on">Cartões</button><button>Tabela</button></div><button class="pilula">Ordenar: <b>menor projeção ÷ meta</b> ▾</button><button class="btn">Exportar</button></div></div>
+  <section class="cartao" style="margin-bottom:16px"><div class="dentro" style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+    <div><b style="font-size:17px">${nf.format(E.bl)} de ${nf.format(E.meta)} BL vendidas · projeção ${nf.format(E.proj)} (${pct(E.atinge)})</b><div class="det" style="margin-top:2px">2 equipes abaixo do ritmo, 3 em atenção e 2 no ritmo da meta</div></div>
+    <div class="legenda" style="margin:0"><span><i class="chv barra"></i>BL vendida até hoje</span><span><i class="chv barra proj"></i>projeção pelo ritmo atual</span><span><i class="chv tick"></i>meta</span></div></div></section>
+  <div class="equipes">${[...D.equipes].sort((a, b) => a.atinge - b.atinge).map((e) => `<article class="cartao eqc">
+    <header><div><h3>${e.nome}</h3><small>sup. ${e.sup} · ${e.hc} vendedores</small></div><span class="chip ${ST[e.status][1]}">${ST[e.status][0]}</span></header>
+    <div class="corpo"><div class="num-g num">${e.bl} <small>BL vendidas · meta ${e.meta}</small></div>
+      <div style="margin-top:10px">${G.barraMeta(e, max)}</div>
+      <div class="proj"><span>Projeção <b>${e.proj}</b> · ${pct(e.atinge)} da meta</span></div>
+      <div class="proj" style="margin-top:2px"><span>Ritmo: <b>${dec(e.ritmoAtual)}</b> por dia útil</span><span>${e.ritmoNec ? `precisa de <b>${dec(e.ritmoNec)}</b>` : "meta garantida"}</span></div></div>
+    <footer><div><b class="num">${pct(e.canc / e.vendas, 1)}</b>canceladas</div><div><b class="num ${e.fpdSt === "abaixo" ? "cr" : e.fpdSt === "atencao" ? "at" : ""}">${e.fpdSt === "abaixo" ? "▲ " : e.fpdSt === "atencao" ? "◆ " : ""}${dec(e.fpd * 100)}%</b>FPD 3 safras</div><div><b class="num">${e.semVenda} de ${e.hc}</b>sem venda hoje</div></footer></article>`).join("")}</div>
+  <p class="det" style="margin-top:16px">BL vendida: contratos do mês com banda larga, instalados ou pendentes. Ritmo: BL vendidas por dia útil (atual → necessário para a meta). Projeção calculada pessoa a pessoa pelo calendário da cidade da equipe.</p>`;
+}
+
+/* ====================== 4 · FILA: VIABILIDADE ====================== */
+function telaViabilidade() {
+  const R = D.viabResumo, sel = D.viabilidade.find((v) => v.id === 1904);
+  const idade = (m) => (m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)}h${String(m % 60).padStart(2, "0")}`);
+  const card = (v) => `<button class="pedido ${v.id === sel.id ? "sel" : ""}"><span class="l1"><span class="idade ${v.st === "PENDENTE" && v.ha > 30 ? "fora" : ""}">${idade(v.ha)}</span>${v.cont ? '<span class="contestado">contestado</span>' : ""}<span>nº ${v.id}</span></span>
+    <b>${v.end}</b><span class="onde">${v.bairro} · ${v.cidade}</span><span class="quem">${v.vendedor} · ${v.equipe}${v.resp ? ` · com <b style="display:inline;font-size:13px">${v.resp}</b>` : ""}</span><span class="tags">${v.checa.map((c) => `<span>${c}</span>`).join("")}</span></button>`;
+  const resp = [["1910", "QS 410 Conjunto C Lote 7", "Samambaia Norte", "Atende · HP 88213", "ok"], ["1908", "Rua 4 Chácara 12", "Vicente Pires", "Não atende · fora da área", "cr"], ["1907", "QNN 21 Conjunto B Casa 3", "Ceilândia Norte", "Atende · HP 88207", "ok"]];
+  return `
+  <div class="cab"><div><div class="mig">Operação · antes do lançamento</div><h1>Viabilidade</h1><div class="sub">Pedidos dos vendedores, do mais antigo para o mais novo · referência de 30 min para começar a análise</div></div>
+    <div class="acoes"><button class="pilula">🔔 Aviso sonoro: <b>ligado</b></button><button class="pilula">Vendedor ▾</button><label class="buscar" style="width:280px"><span class="sr">Buscar</span><input style="width:100%;height:36px;border:1px solid var(--borda-2);border-radius:999px;padding:0 14px;background:var(--cartao)" placeholder="Rua, bairro, CEP, cliente ou vendedor"></label></div></div>
+  <div class="quadro">
+    <div class="coluna"><h3>Aguardando <span class="q">${R.pendentes}</span></h3>${D.viabilidade.filter((v) => v.st === "PENDENTE").map(card).join("")}<p class="det" style="margin:4px">+ 5 pedidos mais novos</p></div>
+    <div class="coluna"><h3>Em análise <span class="q">${R.analise}</span></h3>${D.viabilidade.filter((v) => v.st === "ANALISE").map(card).join("")}</div>
+    <div class="coluna"><h3>Respondidos hoje <span class="q">${R.respondidasHoje}</span></h3><p class="det" style="margin:0 4px 10px">${R.atende} atende · ${R.naoAtende} não atende</p>
+      ${resp.map(([n, e, b, r, c]) => `<button class="pedido"><span class="l1"><span>nº ${n}</span><span class="chip ${c}">${r.split(" · ")[0]}</span></span><b>${e}</b><span class="onde">${b}</span><span class="quem">${r.split(" · ")[1]}</span></button>`).join("")}</div>
+  </div>
+  <div class="veu"></div>
+  <aside class="painel-lado" aria-label="Pedido selecionado">
+    <div class="cab-p"><div class="l1"><span>Viabilidade nº ${sel.id} · pedida às ${sel.quando}</span><button class="fechar" style="border:0;background:none;font-size:22px;color:var(--texto-3);cursor:pointer" aria-label="Fechar">×</button></div>
+      <h2>${sel.end}</h2><div class="det">${sel.bairro} · ${sel.cidade} · CEP ${sel.cep}</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap"><span class="chip nt">Aguardando ${idade(sel.ha)}</span><span class="det">${sel.vendedor} · ${sel.equipe}</span></div></div>
+    <div class="corpo-p">
+      <section><h3>Endereço <a class="ver" href="#" style="font-size:14px;color:var(--in);font-weight:600">Ver no mapa ↗</a></h3><dl><dt>Ponto de referência</dt><dd>Ao lado da Praça da Bíblia</dd><dt>Cliente</dt><dd>Roberto Dias · (61) 98456-0371</dd></dl></section>
+      <section><h3>Resposta do endereço <small>vale para a venda inteira</small></h3>
+        <div class="dois-campos"><div class="campo"><label for="hp">HP <small>obrigatório para atender</small></label><input id="hp" inputmode="numeric"></div><div class="campo"><label for="rv">Resposta ao vendedor <small>obrigatória se não atender</small></label><input id="rv" placeholder="Ex.: fora da área de cobertura"></div></div>
+        <div class="botoes"><button class="btn ok">✓ Atende</button><button class="btn cr">✕ Não atende</button></div></section>
+      <section><h3>Checagem de crédito</h3><dl><dt>Nome completo</dt><dd>Roberto Dias de Almeida</dd><dt>CPF</dt><dd>***.416.508-**</dd><dt>Nascimento</dt><dd>02/09/1979</dd></dl>
+        <div class="botoes"><button class="btn ok">✓ Aprovado</button><button class="btn ok">✓ Aprovado (Oferta Single)</button><button class="btn cr">✕ Reprovado</button></div></section>
+      <section><h3>Conversa e anexos <small>1 observação · 1 anexo</small></h3><p style="margin:0;font-size:14px">“Cliente mora na casa dos fundos, entrada pela rua lateral. Foto da fachada anexada.”</p><p class="det" style="margin:4px 0 0">Mateus Rocha · 13:12 · fachada.jpg (1,8 MB)</p></section>
+    </div>
+    <div class="rod-p"><button class="btn">Devolver para a fila</button><button class="btn pri">Pegar para análise</button></div>
+  </aside>`;
+}
+
+/* ====================== 5 · DOSSIÊ DA VENDA ====================== */
+function telaVenda() {
+  const V = D.venda;
+  const ICO = { rota: "⟳", confirmacao: "☎", status: "●", externa: "↗", viab: "⌖", obs: "✎" };
+  const feed = [{ quando: "24/10 09:40", tipo: "obs", txt: "Observação: “Cliente pediu ligação 30 min antes do técnico chegar.”", por: "Juliana Castro · Cadastro" }, ...V.historico];
+  return `
+  <section class="cartao dossie-cab">
+    <div class="dossie-top"><div><div class="l0"><a href="#" data-ir="vendas">Vendas</a> › Contrato ${V.contrato}</div><h1>${V.cliente}</h1>
+      <div class="meta"><span><span class="chip in">Pendente de instalação</span></span><span>Vendedor <b>${V.vendedor}</b> · ${V.equipe}</span><span>Lançada em <b>${V.dataVenda}</b> por <b>Juliana Castro</b></span><span>${V.origem} · finalizada no ${V.canal}</span></div></div>
+      <div class="acoes" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn">Editar</button><button class="btn">Reagendar instalação</button><button class="btn pri">Registrar observação</button><button class="btn" aria-label="Mais ações">⋯</button></div></div>
+    <div class="processo" aria-label="Linha do processo">
+      <div class="passo feito prop-p"><span class="pt">✓</span><b>Antes do lançamento <span class="prop" title="Vincular a viabilidade e o envio ao Solar à venda é funcionalidade nova.">◆</span></b><small>Viabilidade e Solar · 19/10</small></div>
+      <div class="passo feito"><span class="pt">✓</span><b>Lançada</b><small>19/10 · 16:02</small></div>
+      <div class="passo feito"><span class="pt">✓</span><b>Confirmação D+1</b><small>Confirmado · 20/10</small></div>
+      <div class="passo agora"><span class="pt">•</span><b>Instalação</b><small>26/10 · manhã · confirmada</small></div>
+      <div class="passo"><span class="pt"></span><b>Confirmação D+15</b><small>prevista 03/11</small></div>
+      <div class="passo"><span class="pt"></span><b>1ª fatura</b><small>vence 10/11 · FPD</small></div>
+    </div>
+  </section>
+  <div class="duas">
+    <section class="cartao"><header><h2>Atividade<small>Tudo o que aconteceu com esta venda, do mais recente ao mais antigo <span class="prop" title="Confirmações, rota, Solar e viabilidade aparecem aqui quando o detalhe passar a consultá-los.">◆ proposta</span></small></h2></header>
+      <div class="compor" style="margin-top:12px"><input placeholder="Escrever uma observação sobre a cliente…" aria-label="Nova observação"><button class="btn pri">Salvar</button></div>
+      <div class="filtro-feed"><button class="pilula on">Tudo</button><button class="pilula">Situação</button><button class="pilula">Contatos</button><button class="pilula">Observações</button><button class="pilula">Alterações</button></div>
+      <ul class="feed">${feed.map((h) => `<li><span class="ic ${h.tipo}">${ICO[h.tipo]}</span><div><b>${h.txt}</b><span class="quando">${h.quando} · ${h.por}</span></div></li>`).join("")}</ul></section>
+    <aside class="cartao">
+      <div class="ficha-sec"><h3>Cliente</h3><dl><dt>CPF</dt><dd>${V.doc}</dd><dt>Telefone</dt><dd>(61) 99812-4410 · <a href="#" style="color:var(--in);font-weight:600">WhatsApp</a></dd><dt>Nascimento</dt><dd>${V.nascimento}</dd><dt>Endereço</dt><dd>${V.endereco}<br>${V.bairro} · ${V.cidade}</dd></dl></div>
+      <div class="ficha-sec"><h3>Produtos e pagamento</h3><ul class="prods">${V.produtos.map((p) => `<li><b>${p.qtd > 1 ? p.qtd + "× " : ""}${p.nome}</b><span>${p.cat}${p.adesao ? " · " + p.adesao : ""}</span></li>`).join("")}<li><b>Débito em conta</b><span>vence dia ${V.vencimento}</span></li><li><b>Pacote</b><span>R$ 189,90 · só gerência</span></li></ul></div>
+      <div class="ficha-sec"><h3>Responsáveis</h3><dl><dt>Vendedor</dt><dd>${V.vendedor} · ${V.equipe}</dd><dt>Supervisor</dt><dd>${V.supervisor}</dd><dt>Lançamento</dt><dd>Juliana Castro · Cadastro</dd></dl></div>
+    </aside>
+  </div>`;
+}
+
+const TELAS = { painel: telaPainel, vendas: telaVendas, equipes: telaEquipes, viabilidade: telaViabilidade, venda: telaVenda };
+function ir(pg) {
+  if (pg === "app") { location.href = "direcao-b-app.html"; return; }
+  pintarNavegacao(pg);
+  const alvo = document.getElementById("tela"), f = TELAS[pg];
+  alvo.innerHTML = f ? f() : `<div class="cab"><div><div class="mig">${moduloDe(pg).n}</div><h1>${nomeDe(pg) || "Página"}</h1></div></div><div class="vazio">Esta página não faz parte da prévia. Ela mantém o conteúdo atual, com o novo padrão visual aplicado na implementação.</div>`;
+  if (pg === "painel") G.acumulado(document.getElementById("g-acum"), { dias: D.dias, meta: D.empresa.meta, altura: 280 });
+  G.ligarBullets(alvo); G.rotularTabelas(alvo);
+  document.querySelectorAll(".prev [data-ir]").forEach((b) => b.classList.toggle("on", b.dataset.ir === pg));
+  window.scrollTo(0, 0);
+  history.replaceState(null, "", "#" + pg);
+}
+document.addEventListener("click", (ev) => {
+  const am = document.getElementById("acao-mod");
+  if (am && ev.target.closest("#acao-b")) { const ab = am.classList.toggle("aberto"); document.getElementById("acao-b").setAttribute("aria-expanded", ab); return; }
+  if (am && !ev.target.closest("#acao-mod")) am.classList.remove("aberto");
+  const a = ev.target.closest("[data-ir]"); if (!a) return; ev.preventDefault(); ir(a.dataset.ir);
+});
+document.addEventListener("keydown", (ev) => { if (ev.key === "Escape") document.getElementById("acao-mod")?.classList.remove("aberto"); });
+ir((location.hash || "#painel").slice(1));
+</script>
+<script src="prototipo.js"></script>
+</body>
+</html>

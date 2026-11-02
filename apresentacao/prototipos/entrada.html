@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c1322">
+<title>Seven · Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   TELA DE ENTRADA · NOVA VERSÃO (modelo escolhido: cartão no azul-marinho)
+   Fundo inteiro no azul-marinho da lateral, formulário num cartão branco no centro e a etiqueta
+   "Nova versão" acima dele, que abre o que mudou. A mesma página serve o computador e o celular.
+   ===================================================================== */
+:root{
+  color-scheme:light;
+  --surface:#ffffff; --surface-2:#fafaf8; --surface-3:#f1f0ed;
+  --line:#e4e3df; --line-2:#d2d0ca;
+  --ink:#17191c; --ink-2:#4a4f57; --ink-3:#6f747c;
+  --brand:#c9202e; --brand-ink:#a3161f; --brand-wash:#fbedee;
+  --ok:#17703f; --ok-wash:#eaf5ee; --warn:#8a5600; --warn-wash:#fbf3e2; --crit:#b3261e; --crit-wash:#fbecea;
+  /* azul-marinho da lateral do sistema (ui.css --menu-bg) */
+  --nav:#0c1322; --nav-tx:#aab4c5; --nav-tx-2:#8794a8; --nav-destaque:#ff6b77;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --r:6px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--nav);color:var(--ink);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.pagina{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top) + 32px) 20px calc(env(safe-area-inset-bottom) + 24px)}
+.centro{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:16px 0 40px}
+
+/* etiqueta de versão nova: abre o que mudou */
+.selo{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:6px 16px 6px 13px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:13.5px;line-height:1.3;cursor:pointer;text-align:left}
+.selo:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.32)}
+.selo:focus-visible{outline-color:#fff}
+.selo i{width:7px;height:7px;border-radius:50%;background:var(--nav-destaque);flex:none}
+.selo b{font-weight:600}
+.selo .div{color:rgba(255,255,255,.3)}
+.selo .ver{color:var(--nav-tx)}
+
+/* cartão */
+.cartao{width:100%;max-width:420px;background:var(--surface);border-radius:12px;box-shadow:0 30px 70px rgba(0,0,0,.42);padding:34px 36px 28px}
+.cartao .logo{display:block;height:30px;width:auto;margin:0 auto 26px}
+.cab-form{text-align:center;margin-bottom:22px}
+.passo{font-size:12.5px;font-weight:600;color:var(--ink-3);letter-spacing:.02em;margin:0 0 6px}
+.cab-form h1{font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-.02em;margin:0}
+.cab-form .sub{margin:6px 0 0;color:var(--ink-3);font-size:14.5px;line-height:1.45}
+.cab-form .sub b{color:var(--ink-2);font-weight:500;overflow-wrap:anywhere}
+.campo{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.campo label{font-size:14px;font-weight:500;color:var(--ink-2)}
+.campo input{height:46px;width:100%;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);padding:0 12px;font-size:16px}
+.campo input:focus{outline:0;border-color:var(--ink);box-shadow:0 0 0 3px rgba(23,25,28,.1)}
+.campo .ajuda{font-size:13px;color:var(--ink-3);line-height:1.45}
+.campo.invalido input{border-color:var(--crit)}
+.campo .msg-erro{font-size:13px;color:var(--crit);font-weight:500}
+.senha{position:relative}
+.senha input{padding-right:96px}
+.senha .mostrar{position:absolute;right:5px;top:50%;transform:translateY(-50%);height:36px;padding:0 10px;border:0;border-radius:4px;background:none;color:var(--ink-2);font-size:13.5px;font-weight:500;cursor:pointer}
+.senha .mostrar:hover{background:var(--surface-3);color:var(--ink)}
+.btn-pri{width:100%;height:48px;border:0;border-radius:var(--r);background:var(--brand);color:#fff;font-weight:600;font-size:16px;cursor:pointer;margin-top:4px}
+.btn-pri:hover{background:var(--brand-ink)}
+.btn-sec{width:100%;height:46px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);color:var(--ink);font-weight:500;font-size:15px;cursor:pointer}
+.btn-sec:hover{border-color:var(--ink-3)}
+.link{display:block;margin:14px auto 0;background:none;border:0;padding:6px 8px;color:var(--ink);font-weight:500;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+/* avisos: sempre ícone + texto */
+.aviso{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;align-items:start;padding:11px 12px;border-radius:var(--r);font-size:14px;line-height:1.45;margin:0 0 18px;border:1px solid transparent}
+.aviso svg{width:20px;height:20px}
+.aviso b{display:block;font-weight:600}
+.aviso p{margin:2px 0 0;color:var(--ink-2)}
+.aviso.erro{background:var(--crit-wash);color:var(--crit);border-color:color-mix(in srgb,var(--crit) 22%,transparent)}
+.aviso.ok{background:var(--ok-wash);color:var(--ok);border-color:color-mix(in srgb,var(--ok) 22%,transparent)}
+.aviso.atencao{background:var(--warn-wash);color:var(--warn);border-color:color-mix(in srgb,var(--warn) 22%,transparent)}
+
+.rodape{margin:0;font-size:12.5px;color:var(--nav-tx-2);text-align:center}
+
+/* ---------------- janela "o que mudou" ---------------- */
+dialog{width:min(760px,calc(100vw - 32px));max-height:min(86vh,880px);padding:0;border:0;border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.35);color:var(--ink)}
+dialog::backdrop{background:rgba(5,9,18,.6)}
+dialog[open]{display:flex;flex-direction:column}
+.d-cab{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 24px 16px;border-bottom:1px solid var(--line)}
+.d-cab h2{margin:10px 0 0;font-size:21px;line-height:1.25;font-weight:600;letter-spacing:-.01em}
+.etiqueta{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;letter-spacing:.02em;color:var(--brand-ink);background:var(--brand-wash);border:1px solid color-mix(in srgb,var(--brand) 25%,transparent);border-radius:999px;padding:3px 12px 3px 10px}
+.etiqueta i{width:7px;height:7px;border-radius:50%;background:var(--brand)}
+.fechar{width:38px;height:38px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);cursor:pointer;font-size:20px;line-height:1;color:var(--ink-2);flex:none}
+.fechar:hover{border-color:var(--ink-3);color:var(--ink)}
+.d-corpo{overflow:auto;padding:4px 24px 8px}
+.d-corpo section{padding:16px 0;border-bottom:1px solid var(--line)}
+.d-corpo section:last-child{border-bottom:0}
+.d-corpo h3{margin:0 0 8px;font-size:15px;font-weight:600}
+.d-corpo p{margin:0;color:var(--ink-2);font-size:14.5px}
+.d-corpo ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:14.5px;display:flex;flex-direction:column;gap:5px}
+.mapa{width:100%;border-collapse:collapse;font-size:14px}
+.mapa th{text-align:left;font-size:12.5px;font-weight:500;color:var(--ink-3);padding:6px 10px 6px 0;border-bottom:1px solid var(--line)}
+.mapa td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+.mapa td.agora{color:var(--ink);font-weight:500}
+.mapa td.seta{color:var(--ink-3);width:28px}
+.mapa tr:last-child td{border-bottom:0}
+.d-rod{padding:14px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:16px;background:var(--surface-2);border-radius:0 0 12px 12px}
+.d-rod p{margin:0;font-size:13.5px;color:var(--ink-3)}
+.d-rod .btn-pri{width:auto;flex:none;padding:0 24px;height:42px;margin:0;font-size:15px}
+
+/* ---------------- barra de controle do protótipo (não faz parte do produto) ---------------- */
+.prev{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:6px;background:#111317;color:#e8e9eb;border-radius:999px;padding:6px 8px 6px 14px;box-shadow:0 14px 40px rgba(0,0,0,.35);font:500 12.5px/1 system-ui,sans-serif;max-width:calc(100vw - 24px);overflow-x:auto;border:1px solid #2a2e35}
+.prev b{font-weight:600;white-space:nowrap;margin-right:6px;color:#fff}
+.prev button{border:0;background:none;color:#c9ccd1;padding:7px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;font:inherit}
+.prev button:hover{background:#262a31;color:#fff}
+.prev button.on{background:#fff;color:#111317}
+.prev .sep{width:1px;height:18px;background:#33373e;margin:0 4px;flex:none}
+.prev .demo{color:#f0b24a;white-space:nowrap;padding:0 6px}
+
+/* celular: o cartão ocupa a largura da tela e o "o que mudou" vira uma folha que sobe do rodapé */
+@media (max-width:600px){
+  .pagina{padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 18px)}
+  .centro{gap:14px;padding:8px 0 24px}
+  .selo{font-size:13px}
+  .cartao{padding:26px 20px 22px}
+  .cartao .logo{height:26px;margin-bottom:20px}
+  .cab-form{margin-bottom:20px}
+  .cab-form h1{font-size:23px}
+  .campo input{height:50px}
+  .btn-pri{height:52px}
+  .btn-sec{height:50px}
+  dialog{width:100%;max-width:none;max-height:92vh;margin:auto 0 0;border-radius:18px 18px 0 0}
+  .d-cab,.d-corpo,.d-rod{padding-left:20px;padding-right:20px}
+  .d-rod{flex-direction:column;align-items:stretch;gap:10px;border-radius:0;padding-bottom:calc(env(safe-area-inset-bottom) + 14px)}
+  .d-rod .btn-pri{width:100%;height:50px}
+  .mapa thead{display:none}
+  .mapa tr{display:block;padding:8px 0;border-bottom:1px solid var(--line)}
+  .mapa tr:last-child{border-bottom:0}
+  .mapa td{display:block;border:0;padding:0}
+  .mapa td.seta{display:none}
+  .mapa td:first-child{font-size:13px;color:var(--ink-3)}
+}
+</style>
+</head>
+<body>
+<div class="pagina">
+  <div class="centro">
+    <button class="selo" type="button" data-abre="mudou" aria-haspopup="dialog"><i></i><b>Nova versão</b><span class="div" aria-hidden="true">·</span><span class="ver">Ver o que mudou →</span></button>
+    <main class="cartao">
+      <img class="logo" src="assets/logo.png" alt="Seven Telecom">
+      <div id="caixa"></div>
+    </main>
+  </div>
+  <p class="rodape">Seven Telecom · canal Claro</p>
+</div>
+
+<dialog id="mudou" aria-labelledby="mudou-t">
+  <div class="d-cab"><div><span class="etiqueta"><i></i>Nova versão</span><h2 id="mudou-t">O que mudou nesta versão</h2></div><button class="fechar" type="button" data-fecha aria-label="Fechar">×</button></div>
+  <div class="d-corpo">
+    <section><h3>O que continua igual</h3><p>Seu e-mail e sua senha, suas permissões, as regras de cada perfil e todos os registros. Nada precisa ser refeito.</p></section>
+    <section><h3>Onde ficou cada coisa no sistema</h3>
+      <table class="mapa"><thead><tr><th>Antes</th><th></th><th>Agora</th></tr></thead><tbody>
+        <tr><td>Painel › Visão geral</td><td class="seta">→</td><td class="agora">Visão geral › Painel</td></tr>
+        <tr><td>Painel › Visão das equipes</td><td class="seta">→</td><td class="agora">Comercial › Equipes</td></tr>
+        <tr><td>Vendas › Lista, Nova venda, Lote e Importar planilha</td><td class="seta">→</td><td class="agora">Comercial › Vendas (botão “Nova venda”)</td></tr>
+        <tr><td>Operação › Viabilidade, Conexão/Solar, Confirmação, Rota e Pendências</td><td class="seta">→</td><td class="agora">Operação, separada em antes e depois do lançamento</td></tr>
+        <tr><td>Operação › Fechamento do dia</td><td class="seta">→</td><td class="agora">Visão geral › Fechamento do dia</td></tr>
+        <tr><td>Operação › Sem venda hoje e Produtividade</td><td class="seta">→</td><td class="agora">Comercial › Equipes e vendedores</td></tr>
+        <tr><td>Indicadores e Lançar FPD</td><td class="seta">→</td><td class="agora">Gestão › Análises</td></tr>
+        <tr><td>Premiação, Plano do mês e Extrato Claro</td><td class="seta">→</td><td class="agora">Gestão</td></tr>
+        <tr><td>CRM</td><td class="seta">→</td><td class="agora">Comercial › CRM</td></tr>
+        <tr><td>Ajuda › Wiki</td><td class="seta">→</td><td class="agora">Botão Ajuda (?) no topo de cada tela</td></tr>
+        <tr><td>Trocar senha e sair, no topo</td><td class="seta">→</td><td class="agora">Menu da sua conta (suas iniciais)</td></tr>
+      </tbody></table></section>
+    <section><h3>No app do vendedor</h3><ul>
+      <li>Barra de baixo com Início, Vendas, Agenda e Premiação, e o botão + no meio para registrar viabilidade, venda Conexão ou Solar e retorno na agenda.</li>
+      <li>Início com o seu mês: BL vendida, meta e projeção.</li>
+      <li>Vendas reúne viabilidade, Conexão/Solar e contratos, separados em abas.</li></ul></section>
+    <section><h3>Visual</h3><p>Telas redesenhadas, com a base de cada número à vista e as situações sempre com texto e ícone. O tema escuro foi retirado: agora há um visual só.</p></section>
+  </div>
+  <div class="d-rod"><p>Dúvidas depois de entrar? O botão Ajuda (?) abre a Wiki no assunto da tela.</p><button class="btn-pri" type="button" data-fecha>Entendi</button></div>
+</dialog>
+
+<nav class="prev" aria-label="Controles do protótipo">
+  <b>Entrada · nova versão</b>
+  <button data-tela="entrar">Entrar</button>
+  <button data-tela="erro">Senha errada</button>
+  <button data-tela="semconexao">Sem internet</button>
+  <button data-tela="esqueci">Esqueci a senha</button>
+  <button data-tela="enviado">Link enviado</button>
+  <button data-tela="redefinir">Nova senha</button>
+  <button data-tela="primeiro">Primeiro acesso</button>
+  <button data-tela="novidades">O que mudou</button>
+  <span class="sep"></span>
+  <button type="button" onclick="location.href='entrada-app.html'">Ver no celular</button>
+  <button type="button" onclick="location.href='direcao-a.html'">Sistema</button>
+  <span class="demo">dados de demonstração</span>
+</nav>
+
+<script>
+"use strict";
+const EMAIL = "rafael.moura@exemplo.com.br";   // demonstração
+const SVG = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const IC = {
+  erro: '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/>',
+  ok: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16 9.5"/>',
+  rede: '<path d="M2.5 8.8a14 14 0 0 1 6.2-3.3M15.3 5.5a14 14 0 0 1 6.2 3.3M5.8 12.3a9 9 0 0 1 4.4-2.3M18.2 12.3a9 9 0 0 0-1.6-1.2M9.2 15.6a4.6 4.6 0 0 1 5.6 0"/><path d="M12 19.2v.01M3.5 3.5l17 17"/>',
+};
+/* as mesmas regras que o servidor confere (routes_auth.js · senhaForte) */
+const REGRA = "Use 10 ou mais caracteres, com letras e números. Nada óbvio, como 12345678 ou senha123, e sem o seu e-mail.";
+const aviso = (tipo, ic, titulo, texto) => `<div class="aviso ${tipo}" role="${tipo === "ok" ? "status" : "alert"}">${SVG(IC[ic])}<div><b>${titulo}</b>${texto ? `<p>${texto}</p>` : ""}</div></div>`;
+const cab = (titulo, sub, passo = "") => `<div class="cab-form">${passo ? `<p class="passo">${passo}</p>` : ""}<h1>${titulo}</h1><p class="sub">${sub}</p></div>`;
+const campo = (id, rot, tipo, auto, valor = "") => `<div class="campo"><label for="${id}">${rot}</label><input id="${id}" name="${id}" type="${tipo}" autocomplete="${auto}" value="${valor}"${tipo === "email" ? ' inputmode="email" autocapitalize="off" spellcheck="false"' : ""}></div>`;
+const campoSenha = (id, rot, auto, valor = "", ajuda = "") => `<div class="campo"><label for="${id}">${rot}</label><div class="senha"><input id="${id}" name="${id}" type="password" autocomplete="${auto}" value="${valor}"${ajuda ? ` aria-describedby="${id}-a"` : ""}><button type="button" class="mostrar" aria-pressed="false" aria-controls="${id}">Mostrar</button></div>${ajuda ? `<span class="ajuda" id="${id}-a">${ajuda}</span>` : ""}</div>`;
+
+const entrar = (msg = "", email = "", senha = "") => `${cab("Entrar", "Use o e-mail e a senha de sempre.")}${msg}
+  <form data-acao="entrar" novalidate>${campo("email", "E-mail", "email", "username", email)}${campoSenha("senha", "Senha", "current-password", senha)}
+  <button class="btn-pri" type="submit">Entrar</button></form>
+  <button class="link" type="button" data-ir="esqueci">Esqueci a senha</button>`;
+const TELAS = {
+  entrar: () => entrar(),
+  novidades: () => entrar(),
+  /* mensagens iguais às que o servidor devolve hoje */
+  erro: () => entrar(aviso("erro", "erro", "E-mail ou senha incorretos.", "Confira os dois e tente de novo."), EMAIL, "senha-errada"),
+  semconexao: () => entrar(aviso("atencao", "rede", "Sem conexão com a internet.", "Confira o Wi-Fi ou os dados móveis e tente de novo. O Seven precisa de internet para entrar."), EMAIL, "senha-certa"),
+  alterada: () => entrar(aviso("ok", "ok", "Senha alterada.", "Entre com a senha nova."), EMAIL),
+  esqueci: () => `${cab("Esqueci a senha", "Informe o e-mail do seu acesso para receber o link de nova senha.")}
+    <form data-acao="esqueci" novalidate>${campo("email", "E-mail", "email", "username", EMAIL)}<button class="btn-pri" type="submit">Pedir nova senha</button></form>
+    <button class="link" type="button" data-ir="entrar">Voltar para o login</button>`,
+  enviado: () => `${cab("Esqueci a senha", `Pedido feito para <b>${EMAIL}</b>.`)}
+    ${aviso("ok", "ok", "Confira o seu e-mail.", "Se o e-mail estiver cadastrado, enviamos um link para você escolher uma senha nova. Ele vale por 60 minutos. Confira também a caixa de spam.")}
+    <button class="btn-sec" type="button" data-ir="entrar">Voltar para o login</button>`,
+  redefinir: () => `${cab("Nova senha", `Acesso de <b>${EMAIL}</b>. Escolha a senha nova.`, "Link recebido por e-mail")}
+    <form data-acao="redefinir" novalidate>${campoSenha("nova", "Senha nova", "new-password", "", REGRA)}${campoSenha("nova2", "Repita a senha nova", "new-password")}
+    <button class="btn-pri" type="submit">Salvar senha</button></form>
+    <button class="link" type="button" data-ir="entrar">Voltar para o login</button>`,
+  primeiro: () => `${cab("Defina a sua senha", "Para continuar, troque a senha temporária que você recebeu por uma senha só sua.", "Primeiro acesso")}
+    <form data-acao="primeiro" novalidate>${campoSenha("atual", "Senha temporária", "current-password")}${campoSenha("nova", "Senha nova", "new-password", "", REGRA)}
+    <button class="btn-pri" type="submit">Salvar e continuar</button></form>`,
+};
+
+const caixa = document.getElementById("caixa"), dlg = document.getElementById("mudou");
+function erroNoCampo(id, msg) {
+  const i = document.getElementById(id), c = i.closest(".campo");
+  c.classList.add("invalido");
+  if (!c.querySelector(".msg-erro")) {
+    c.insertAdjacentHTML("beforeend", `<span class="msg-erro" id="${id}-e">${msg}</span>`);
+    i.setAttribute("aria-describedby", [i.getAttribute("aria-describedby"), `${id}-e`].filter(Boolean).join(" "));
+  }
+  return false;
+}
+const forte = (s) => s.length >= 10 && /[A-Za-z]/.test(s) && /\d/.test(s);
+/* no protótipo os formulários só conferem o preenchimento e seguem para a próxima tela (todas as conferências rodam juntas) */
+const tudoCerto = (...v) => v.every(Boolean);
+const SEGUE = {
+  entrar: (f) => tudoCerto(f.email.value.trim() || erroNoCampo("email", "Informe o e-mail."), f.senha.value || erroNoCampo("senha", "Informe a senha."))
+    && (location.href = "direcao-a.html#painel"),
+  esqueci: (f) => (f.email.value.trim() || erroNoCampo("email", "Informe o e-mail do seu acesso.")) && (location.hash = "enviado"),
+  redefinir: (f) => tudoCerto(forte(f.nova.value) || erroNoCampo("nova", "A senha ainda não segue as regras acima."), f.nova.value === f.nova2.value || erroNoCampo("nova2", "As duas senhas não são iguais."))
+    && (location.hash = "alterada"),
+  primeiro: (f) => tudoCerto(f.atual.value || erroNoCampo("atual", "Informe a senha temporária."), forte(f.nova.value) || erroNoCampo("nova", "A senha ainda não segue as regras acima."))
+    && (location.href = "direcao-a.html#painel"),
+};
+const marcar = (t) => document.querySelectorAll(".prev [data-tela]").forEach((b) => b.classList.toggle("on", b.dataset.tela === t));
+function pintar() {
+  const t = TELAS[location.hash.slice(1)] ? location.hash.slice(1) : "entrar";
+  caixa.innerHTML = TELAS[t]();
+  marcar(t);
+  if (t === "novidades" && !dlg.open) dlg.showModal();
+  if (t !== "novidades" && dlg.open) dlg.close();
+}
+document.addEventListener("click", (ev) => {
+  const b = ev.target.closest("button");
+  if (!b) return;
+  if (b.dataset.ir) location.hash = b.dataset.ir;
+  else if (b.dataset.tela) location.hash = b.dataset.tela;
+  else if (b.dataset.abre) dlg.showModal();
+  else if (b.hasAttribute("data-fecha")) dlg.close();
+  else if (b.classList.contains("mostrar")) {
+    const i = document.getElementById(b.getAttribute("aria-controls")), ver = i.type === "password";
+    i.type = ver ? "text" : "password"; b.textContent = ver ? "Ocultar" : "Mostrar"; b.setAttribute("aria-pressed", String(ver));
+  }
+});
+caixa.addEventListener("submit", (ev) => { ev.preventDefault(); SEGUE[ev.target.dataset.acao](ev.target); });
+caixa.addEventListener("input", (ev) => { const c = ev.target.closest(".campo.invalido"); if (c) { c.classList.remove("invalido"); c.querySelector(".msg-erro")?.remove(); } });
+// ao fechar, o formulário fica como estava (nada do que foi digitado se perde)
+dlg.addEventListener("close", () => { if (location.hash === "#novidades") { history.replaceState(null, "", "#entrar"); marcar("entrar"); } });
+addEventListener("hashchange", pintar);
+pintar();
+</script>
+<script src="prototipo.js"></script>
+</body>
+</html>

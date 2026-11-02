@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direção B · App do vendedor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Direção B · Fluxo — app do vendedor (PWA). Cartões com faixa de situação, botão Registrar sempre à mão, formulário em passos. */
+:root{color-scheme:light;
+  --fundo:#eef1f4;--cartao:#fff;--cartao-2:#f7f9fb;--cartao-3:#eef2f6;--borda:#dde3ea;--borda-2:#c6cfda;
+  --texto:#0e1726;--texto-2:#3d4b60;--texto-3:#5f6e84;--marca:#c9202e;--marca-2:#a3161f;--marca-bg:#fdeced;
+  --ok:#0f7b46;--ok-bg:#e5f4eb;--at:#91560b;--at-bg:#fcf2df;--cr:#b42318;--cr-bg:#fdebe9;--in:#1f5aa6;--in-bg:#e8f0fb;
+  --g-real:#2a64ad;--sombra:0 1px 2px rgba(14,23,38,.06),0 2px 8px rgba(14,23,38,.05);--fonte:"Source Sans 3","Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:#d9dee4;color:var(--texto);font:16px/1.45 var(--fonte);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.palco{padding:32px 28px 120px;max-width:1700px;margin:0 auto}
+.palco>header{max-width:980px;margin:0 0 26px}
+.palco h1{font-size:23px;margin:0 0 6px}.palco p{margin:0;color:#3d4b60;font-size:16px}
+.fileira{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+figure{margin:0}figcaption{font:700 14px/1.4 var(--fonte);color:#253247;margin:0 0 10px}
+figcaption small{display:block;font-weight:400;color:#56657b;margin-top:2px;max-width:375px}
+.cel{width:375px;height:812px;border-radius:46px;background:var(--fundo);position:relative;overflow:hidden;box-shadow:0 0 0 10px #15191f,0 0 0 11px #39404a,0 30px 60px rgba(0,0,0,.28)}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 28px 0 32px;font:600 15px system-ui,sans-serif;color:var(--texto)}
+.status i{width:120px;height:30px;border-radius:20px;background:#0b0c0e;position:absolute;left:50%;top:8px;transform:translateX(-50%)}
+.home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:var(--texto);opacity:.85;z-index:9}
+.tela{position:absolute;top:44px;bottom:0;left:0;right:0;display:flex;flex-direction:column}
+.rolagem{flex:1;overflow:auto;padding:0 16px 96px}
+.cabeca{display:flex;align-items:center;gap:12px;padding:8px 16px 14px}
+.cabeca h2{margin:0;font-size:25px;font-weight:700;letter-spacing:-.02em;line-height:1.15;flex:1}
+.cabeca h2 small{display:block;font-size:14.5px;font-weight:500;color:var(--texto-3);letter-spacing:0;margin-top:2px}
+.av{width:42px;height:42px;border-radius:50%;background:var(--marca-bg);color:var(--marca-2);display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+.card{background:var(--cartao);border:1px solid var(--borda);border-radius:16px;box-shadow:var(--sombra)}
+.meta{padding:16px 18px 18px;margin-bottom:12px}
+.meta .t{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700;color:var(--texto-2)}
+.meta .v{font-size:44px;font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-top:6px}
+.meta .v small{font-size:17px;font-weight:600;color:var(--texto-3);letter-spacing:0}
+.med{position:relative;height:14px;border-radius:7px;background:var(--cartao-3);margin:12px 0 6px}
+.med i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--g-real)}
+.med u{position:absolute;top:-5px;bottom:-5px;width:3px;border-radius:2px;background:var(--texto)}
+.med-l{display:flex;justify-content:space-between;font-size:13px;color:var(--texto-3)}
+.par{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.par div{background:var(--cartao-2);border-radius:12px;padding:10px 12px}
+.par b{display:block;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.par span{display:block;font-size:13.5px;color:var(--texto-3);line-height:1.3}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.in{background:var(--in-bg);color:var(--in)}.chip.in::before{background:none;border:2px solid currentColor;width:5px;height:5px}.chip.cr{background:var(--cr-bg);color:var(--cr)}.chip.cr::before{border-radius:1px}
+.hoje{display:flex;gap:8px;overflow-x:auto;margin:0 -16px 14px;padding:0 16px;scrollbar-width:none}
+.hoje span{flex:none;background:var(--cartao);border:1px solid var(--borda);border-radius:12px;padding:8px 12px;font-size:14.5px;color:var(--texto-2)}
+.hoje b{color:var(--texto);font-size:16px}
+.tit{display:flex;justify-content:space-between;align-items:baseline;margin:6px 2px 10px}
+.tit h3{margin:0;font-size:17px;font-weight:700}
+.tit a{font-size:15px;font-weight:600;color:var(--in);text-decoration:none}
+.aviso-c{display:block;padding:12px 14px 12px 16px;margin-bottom:10px;border-left:4px solid var(--in);position:relative}
+.aviso-c.cr{border-left-color:var(--cr)}.aviso-c.at{border-left-color:var(--at)}.aviso-c.ok{border-left-color:var(--ok)}
+.aviso-c b{display:block;font-size:16px;font-weight:700;line-height:1.3;padding-right:46px}
+.aviso-c span{display:block;font-size:14.5px;color:var(--texto-2);margin-top:2px}
+.aviso-c time{position:absolute;right:14px;top:12px;font-size:13px;color:var(--texto-3)}
+.premio{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;margin-top:4px}
+.premio b{display:block;font-size:16px}.premio small{display:block;font-size:13.5px;color:var(--texto-3)}
+.premio strong{font-size:20px;font-variant-numeric:tabular-nums}
+.fab{position:absolute;right:16px;bottom:104px;height:56px;padding:0 22px 0 18px;border-radius:28px;border:0;background:var(--marca);color:#fff;font:700 16px var(--fonte);display:flex;align-items:center;gap:10px;box-shadow:0 10px 24px rgba(201,32,46,.35);z-index:5}
+.fab svg{width:22px;height:22px}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);background:var(--cartao);border-top:1px solid var(--borda);padding:8px 4px 34px}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12.5px;font-weight:600;color:var(--texto-3);text-decoration:none;min-height:52px;position:relative}
+.nav a span.ic{width:56px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center}
+.nav a svg{width:23px;height:23px}
+.nav a.on{color:var(--texto)}.nav a.on span.ic{background:var(--marca-bg);color:var(--marca-2)}
+.nav .n{position:absolute;top:-2px;left:calc(50% + 8px);min-width:18px;height:18px;border-radius:9px;background:var(--marca);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* vendas */
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--cartao-3);border-radius:12px;padding:4px;margin:0 16px 12px}
+.seg button{border:0;background:none;border-radius:9px;font:inherit;font-size:15px;font-weight:600;color:var(--texto-2);min-height:42px}
+.seg button.on{background:var(--cartao);color:var(--texto);box-shadow:var(--sombra)}
+.busca{margin:0 16px 10px;position:relative}
+.busca input{width:100%;height:48px;border:1px solid var(--borda-2);border-radius:24px;padding:0 16px 0 44px;font:inherit;font-size:16px;background:var(--cartao)}
+.busca svg{position:absolute;left:15px;top:14px;width:20px;height:20px;color:var(--texto-3)}
+.filtros{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}
+.filtros button{flex:none;height:38px;border-radius:19px;border:1px solid var(--borda-2);background:var(--cartao);padding:0 14px;font:inherit;font-size:15px;color:var(--texto-2)}
+.filtros button.on{background:var(--texto);border-color:var(--texto);color:var(--cartao)}
+.vcard{position:relative;padding:13px 14px 12px 18px;margin-bottom:10px;overflow:hidden}
+.vcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--in)}
+.vcard.ok::before{background:var(--ok)}.vcard.cr::before{background:var(--cr)}
+.vcard .l1{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.vcard b{font-size:16.5px;line-height:1.3}
+.vcard .sub{font-size:14px;color:var(--texto-3);margin-top:2px}
+.vcard .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.vcard .tags span{font-size:13px;font-weight:600;background:var(--cartao-3);color:var(--texto-2);border-radius:6px;padding:1px 8px}
+.vcard .prox{margin-top:10px;padding-top:9px;border-top:1px solid var(--borda);font-size:14.5px;color:var(--texto-2);display:flex;gap:8px;align-items:center}
+.vcard .prox b{font-size:14.5px}
+.vcard .prox.at{color:var(--at)}
+.prop{display:inline-block;font-size:11px;font-weight:700;color:var(--in);border:1px dashed var(--in);border-radius:4px;padding:0 4px;margin-left:2px}
+
+/* formulário em passos */
+.passos-topo{padding:6px 16px 12px;background:var(--cartao);border-bottom:1px solid var(--borda)}
+.passos-topo .l1{display:flex;justify-content:space-between;align-items:center}
+.passos-topo button{border:0;background:none;font:inherit;font-size:16px;color:var(--texto-2);min-height:44px;padding:0}
+.passos-topo h2{margin:2px 0 10px;font-size:22px;font-weight:700}
+.prog{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.prog i{height:5px;border-radius:3px;background:var(--cartao-3)}
+.prog i.feito{background:var(--ok)}.prog i.agora{background:var(--texto)}
+.prog-l{display:flex;justify-content:space-between;font-size:13px;color:var(--texto-3);margin-top:6px}
+.prog-l b{color:var(--texto)}
+.feitos{margin:14px 16px 0;padding:10px 14px;font-size:14.5px;color:var(--texto-2);display:flex;justify-content:space-between;align-items:center}
+.feitos a{color:var(--in);font-weight:600;text-decoration:none}
+.form-c{margin:12px 16px 0;padding:6px 16px 16px}
+.f{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.f label{font-size:15px;font-weight:700;color:var(--texto-2)}
+.f label em{font-style:normal;color:var(--cr)}
+.f input{height:50px;border:1px solid var(--borda-2);border-radius:12px;padding:0 14px;font:inherit;font-size:17px;background:var(--cartao)}
+.f .aj{font-size:14px;color:var(--texto-3)}
+.f.erro input{border-color:var(--cr);box-shadow:0 0 0 3px var(--cr-bg)}
+.f .er{font-size:14.5px;color:var(--cr);font-weight:600}
+.lado{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.lado>div{min-width:0}
+.f input{width:100%;min-width:0}
+.sn{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:15px;color:var(--texto-2)}
+.sn i{width:44px;height:26px;border-radius:13px;background:var(--cartao-3);position:relative;border:1px solid var(--borda-2)}
+.sn i::after{content:"";position:absolute;left:2px;top:2px;width:20px;height:20px;border-radius:50%;background:var(--cartao);box-shadow:var(--sombra)}
+.auto{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ok);font-weight:600;margin-top:8px}
+.rodape{display:grid;grid-template-columns:1fr 2fr;gap:10px;padding:12px 16px 34px;background:var(--cartao);border-top:1px solid var(--borda)}
+.rodape button{height:52px;border-radius:14px;font:700 16px var(--fonte);border:1px solid var(--borda-2);background:var(--cartao);color:var(--texto)}
+.rodape button.pri{background:var(--marca);border-color:var(--marca);color:#fff}
+
+/* mensagens */
+.msgs{width:375px;display:flex;flex-direction:column;gap:12px}
+.snack{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:start;padding:14px 16px;border-radius:14px;font-size:15px;box-shadow:0 10px 24px rgba(14,23,38,.18)}
+.snack b{display:block;font-size:16px}
+.snack.esc{background:#18212d;color:#e9eef5}.snack.esc span{color:#b6c2d2}
+.snack.cl{background:var(--cartao);border:1px solid var(--borda)}.snack.cl span{color:var(--texto-2)}
+.snack .i{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+.snack .acao{display:inline-block;margin-top:8px;font-weight:700;color:#8db8ee;text-decoration:none}
+.snack.cl .acao{color:var(--in)}
+.gira{width:16px;height:16px;border:2px solid #4a5a70;border-top-color:#fff;border-radius:50%;animation:g 1s linear infinite}
+@keyframes g{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){.gira{animation:none}}
+
+.prev{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:6px;background:#111317;color:#e8e9eb;border-radius:999px;padding:6px 8px 6px 14px;box-shadow:0 14px 40px rgba(0,0,0,.35);font:500 12.5px/1 system-ui,sans-serif;max-width:calc(100vw - 24px);overflow-x:auto}
+.prev b{font-weight:600;white-space:nowrap;margin-right:6px;color:#fff}
+.prev a,.prev button{border:0;background:none;color:#c9ccd1;padding:7px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;font:inherit;text-decoration:none}
+.prev a:hover,.prev button:hover{background:#262a31;color:#fff}.prev .on{background:#fff;color:#111317}
+.prev .sep{width:1px;height:18px;background:#33373e;margin:0 4px}.prev .demo{color:#f0b24a;white-space:nowrap;padding:0 6px}
+</style>
+</head>
+<body>
+<div class="palco">
+  <header><h1>App do vendedor · Direção B</h1>
+    <p>Cartões com a situação de cada venda, um botão Registrar sempre à mão e formulários em passos curtos. Continua sendo o PWA de hoje, sem funcionamento offline: nada aparece como concluído antes da confirmação do servidor.</p></header>
+  <div class="fileira" id="fileira"></div>
+</div>
+<nav class="prev" aria-label="Controles do protótipo">
+  <b>Direção B · Fluxo</b>
+  <a href="direcao-b.html#painel">1 Painel</a><a href="direcao-b.html#vendas">2 Módulo: Vendas</a><a href="direcao-b.html#equipes">3 Equipes</a><a href="direcao-b.html#viabilidade">4 Fila</a><a href="direcao-b.html#venda">5 Detalhe</a><a class="on" href="#">6–7 App</a>
+  <span class="sep"></span><span class="demo">dados de demonstração</span>
+</nav>
+<script src="dados-demo.js"></script>
+<script>
+"use strict";
+const D = window.DEMO, A = D.app, nf = new Intl.NumberFormat("pt-BR");
+const dec = (x, c = 1) => x.toFixed(c).replace(".", ",");
+const P = {
+  inicio: '<path d="M4 11l8-6.5 8 6.5V20a1 1 0 01-1 1h-5v-6h-4v6H5a1 1 0 01-1-1z"/>', vendas: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+  viab: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', agenda: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  mais: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>', mais2: '<path d="M12 5v14M5 12h14"/>', busca: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+};
+const s = (k, w = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${P[k]}</svg>`;
+const nav = (on) => `<nav class="nav" aria-label="Navegação principal">${[["inicio", "Início"], ["vendas", "Vendas", 2], ["viab", "Viabilidade", 1], ["agenda", "Agenda"], ["mais", "Mais"]].map(([k, n, q]) => `<a href="#" class="${k === on ? "on" : ""}"><span class="ic">${s(k)}</span>${q ? `<span class="n">${q}</span>` : ""}${n}</a>`).join("")}</nav>`;
+const cel = (c) => `<div class="cel"><div class="status"><span>14:20</span><i></i><span>5G ▮▮▮</span></div><div class="tela">${c}</div><span class="home"></span></div>`;
+const fab = `<button class="fab" aria-label="Registrar: viabilidade, venda Conexão ou Solar, retorno">${s("mais2", 2.4)}Registrar</button>`;
+
+const esperado = Math.round((A.meta / D.DU.total) * D.DU.decorridos), nec = (A.meta - A.bl) / D.DU.restantes;
+const COR = { hp: "cr", viab: "ok", crm: "in", pend: "at" };
+const inicio = cel(`
+  <div class="cabeca"><h2>Olá, ${A.primeiro}<small>${A.equipe} · sábado, 24 de outubro</small></h2><span class="av" aria-label="Conta">RM</span></div>
+  <div class="rolagem">
+    <section class="card meta"><div class="t"><span>Meta de outubro</span><span class="chip ok">No ritmo</span></div>
+      <div class="v">${A.bl} <small>BL vendidas de ${A.meta}</small></div>
+      <div class="med" aria-hidden="true"><i style="width:${(A.bl / A.meta) * 100}%"></i><u style="left:${(esperado / A.meta) * 100}%"></u></div>
+      <div class="med-l"><span>esperado até hoje: ${esperado}</span><span>instaladas + pendentes</span></div>
+      <div class="par"><div><b>${A.proj}</b><span>projeção para o fim do mês</span></div><div><b>${dec(nec)}</b><span>BL por dia útil para chegar a ${A.meta}</span></div></div></section>
+    <div class="hoje"><span><b>2</b> vendas hoje</span><span><b>1</b> resposta nova</span><span><b>1</b> retorno às 16:00</span><span><b>${A.posicao}º</b> de ${A.equipeTam} na equipe</span></div>
+    <div class="tit"><h3>Para resolver</h3><a href="#">Ver tudo</a></div>
+    ${A.acoes.map((a) => `<a class="card aviso-c ${COR[a.tipo]}" href="#"><b>${a.tit}</b><span>${a.txt}</span><time>${a.quando}</time></a>`).join("")}
+    <a class="card premio" href="#"><div><b>Premiação parcial</b><small>Vendas instaladas até hoje · regra do plano</small></div><strong>R$ ${nf.format(A.premiacao)},00 ›</strong></a>
+  </div>${fab}${nav("inicio")}`);
+
+const ST = { Pendente: ["in", "Pendente"], Instalada: ["ok", "Instalada"], Cancelada: ["cr", "Cancelada"] };
+const vendas = cel(`
+  <div class="cabeca"><h2>Vendas<small>Outubro · ${A.vendas} contratos lançados</small></h2></div>
+  <div class="seg" role="tablist"><button class="on">Contratos · ${A.vendas}</button><button>Conexão / Solar · 2</button></div>
+  <label class="busca">${s("busca")}<input inputmode="numeric" placeholder="Nº do contrato" aria-label="Buscar pelo número do contrato"></label>
+  <div class="filtros"><button class="on">Todas</button><button>Pendentes · ${A.pend}</button><button>Instaladas · ${A.inst}</button><button>Canceladas · ${A.canc}</button><button>Outubro ▾</button></div>
+  <div class="rolagem">${A.lista.map((v) => `<article class="card vcard ${ST[v.st][0]}"><div class="l1"><div><b>${v.cliente}</b><div class="sub">Contrato ${v.contrato} · ${v.data}</div></div><span class="chip ${ST[v.st][0]}">${ST[v.st][1]}</span></div>
+      <div class="tags">${v.produtos.split(" + ").map((p) => `<span>${p}</span>`).join("")}</div>
+      <div class="prox ${v.prox.startsWith("Pendência") ? "at" : ""}">${v.st === "Cancelada" ? "" : "Próximo:"} <b>${v.prox}</b>${v.st === "Pendente" ? '<span class="prop">◆</span>' : ""}</div></article>`).join("")}</div>
+  ${fab}${nav("vendas")}`);
+
+const form = cel(`
+  <div class="passos-topo"><div class="l1"><button>‹ Voltar</button><button>Cancelar</button></div><h2>Nova viabilidade</h2>
+    <div class="prog" aria-hidden="true"><i class="feito"></i><i class="agora"></i><i></i><i></i></div>
+    <div class="prog-l"><span>Passo <b>2 de 4</b> · Endereço</span><span>Próximo: titular do crédito</span></div></div>
+  <div class="rolagem" style="padding:0 0 20px">
+    <div class="card feitos"><span>Verificar: <b>endereço e crédito</b></span><a href="#">Alterar</a></div>
+    <div class="card form-c">
+      <div class="f"><label for="cep">CEP <em>*</em></label><input id="cep" inputmode="numeric" autocomplete="postal-code" value="72405-120"><span class="auto">✓ Endereço encontrado pelo CEP</span></div>
+      <div class="f"><label for="rua">Rua ou avenida <em>*</em></label><input id="rua" value="QR 407 Conjunto 3"></div>
+      <div class="lado"><div class="f erro"><label for="num">Número <em>*</em></label><input id="num" inputmode="numeric" value="" aria-invalid="true" aria-describedby="num-e"><span class="er" id="num-e">Informe o número ou marque “Sem número”.</span></div>
+        <div class="f"><label for="comp">Complemento</label><input id="comp" placeholder="Casa, apto"></div></div>
+      <label class="sn"><i></i>Sem número (S/N)</label>
+      <div class="f"><label for="bai">Bairro</label><input id="bai" value="Samambaia Norte"></div>
+      <div class="f"><label for="ref">Ponto de referência</label><input id="ref" placeholder="Ex.: ao lado do mercado"><span class="aj">Ajuda o backoffice a achar o endereço.</span></div>
+    </div>
+  </div>
+  <div class="rodape"><button>Voltar</button><button class="pri">Continuar</button></div>`);
+
+const msgs = `<div class="msgs">
+  <div class="snack esc"><span class="i"><span class="gira"></span></span><div><b>Enviando para o backoffice…</b><span>O pedido aparece na sua lista quando o servidor confirmar.</span></div></div>
+  <div class="snack cl"><span class="i" style="background:var(--ok-bg);color:var(--ok)">✓</span><div><b>Viabilidade nº 1913 enviada</b><span>Você recebe a resposta aqui e no celular.</span><br><a class="acao" href="#">Acompanhar</a></div></div>
+  <div class="snack cl"><span class="i" style="background:var(--cr-bg);color:var(--cr)">!</span><div><b>Não foi possível enviar</b><span>Já existe um pedido aberto para este endereço (nº 1898). O que você preencheu continua no formulário.</span><br><a class="acao" href="#">Abrir o pedido existente</a></div></div>
+  <div class="snack esc"><span class="i" style="background:#3a2f14;color:#f0c66b">⟳</span><div><b>Você está sem internet</b><span>Nada foi enviado. Toque em Continuar de novo quando a conexão voltar.</span></div></div></div>`;
+
+document.getElementById("fileira").innerHTML = `
+  <figure><figcaption>6 · Início<small>Meta do mês, o que precisa ser resolvido e o botão Registrar sempre à mão.</small></figcaption>${inicio}</figure>
+  <figure><figcaption>7 · Vendas<small>Cada venda com a situação na faixa lateral e o próximo passo; Conexão/Solar na outra aba.</small></figcaption>${vendas}</figure>
+  <figure><figcaption>7 · Formulário em passos<small>Pedido de viabilidade em 4 passos curtos: o que verificar, endereço, titular, revisão.</small></figcaption>${form}</figure>
+  <figure><figcaption>Mensagens de envio<small>Envio, sucesso, falha e falta de conexão, sem nunca dar como concluído antes do servidor.</small></figcaption>${msgs}</figure>`;
+</script>
+<script src="prototipo.js"></script>
+</body>
+</html>

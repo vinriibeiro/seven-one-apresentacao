@@ -1,0 +1,187 @@
+/* Telas: painel — regras próprias destas telas, no sistema visual do seven.css (tokens e componentes). */
+
+/* ---------- Painel do gerente: mesmo desenho do protótipo (design/prototipos/direcao-a.html, telaPainel) ---------- */
+.tela-painel{--st-inst:#2e9e5b;--st-pend:#6f8fbf;--st-canc:#d0393b}
+.tela-painel .cab .linha{font-size:13.5px;color:var(--ink-3);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.tela-painel .cab .linha b{color:var(--ink-2);font-weight:500}
+.tela-painel .cab .acoes .campo{min-width:0}
+.tela-painel .cab .acoes select{min-width:170px}
+.tela-painel>.cab{padding-bottom:20px;margin-bottom:0}
+.tela-painel .secao .grade{margin-bottom:0}
+.tela-painel .rk-filtro{border:0;box-shadow:none;background:none;padding:0 0 8px;margin:0}
+.tela-painel .rk-filtro .campo{width:150px}
+/* resultado do mês: quatro números lado a lado, com a base de cada um */
+.tela-painel .livro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--surface);border:1px solid var(--line);border-radius:var(--r-cartao)}
+.tela-painel .livro>div{padding:16px 18px 18px;min-width:0}
+.tela-painel .livro>div+div{border-left:1px solid var(--line)}
+.tela-painel .rot{font-size:13px;color:var(--ink-2);font-weight:500;display:flex;align-items:center;gap:6px}
+.tela-painel .rot .def{width:16px;height:16px;border-radius:50%;border:1px solid var(--line-2);font-size:10.5px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink-3);cursor:help;font-weight:600;flex:none}
+.tela-painel .val{font-size:32px;font-weight:600;letter-spacing:-.025em;line-height:1.15;margin:8px 0 4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tela-painel .val small{font-size:15px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin-left:4px}
+.tela-painel .det{font-size:13px;color:var(--ink-3);line-height:1.45}
+.tela-painel .det b{color:var(--ink-2);font-weight:500}
+.tela-painel .medidor{position:relative;height:8px;background:var(--surface-3);border-radius:2px;margin-top:12px}
+.tela-painel .medidor i{position:absolute;left:0;top:0;bottom:0;background:var(--c-real);border-radius:2px}
+.tela-painel .medidor u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.tela-painel .medidor-leg{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);margin-top:8px}
+.tela-painel .bl-tipos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.tela-painel .bl-tipos span{display:block;font-size:12px;color:var(--ink-3)}
+.tela-painel .bl-tipos b{display:block;font-size:17px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:2px}
+.tela-painel .g-pilha{display:flex;gap:2px;height:10px;margin-top:14px}
+.tela-painel .g-pilha-p{display:block;border-radius:2px;min-width:3px}
+.tela-painel .g-pilha-p.inst{background:var(--st-inst)}.tela-painel .g-pilha-p.pend{background:var(--st-pend)}.tela-painel .g-pilha-p.canc{background:var(--st-canc)}
+.tela-painel .leg-est{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;font-size:13px;margin-top:10px;color:var(--ink-2);align-items:center}
+.tela-painel .leg-est i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.tela-painel .leg-est .num{color:var(--ink);font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+/* meta e fechamento: projeção à esquerda, acumulado à direita */
+.tela-painel .meta-grade{display:grid;grid-template-columns:300px minmax(0,1fr);gap:28px;align-items:start}
+.tela-painel .proj-box .val{font-size:44px}
+.tela-painel .proj-box dl{margin:18px 0 0;display:grid;grid-template-columns:1fr auto;gap:10px 16px;font-size:13.5px}
+.tela-painel .proj-box dt{color:var(--ink-2)}
+.tela-painel .proj-box dd{margin:0;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.tela-painel .proj-box dd small{display:block;font-weight:400;color:var(--ink-3);font-size:12px}
+.tela-painel .metodo{margin-top:16px;font-size:12.5px;color:var(--ink-3);line-height:1.5;border-left:2px solid var(--line-2);padding-left:10px}
+.tela-painel .grafico{margin:0;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-cartao);padding:14px 12px 6px}
+/* chaves de legenda e situação com símbolo */
+.tela-painel .legenda{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);padding:0 0 10px}
+.tela-painel .legenda span{display:inline-flex;align-items:center;gap:7px}
+.tela-painel .chv{display:inline-block;width:18px;height:0;border-top:2px solid var(--c-real)}
+.tela-painel .chv.barra{height:10px;width:14px;border:0;background:var(--c-real);border-radius:2px}
+.tela-painel .chv.barra.proj{background:var(--c-proj)}
+.tela-painel .chv.tick{width:2px;height:12px;border:0;background:var(--c-meta)}
+.tela-painel .st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap}
+.tela-painel .st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.tela-painel .st.ok{color:var(--ok)}.tela-painel .st.atencao{color:var(--warn)}.tela-painel .st.abaixo{color:var(--crit)}
+.tela-painel .st.atencao::before{border-radius:1px;transform:rotate(45deg);width:7px;height:7px}
+.tela-painel .st.abaixo::before{border-radius:0;width:0;height:0;background:none;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid currentColor}
+.tela-painel .st.neutro{color:var(--ink-2)}.tela-painel .st.neutro::before{background:var(--ink-3)}
+/* tabelas do protótipo */
+.tela-painel .tabela{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-cartao);overflow:hidden;font-size:13.5px}
+.tela-painel .tabela th{font-size:12.5px;font-weight:500;color:var(--ink-3);text-align:left;padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--line);white-space:nowrap}
+.tela-painel .tabela td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tela-painel .tabela tbody tr:last-child td{border-bottom:0}
+.tela-painel .tabela tbody tr:hover td{background:var(--surface-2)}
+.tela-painel .tabela .n,.tela-painel .tabela th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tela-painel .tabela td.n b{font-weight:600}
+.tela-painel .tabela .sub{display:block;font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.tela-painel .tabela tfoot td{background:var(--surface-2);font-weight:600;border-top:1px solid var(--line-2)}
+.tela-painel .tabela .larga{width:30%;min-width:200px}
+.tela-painel .tabela.equipes th:first-child,.tela-painel .tabela.equipes td:first-child{min-width:230px}
+.tela-painel .tabela tr.link{cursor:pointer}
+.tela-painel .g-bullet{position:relative;height:18px;border-radius:2px;background:var(--surface-3)}
+.tela-painel .g-bullet .g-b-proj,.tela-painel .g-bullet .g-b-real{position:absolute;left:0;top:4px;bottom:4px;border-radius:0 2px 2px 0}
+.tela-painel .g-bullet .g-b-proj{background:var(--c-proj)}
+.tela-painel .g-bullet .g-b-real{background:var(--c-real)}
+.tela-painel .g-bullet .g-b-meta{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--c-meta)}
+/* desvios que pedem atenção */
+.tela-painel .desvios{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-cartao)}
+.tela-painel .desvio{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:4px 12px;padding:14px 16px;border-top:1px solid var(--line);align-items:start}
+.tela-painel .desvio:first-child{border-top:0}
+.tela-painel .desvio .ic{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px}
+.tela-painel .desvio .ic.abaixo{background:var(--crit-wash);color:var(--crit)}.tela-painel .desvio .ic.atencao{background:var(--warn-wash);color:var(--warn)}
+.tela-painel .desvio b{display:block;font-weight:600;font-size:14.5px}
+.tela-painel .desvio p{margin:3px 0 0;color:var(--ink-2);font-size:13.5px}
+.tela-painel .desvio .base{display:block;margin-top:5px;font-size:12.5px;color:var(--ink-3)}
+.tela-painel .desvio .btn{align-self:center}
+@media (max-width:1180px){
+  .tela-painel .livro{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tela-painel .livro>div:nth-child(3){border-left:0;border-top:1px solid var(--line)}.tela-painel .livro>div:nth-child(4){border-top:1px solid var(--line)}
+  .tela-painel .meta-grade{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .tela-painel .livro{grid-template-columns:1fr}.tela-painel .livro>div+div{border-left:0;border-top:1px solid var(--line)}
+  .tela-painel .desvio{grid-template-columns:28px minmax(0,1fr)}.tela-painel .desvio .btn{grid-column:2;justify-self:start}
+  .tela-painel .tabela,.tela-painel .tabela tbody,.tela-painel .tabela tfoot,.tela-painel .tabela tr,.tela-painel .tabela td{display:block;width:100%}
+  .tela-painel .tabela thead{display:none}
+  .tela-painel .tabela tr{padding:10px 14px;border-bottom:1px solid var(--line)}
+  .tela-painel .tabela td{display:flex;justify-content:space-between;gap:12px;padding:3px 0;border:0;text-align:right;min-width:0!important}
+  .tela-painel .tabela td::before{content:attr(data-l);color:var(--ink-3);font-size:12.5px;text-align:left;flex:none}
+  .tela-painel .tabela td:first-child{display:block;text-align:left;font-size:15px;padding-bottom:6px}.tela-painel .tabela td:first-child::before{display:none}
+  .tela-painel .tabela td:empty{display:none}.tela-painel .tabela td .g-bullet{flex:1;max-width:60%;margin-top:4px}
+}
+
+/* ---------- Início do vendedor (computador e app) ---------- */
+.tela-inicio .secao:first-of-type{border-top:0;padding-top:4px}
+.tela-inicio .secao .grade{margin-bottom:0}
+.tela-inicio .ini-ranks{display:flex;flex-direction:column;gap:18px}
+.tela-inicio .ini-posicao{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.tela-inicio .ini-posicao .med{font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1;color:var(--c-real);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tela-inicio .ini-posicao .med small{font-size:15px;color:var(--ink-3);font-weight:500;letter-spacing:0}
+.tela-inicio .ini-posicao>div:last-child{min-width:0;flex:1 1 200px}
+
+/* app: blocos no desenho do protótipo */
+.tela-inicio .ini-sec{margin:0 0 18px}
+.tela-inicio .ini-sec>h2{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--ink-2)}
+.tela-inicio .ini-bloco{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-janela);padding:16px}
+.tela-inicio .ini-rot{font-size:13.5px;color:var(--ink-2);font-weight:500}
+.tela-inicio .ini-val{font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1.1;margin-top:4px;color:var(--c-real);font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.tela-inicio .ini-val small{font-size:17px;font-weight:500;color:var(--ink-3);letter-spacing:0}
+.tela-inicio .ini-val .chip{font-size:13px;letter-spacing:0;align-self:center}
+.tela-inicio .ini-medidor{display:block;width:100%;height:10px;margin:14px 0 6px;border-radius:2px;overflow:hidden}
+.tela-inicio .ini-medidor .pista{fill:var(--c-trilho)}
+.tela-inicio .ini-medidor .p{fill:var(--c-proj)}
+.tela-inicio .ini-medidor .r{fill:var(--c-real)}
+.tela-inicio .ini-medidor .hoje{fill:var(--c-meta)}
+.tela-inicio .ini-leg{font-size:12.5px;color:var(--ink-3)}
+.tela-inicio .ini-st{margin:12px 0 0}
+.tela-inicio .ini-st .tag{font-size:13.5px}
+.tela-inicio .ini-msg{margin:10px 0 0;font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.tela-inicio .ini-trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);margin-top:14px}
+.tela-inicio .ini-trio>div{padding:12px 6px 0 0;min-width:0}
+.tela-inicio .ini-trio>div+div{padding-left:12px;border-left:1px solid var(--line)}
+.tela-inicio .ini-trio b{display:block;font-size:22px;font-weight:600;color:var(--c-real);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
+.tela-inicio .ini-trio span{display:block;font-size:12.5px;color:var(--ink-3);line-height:1.3;margin-top:2px}
+.tela-inicio .ini-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tela-inicio .ini-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:inherit;cursor:pointer;min-width:0;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-janela);padding:14px 28px 14px 14px}
+.tela-inicio .ini-tile:hover{border-color:var(--line-2);background:var(--surface-2)}
+.tela-inicio .ini-tile:focus-visible{outline:none;box-shadow:var(--foco)}
+.tela-inicio .ini-tile .r{font-size:13.5px;color:var(--ink-2);font-weight:500}
+.tela-inicio .ini-tile .v{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:4px 0 2px;color:var(--c-real);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;max-width:100%}
+.tela-inicio .ini-tile .d{font-size:12.5px;color:var(--ink-3)}
+.tela-inicio .ini-tile .seta{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--ink-3)}
+.tela-inicio .ini-pos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0}
+.tela-inicio .ini-pos>div{padding:14px 16px;min-width:0}
+.tela-inicio .ini-pos>div+div{border-left:1px solid var(--line)}
+.tela-inicio .ini-pos b{display:block;font-size:28px;font-weight:600;color:var(--c-real);line-height:1.1;font-variant-numeric:tabular-nums}
+.tela-inicio .ini-pos span{display:block;font-size:14px;color:var(--ink-2);font-weight:500;margin-top:2px}
+.tela-inicio .ini-pos small{display:block;font-size:12.5px;color:var(--ink-3)}
+
+/* ---------- Início do app: mesmo desenho do protótipo do app ---------- */
+.app-inicio{--st-ok:var(--ok)}
+.app-inicio .sec{padding:12px 0 4px}
+.app-inicio .sec h3{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--ink-2);display:flex;justify-content:space-between;align-items:baseline}
+.app-inicio .bloco{display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none}
+.app-inicio .mes{padding:14px 16px 16px}
+.app-inicio .mes .rot{font-size:13.5px;color:var(--ink-2);font-weight:500}
+.app-inicio .mes .val{font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1.1;margin-top:6px;font-variant-numeric:tabular-nums}
+.app-inicio .mes .val small{font-size:16px;font-weight:500;color:var(--ink-3);letter-spacing:0}
+.app-inicio .medidor{position:relative;height:8px;background:var(--surface-3);border-radius:2px;margin:12px 0 6px}
+.app-inicio .medidor i{position:absolute;left:0;top:0;bottom:0;background:var(--c-real);border-radius:2px}
+.app-inicio .medidor u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.app-inicio .leg{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-3)}
+.app-inicio .ini-st{margin-top:10px}
+.app-inicio .st{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:500}
+.app-inicio .st::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor;flex:none}
+.app-inicio .st.ok{color:var(--ok)}.app-inicio .st.atencao{color:var(--warn)}.app-inicio .st.abaixo{color:var(--crit)}
+.app-inicio .st.atencao::before{border-radius:1px;transform:rotate(45deg);width:8px;height:8px}
+.app-inicio .st.abaixo::before{border-radius:0;width:0;height:0;background:none;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid currentColor}
+.app-inicio .trio{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:14px}
+.app-inicio .trio div{padding:12px 6px 0 0;min-width:0}.app-inicio .trio div+div{padding-left:12px;border-left:1px solid var(--line)}
+.app-inicio .trio b{display:block;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.app-inicio .trio span{display:block;font-size:12.5px;color:var(--ink-3);line-height:1.3;margin-top:2px}
+.app-inicio .lista{list-style:none;margin:0;padding:0}
+.app-inicio .lista li{border-top:1px solid var(--line)}
+.app-inicio .lista li:first-child{border-top:0}
+.app-inicio .lista a{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;min-height:64px;color:inherit;text-decoration:none}
+.app-inicio .lista .ico{width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+.app-inicio .ico.hp{background:var(--crit-wash);color:var(--crit)}.app-inicio .ico.viab{background:var(--ok-wash);color:var(--ok)}.app-inicio .ico.crm{background:var(--info-wash);color:var(--info)}
+.app-inicio .lista b{display:block;font-size:15px;font-weight:600;line-height:1.3}
+.app-inicio .lista small{display:block;font-size:13.5px;color:var(--ink-2);line-height:1.35}
+.app-inicio .lista time{font-size:12.5px;color:var(--ink-3);text-align:right}
+.app-inicio .lista .chev{color:var(--ink-3);font-size:20px}
+.app-inicio .vazio-app{padding:14px 16px;font-size:13.5px;color:var(--ink-3)}
+.app-inicio .linha-simples{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;gap:10px}
+.app-inicio .linha-simples b{font-size:15px}.app-inicio .linha-simples small{display:block;color:var(--ink-3);font-size:13px}
+.app-inicio .linha-simples .valor{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.app-inicio .sec h3 .ver-tudo{border:0;background:none;padding:0;font:inherit;font-weight:500;font-size:14px;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}

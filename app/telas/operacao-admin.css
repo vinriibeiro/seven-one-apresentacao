@@ -1,0 +1,31 @@
+/* Telas: operacao-admin — regras próprias destas telas, no sistema visual do seven.css (tokens e componentes). */
+
+/* ---------- Confirmação D+1 / D+15 ---------- */
+.tela-conf .cf-col{background:var(--surface-2);border-color:var(--line);border-radius:var(--r-cartao,12px)}
+.tela-conf .cf-tag{width:44px;height:44px;border-radius:10px;font-size:14px;background:var(--nav)!important;box-shadow:none!important}
+.tela-conf .cf-prog .fx-bar i{background:var(--c-real)}
+.tela-conf .cf-dica{background:var(--surface);border:1px solid var(--line);color:var(--ink-2)}
+/* situação: texto com marcador, como no Painel (sem pílulas coloridas) */
+.tela-conf .cf-cont{gap:4px 14px}
+.tela-conf .cf-cont span,.tela-conf .vb-pill{background:none!important;border:0!important;padding:0;font-size:12.5px;font-weight:500;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+.tela-conf .cf-cont span::before,.tela-conf .vb-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink-3);opacity:1;flex:none}
+.tela-conf .cf-cont .ok,.tela-conf .vb-pill.ok{color:var(--ok)!important}
+.tela-conf .cf-cont .alerta,.tela-conf .vb-pill.alerta{color:var(--warn)!important}
+.tela-conf .cf-cont .ruim,.tela-conf .vb-pill.ruim{color:var(--crit)!important}
+.tela-conf .cf-cont .ok::before,.tela-conf .vb-pill.ok::before{background:var(--ok-mark)}
+.tela-conf .cf-cont .alerta::before,.tela-conf .vb-pill.alerta::before{background:var(--warn-mark);border-radius:1px;transform:rotate(45deg);width:7px;height:7px}
+.tela-conf .cf-cont .ruim::before,.tela-conf .vb-pill.ruim::before{background:var(--crit-mark);border-radius:1px}
+.tela-conf .fx-sw input:checked+i{background:var(--nav)}
+/* cartões: a borda da esquerda marca o último resultado, nos tons de situação */
+.tela-conf .cf-card{box-shadow:none;border-color:var(--line)}
+.tela-conf .cf-card.r-CONFIRMADO{border-left:3px solid var(--ok-mark)}
+.tela-conf .cf-card.r-PROBLEMA{border-left:3px solid var(--crit-mark)}
+.tela-conf .cf-card.r-NAO_ATENDEU{border-left:3px solid var(--warn-mark)}
+.tela-conf .cf-cli{font-size:14.5px;font-weight:600}
+.tela-conf .cf-tel a[href^="tel"]::before{color:var(--ink-3)}
+.tela-conf .cf-wa{color:var(--ink-2)!important;background:var(--surface)!important;border-color:var(--line-2)!important;font-weight:500!important}
+.tela-conf .cf-wa:hover{border-color:var(--ink-3)!important}
+.tela-conf .cf-ult{background:var(--surface-3)}
+/* "Confirmado" é a ação principal do cartão: botão principal padrão, sem o verde em degradê */
+.tela-conf .btn.vb-ok{background:var(--brand)!important;box-shadow:none}
+.tela-conf .cf-atr{border-color:var(--warn-line);background:var(--surface)}

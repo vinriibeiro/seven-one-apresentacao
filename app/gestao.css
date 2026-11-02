@@ -1,0 +1,69 @@
+/* Módulo Gestão: acabamento sóbrio (v123). Escopado em body[data-modulo="gestao"] (app.js marca o módulo ativo).
+   Princípios: fundo e cartões como o resto do sistema, moldura fina, nenhuma sombra ou brilho, uma cor principal (azul-marinho)
+   e vermelho fosco só para o que é ruim. Só aparência: nada aqui altera dados ou cálculos. */
+
+body[data-modulo="gestao"]{
+  /* gráficos: azul-marinho + tons de cinza-azulado; estados sóbrios */
+  --c-s1:#2d4a80; --c-real:#2d4a80; --c-proj:#a9b8d3; --c-dest:#2d4a80; --c-hover:rgba(45,74,128,.06);
+  --c-ok:#2d4a80; --c-pend:#7f93b5; --c-ruim:#b5545a; --c-alerta:#b98a2e;
+  --c-r1:#e8edf5; --c-r2:#c8d3e6; --c-r3:#9fb1d0; --c-r4:#7088b3; --c-r5:#4d6aa0; --c-r6:#2d4a80; --c-r7:#1f3562;
+}
+
+/* ---- título da página ---- */
+body[data-modulo="gestao"] .cab{margin-bottom:24px}
+body[data-modulo="gestao"] .cab p,body[data-modulo="gestao"] .cab .sub{font-size:13.5px;margin-top:4px}
+body[data-modulo="gestao"] .cab h1{font-size:24px;font-weight:600;letter-spacing:-.02em}
+
+/* ---- cartões: moldura fina, sem sombra; cabeçalho separado por uma linha ---- */
+body[data-modulo="gestao"] .grade{gap:20px;margin-bottom:20px;align-items:start}
+body[data-modulo="gestao"] .painel{border:1px solid var(--line);border-radius:var(--r-cartao);box-shadow:none;margin-bottom:18px;overflow:hidden}
+body[data-modulo="gestao"] .grade>.painel{margin-bottom:0}
+body[data-modulo="gestao"] .painel>h2{padding:15px 20px;border-bottom:1px solid var(--line);font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+body[data-modulo="gestao"] .painel>h2 small{font-size:12.5px;font-weight:400;color:var(--ink-3)}
+body[data-modulo="gestao"] .painel>.corpo{padding:16px 20px 18px}
+body[data-modulo="gestao"] .painel>.nota{padding:0 20px 16px;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+
+/* ---- tabelas: sem moldura dupla; cabeçalho discreto; linhas arejadas ---- */
+body[data-modulo="gestao"] .painel .tab{border:0;border-radius:0;margin:0}
+body[data-modulo="gestao"] .tab th{background:var(--surface-2);font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);padding:10px 14px}
+body[data-modulo="gestao"] .tab td{padding:12px 14px;font-size:13.5px}
+body[data-modulo="gestao"] .tab td:first-child{font-weight:500}
+body[data-modulo="gestao"] .tab .num{font-variant-numeric:tabular-nums}
+
+/* ---- indicadores (KPIs): cartão simples — rótulo, número, variação em texto, detalhe ---- */
+body[data-modulo="gestao"] .kpis{background:none;border:0;border-radius:0;overflow:visible;gap:16px;margin-bottom:20px}
+body[data-modulo="gestao"] .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-cartao);margin:0;padding:18px 20px 16px}
+body[data-modulo="gestao"] .kpi .ico,body[data-modulo="gestao"] .kpi .spark{display:none}
+body[data-modulo="gestao"] .kpi .r{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+body[data-modulo="gestao"] .kpi .v{font-size:27px;font-weight:600;letter-spacing:-.025em;font-variant-numeric:tabular-nums;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;overflow:visible;white-space:normal;margin-top:4px}
+body[data-modulo="gestao"] .kpi .kpi-val{display:block;margin:0}
+body[data-modulo="gestao"] .kpi .d{margin-top:6px;font-size:12.5px;color:var(--ink-3)}
+/* variação: só texto colorido, sem pílula */
+.chip.dpos,.chip.dneg,.chip.dneu{font-size:12.5px;font-weight:600;padding:0;border:0;background:none;letter-spacing:0}
+.chip.dpos{color:var(--ok)}
+.chip.dneg{color:var(--crit)}
+.chip.dneu{color:var(--ink-3)}
+
+/* ---- "Em resumo": frase em português simples no alto de cada gráfico ---- */
+body[data-modulo="gestao"] .leitura{margin:0 0 14px;padding:10px 14px;border-left:3px solid var(--c-s1);background:var(--surface-2);border-radius:0 6px 6px 0;font-size:13.5px;line-height:1.5;color:var(--ink)}
+body[data-modulo="gestao"] .leitura b{font-weight:600}
+
+/* ---- barrinhas dentro de tabelas ---- */
+body[data-modulo="gestao"] .minibar{height:6px;border-radius:3px;margin-left:10px}
+body[data-modulo="gestao"] .minibar i{border-radius:3px}
+
+/* ---- celular ---- */
+@media (max-width:760px){
+  body[data-modulo="gestao"] .cab h1{font-size:22px}
+  body[data-modulo="gestao"] .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  body[data-modulo="gestao"] .kpi{padding:13px 14px}
+  body[data-modulo="gestao"] .kpi .v{font-size:22px}
+  body[data-modulo="gestao"] .painel>h2{padding:12px 14px}
+  body[data-modulo="gestao"] .painel>h2{display:grid;grid-template-columns:minmax(0,1fr) auto auto;column-gap:6px;row-gap:2px;align-items:center}
+  body[data-modulo="gestao"] .painel>h2>span{grid-column:1;grid-row:1}
+  body[data-modulo="gestao"] .painel>h2>small{grid-column:1;grid-row:2}
+  body[data-modulo="gestao"] .painel>h2>.csv.tbl{grid-column:2;grid-row:1;margin:0}
+  body[data-modulo="gestao"] .painel>h2>.csv:not(.tbl){grid-column:3;grid-row:1;margin:0}
+  body[data-modulo="gestao"] .painel>.corpo{padding:10px 14px 14px}
+  body[data-modulo="gestao"] .painel>.nota{padding:0 14px 12px}
+}

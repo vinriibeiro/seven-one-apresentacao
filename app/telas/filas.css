@@ -1,0 +1,113 @@
+/* Telas: filas — regras próprias destas telas, no sistema visual do seven.css (tokens e componentes). */
+
+/* ---------- Viabilidade (backoffice e gerente): mesmo desenho do protótipo (telaViabilidade) ---------- */
+.tela-viab .cab .linha{font-size:13.5px;color:var(--ink-3);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.tela-viab .cab .linha b{color:var(--ink-2);font-weight:500}
+.tela-viab .filtros{border-radius:var(--r-cartao) var(--r-cartao) 0 0;border-bottom:0;margin-bottom:0}
+.tela-viab .seg{min-height:36px;align-items:center}
+.tela-viab .seg button .n{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-left:4px}
+.tela-viab .seg button.on .n{color:#fff;opacity:.75}
+.tela-viab .vb-f-busca{flex:1 1 220px;min-width:220px}
+.tela-viab .vb-f-vend{width:200px}
+.tela-viab .mono{font-family:var(--mono);font-size:.93em;letter-spacing:-.01em}
+.tela-viab .st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap}
+.tela-viab .st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none;box-sizing:border-box}
+.tela-viab .st.neutro{color:var(--ink-2)}.tela-viab .st.neutro::before{background:var(--ink-3)}
+.tela-viab .st.pend{color:var(--info)}.tela-viab .st.pend::before{background:none;border:2px solid currentColor}
+.tela-viab .st.ok{color:var(--ok)}.tela-viab .st.canc{color:var(--crit)}.tela-viab .st.canc::before{border-radius:1px}
+.tela-viab .fila{display:grid;grid-template-columns:minmax(330px,420px) minmax(0,1fr);border:1px solid var(--line);border-radius:0 0 var(--r-cartao) var(--r-cartao);background:var(--surface);min-height:640px}
+.tela-viab .fila-lista{border-right:1px solid var(--line);overflow:auto;max-height:780px}
+.tela-viab .fila-item{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 16px 13px;cursor:pointer;position:relative;color:inherit;font:inherit}
+.tela-viab .fila-item:hover{background:var(--surface-2)}
+.tela-viab .fila-item.on{background:var(--info-wash)}
+.tela-viab .fila-item.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ink)}
+.tela-viab .fila-item .l1{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-3)}
+.tela-viab .fila-item .idade{font-weight:600;color:var(--ink-2)}
+.tela-viab .fila-item .idade.fora{color:var(--crit)}
+.tela-viab .fila-item .l1 .mono{margin-left:auto}
+.tela-viab .fila-item .end{display:block;font-weight:600;font-size:14px;margin-top:5px;line-height:1.35}
+.tela-viab .fila-item .onde{display:block;font-size:13px;color:var(--ink-2)}
+.tela-viab .fila-item .quem{display:block;font-size:12.5px;color:var(--ink-3);margin-top:5px}
+.tela-viab .checas{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.tela-viab .checas span{font-size:11.5px;border:1px solid var(--line-2);border-radius:4px;padding:0 6px;color:var(--ink-2);background:var(--surface)}
+.tela-viab .fila-rodape{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 16px;font-size:12.5px;color:var(--ink-3)}
+.tela-viab .fila-rodape .pag{margin:0}
+.tela-viab .fila-vazia{padding:28px 16px;text-align:center;color:var(--ink-3);margin:0}
+.tela-viab .fila-det{padding:20px 24px 28px;min-width:0}
+.tela-viab .det-cab{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.tela-viab .det-cab h2{margin:0;font-size:19px;font-weight:600;letter-spacing:-.01em}
+.tela-viab .det-cab .linha{font-size:13px;color:var(--ink-3);margin-top:4px}
+.tela-viab .det-cab .linha b{color:var(--ink-2);font-weight:500}
+.tela-viab .botoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.tela-viab .det-cab .botoes{margin:0}
+.tela-viab .bloco{padding:16px 0;border-bottom:1px solid var(--line)}
+.tela-viab .bloco:last-child{border-bottom:0}
+.tela-viab .bloco h3{margin:0 0 10px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tela-viab .bloco h3 small{font-size:12.5px;font-weight:400;color:var(--ink-3);display:inline-flex;align-items:center;gap:6px}
+.tela-viab .dados{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px 20px;margin:0}
+.tela-viab .dados dt{font-size:12.5px;color:var(--ink-3)}
+.tela-viab .dados dd{margin:2px 0 0;font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+.tela-viab .resposta{display:grid;grid-template-columns:200px minmax(0,1fr);gap:12px;margin-top:12px}
+.tela-viab .resposta .campo.largo{grid-column:1/-1}
+.tela-viab .resposta textarea{min-height:64px}
+.tela-viab .campo .ajuda{font-weight:400;color:var(--ink-3);font-size:12px}
+.tela-viab .det{font-size:13px;color:var(--ink-3)}
+.tela-viab .btn.sim{background:var(--surface);border-color:var(--ok-line);color:var(--ok);font-weight:600}
+.tela-viab .btn.nao{background:var(--surface);border-color:var(--crit-line);color:var(--crit);font-weight:600}
+.tela-viab .btn.sim:hover{background:var(--ok-wash)}.tela-viab .btn.nao:hover{background:var(--crit-wash)}
+.tela-viab .veredito{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:10px 12px;border-radius:var(--r);margin-bottom:12px;background:var(--surface-2);border:1px solid var(--line)}
+.tela-viab .veredito.ok{background:var(--ok-wash);border-color:var(--ok-line)}.tela-viab .veredito.ok b{color:var(--ok)}
+.tela-viab .veredito.ruim{background:var(--crit-wash);border-color:var(--crit-line)}.tela-viab .veredito.ruim b{color:var(--crit)}
+.tela-viab .veredito span{font-size:13px;color:var(--ink-2)}
+/* conversa com o vendedor (mesmas peças da tela do vendedor) */
+.tela-viab .vb-conv{display:flex;flex-direction:column;gap:10px;max-height:none;padding:0;border:0;background:none}
+.tela-viab .vb-msg{max-width:80%;font-size:13.5px;align-self:flex-start}
+.tela-viab .vb-msg .vb-bolha{background:var(--surface-3);border-radius:8px;padding:8px 11px;color:var(--ink)}
+.tela-viab .vb-msg small{display:block;color:var(--ink-3);font-size:12px;margin-top:3px}
+.tela-viab .vb-msg.eu{align-self:flex-end}.tela-viab .vb-msg.eu .vb-bolha{background:var(--info-wash)}
+.tela-viab .vb-env{display:flex;gap:8px;align-items:flex-end;margin-top:12px}
+.tela-viab .vb-env textarea{flex:1;min-height:40px}
+@media (max-width:1000px){
+  .tela-viab .fila{grid-template-columns:1fr}
+  .tela-viab .fila-lista{max-height:none;border-right:0}
+  .tela-viab .fila-det{border-top:1px solid var(--line);padding:16px}
+}
+@media (max-width:760px){
+  .tela-viab .filtros>.campo{flex:1 1 100%;width:100%!important;min-width:0!important}.tela-viab .seg{overflow-x:auto;max-width:100%}
+  .tela-viab .resposta{grid-template-columns:1fr}
+}
+
+/* ---------- Pedir viabilidade (vendedor): mesmo desenho do protótipo do app ---------- */
+.vb-modal-app{width:min(620px,100%)!important}
+.vb-modal-app>.corpo{padding:0!important;background:var(--canvas)}
+.vb-form-app .grupo{background:var(--surface);border-bottom:1px solid var(--line);padding:4px 20px 16px}
+.vb-form-app .grupo+.grupo{margin-top:12px;border-top:1px solid var(--line)}
+.vb-form-app .grupo[hidden]{display:none}
+.vb-form-app h4{margin:12px 0 4px;font-size:14px;font-weight:600;color:var(--ink-2)}
+.vb-form-app h4 small{font-weight:400;color:var(--ink-3)}
+.vb-form-app .checa{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.vb-form-app .checa label{display:flex;align-items:center;gap:10px;min-height:48px;border:1px solid var(--line-2);border-radius:10px;padding:0 12px;font-size:15px;background:var(--surface);cursor:pointer}
+.vb-form-app .checa label.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.vb-form-app .checa input{position:absolute;opacity:0;width:1px;height:1px}
+.vb-form-app .checa label:focus-within{box-shadow:var(--foco)}
+.vb-form-app .checa .cx{width:20px;height:20px;border-radius:5px;border:2px solid var(--line-2);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:transparent;flex:none}
+.vb-form-app .checa label.on .cx{background:var(--ink);border-color:var(--ink);color:#fff}
+.vb-form-app .f{display:flex;flex-direction:column;gap:5px;margin-top:12px;min-width:0}
+.vb-form-app .f label{font-size:14px;font-weight:500;color:var(--ink-2)}
+.vb-form-app .f .obr{color:var(--crit);margin-left:2px}
+.vb-form-app .f input,.vb-form-app .f textarea{height:44px;border-radius:10px;font-size:16px;width:100%}
+.vb-form-app .f textarea{height:76px;resize:vertical}
+.vb-form-app .f .ajuda{font-size:13px;color:var(--ink-3)}
+.vb-form-app .dois{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vb-form-app .dois.uf{grid-template-columns:1fr 90px}
+.vb-form-app .anexar{margin-top:12px}
+.vb-form-app .erro{padding:0 20px 12px}
+.vb-modal-app>.rod{flex-wrap:wrap}
+.vb-modal-app>.rod .rod-nota{flex-basis:100%;text-align:right;font-size:12.5px;color:var(--ink-3)}
+@media (max-width:760px){
+  .vb-modal-app>.rod{flex-direction:row!important;flex-wrap:wrap}
+  .vb-modal-app>.rod .btn{flex:1 1 40%;min-height:48px!important;height:48px}
+  .vb-modal-app>.rod .btn#s{order:2}.vb-modal-app>.rod .btn#x{order:1}
+  .vb-modal-app>.rod .rod-nota{text-align:center;order:3}
+}
+.tela-viab .marca-cont{font-size:11.5px;font-weight:600;color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);border-radius:4px;padding:0 6px}

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="prototipos/assets/icone-192.png">
+<title>Seven · nova versão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: memorando em uma coluna de leitura, faixa azul-marinho no topo como a lateral do sistema; telas em grade */
+*{box-sizing:border-box}
+html,body{margin:0}
+:root{
+  --fundo:#f4f4f2; --papel:#ffffff; --tinta:#14171d; --tinta2:#454b55; --tinta3:#6b717b;
+  --linha:#e2e1dc; --nav:#0c1322; --nav-tx:#c3cad6; --marca:#c9202e; --azul:#2c5fa8;
+  --ok:#17703f; --ok-bg:#eaf5ee;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --fundo:#0f131a; --papel:#171c25; --tinta:#eef0f3; --tinta2:#c2c7cf; --tinta3:#959ba5;
+  --linha:#2a313d; --nav:#080c14; --nav-tx:#aeb6c4; --marca:#e5484f; --azul:#7aa6e8; --ok:#5cc489; --ok-bg:#15291e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --fundo:#0f131a; --papel:#171c25; --tinta:#eef0f3; --tinta2:#c2c7cf; --tinta3:#959ba5;
+  --linha:#2a313d; --nav:#080c14; --nav-tx:#aeb6c4; --marca:#e5484f; --azul:#7aa6e8; --ok:#5cc489; --ok-bg:#15291e; color-scheme:dark}
+body{background:var(--fundo);color:var(--tinta);font:16px/1.65 var(--sans)}
+.faixa{background:var(--nav);color:#fff;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.faixa .dentro{max-width:880px;margin:0 auto;padding-block:44px 40px}
+.selo{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--nav-tx);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:3px 12px}
+.selo i{width:7px;height:7px;border-radius:50%;background:#e5484f}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.15;margin:18px 0 12px;letter-spacing:-.02em;text-wrap:balance;font-weight:700}
+.faixa p{color:var(--nav-tx);max-width:62ch;margin:0;font-size:17px}
+.assin{margin-top:18px;font-size:14px;color:var(--nav-tx)}
+main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.col{max-width:880px;margin:0 auto;padding-block:8px 72px}
+section{margin-top:44px}
+h2{font-size:23px;line-height:1.25;margin:0 0 12px;letter-spacing:-.01em;text-wrap:balance}
+h3{font-size:17px;margin:22px 0 6px}
+p{margin:0 0 12px;max-width:68ch;color:var(--tinta2)}
+p b,li b{color:var(--tinta)}
+ul{margin:0 0 12px;padding-left:20px;max-width:68ch}
+li{margin:5px 0;color:var(--tinta2)}
+.resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:-28px;position:relative}
+.resumo div{background:var(--papel);border:1px solid var(--linha);border-radius:10px;padding:16px 18px;min-width:0}
+.resumo b{display:block;font:500 26px/1.1 var(--mono);color:var(--tinta);font-variant-numeric:tabular-nums}
+.resumo span{display:block;margin-top:6px;font-size:14px;color:var(--tinta2);line-height:1.4}
+.dados{display:flex;gap:14px;align-items:flex-start;background:var(--ok-bg);border:1px solid color-mix(in srgb,var(--ok) 35%,transparent);border-radius:10px;padding:16px 18px;margin-top:28px}
+.dados .ic{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ok);color:var(--papel);display:grid;place-items:center;font-weight:700}
+.dados p{margin:0;color:var(--tinta)}
+.porque{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.porque div{background:var(--papel);border:1px solid var(--linha);border-radius:10px;padding:14px 16px;min-width:0}
+.porque h3{margin:0 0 6px;font-size:15.5px}
+.porque p{margin:0;font-size:14.5px}
+.etapas{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:0;max-width:none}
+.etapas li{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--linha);margin:0}
+.etapas li:last-child{border-bottom:1px solid var(--linha)}
+.etapas .n{font:500 14px/28px var(--mono);color:var(--tinta3)}
+.etapas b{display:block;color:var(--tinta)}
+.etapas span{display:block;font-size:15px}
+.telas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:14px}
+.telas figure{margin:0;background:var(--papel);border:1px solid var(--linha);border-radius:10px;overflow:hidden;min-width:0}
+.telas a{display:block}
+.telas img{display:block;width:100%;height:260px;object-fit:cover;object-position:top left;border-bottom:1px solid var(--linha)}
+.telas figure.cel img{object-fit:contain;object-position:top center;background:var(--fundo)}
+.telas figcaption{padding:10px 14px;font-size:14px;color:var(--tinta2)}
+.telas figcaption b{display:block;color:var(--tinta);font-size:15px}
+.nota{font-size:13.5px;color:var(--tinta3)}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+.links a{display:block;text-decoration:none;background:var(--papel);border:1px solid var(--linha);border-radius:10px;padding:14px 16px;color:var(--tinta)}
+.links a:hover,.links a:focus-visible{border-color:var(--azul)}
+.links a b{display:block;font-size:15.5px}
+.links a span{display:block;font-size:14px;color:var(--tinta2);margin-top:4px}
+.links a em{font-style:normal;color:var(--azul);font-size:13.5px;display:block;margin-top:8px}
+.tabela{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;min-width:520px;background:var(--papel);border:1px solid var(--linha);border-radius:10px;font-size:14.5px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--linha);vertical-align:top}
+th{font-size:13px;color:var(--tinta3);font-weight:600}
+td{color:var(--tinta2)} td:first-child{color:var(--tinta);font-weight:500;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+a{color:var(--azul)}
+:focus-visible{outline:2px solid var(--azul);outline-offset:2px}
+footer{border-top:1px solid var(--linha);margin-top:56px;padding-top:18px;font-size:13.5px;color:var(--tinta3)}
+@media (max-width:640px){.telas,.porque{grid-template-columns:1fr}.telas img{height:220px}.faixa .dentro{padding-block:32px 40px}}
+</style>
+</head>
+<body>
+
+<header class="faixa"><div class="dentro">
+  <span class="selo"><i></i>Em uso a partir de segunda, 26/10/2026</span>
+  <h1>Seven: o que mudei neste fim de semana e por quê</h1>
+  <p>O sistema e o app do vendedor ganharam visual, navegação e painéis novos, que desenhei a partir de um diagnóstico do produto. Publiquei tudo e conferi tela a tela. A equipe começa a usar amanhã, segunda, 26/10. Também atualizei a base de dados até hoje.</p>
+  <div class="assin">Vinícius Ribeiro · sábado 24 e domingo 25 de outubro de 2026</div>
+</div></header>
+
+<main><div class="col">
+
+  <div class="resumo">
+    <div><b>35</b><span>publicações que fiz no sistema no fim de semana, todas conferidas antes de ir ao ar</span></div>
+    <div><b>20</b><span>telas que revisei no navegador, além do app do vendedor</span></div>
+    <div><b>1</b><span>única permissão que ampliei, de propósito: o vendedor vê o nome do cliente das próprias vendas</span></div>
+    <div><b>32/32</b><span>testes automáticos passando; nenhuma vulnerabilidade conhecida nas bibliotecas</span></div>
+  </div>
+
+  <div class="dados" role="note">
+    <span class="ic" aria-hidden="true">✓</span>
+    <p><b>Atualizei hoje (25/10) a base de dados.</b> As vendas e os demais dados estão 100% atualizados até hoje. Os painéis, as metas, a premiação e os indicadores já mostram os números completos.</p>
+  </div>
+
+  <section>
+    <h2>Por que fiz</h2>
+    <p>Antes de mudar qualquer tela, fiz um diagnóstico do sistema como ele estava: 20 telas, 126 funções no servidor e 70 consultas de indicadores. O sistema funcionava, mas tinha crescido rápido, e isso aparecia em quatro pontos.</p>
+    <div class="porque">
+      <div><h3>Difícil de achar as coisas</h3><p>O menu misturava telas de consulta com ações como "Nova venda" e "Lançar FPD". Havia três botões diferentes para abrir e fechar o menu, e alguns avisos levavam para a tela errada.</p></div>
+      <div><h3>O painel não respondia às perguntas do gestor</h3><p>Os gráficos estavam na ordem em que foram criados, e a mesma informação aparecia em três ou quatro formatos. Faltava a resposta direta: vamos bater a meta? Quem está abaixo? O que precisa de atenção hoje?</p></div>
+      <div><h3>Números com regras diferentes</h3><p>"Atenção" do ritmo valia 75% numa tela e 85% em outra. "Sem venda hoje" tinha três definições. O limite de FPD era diferente entre os painéis e a premiação. Um mesmo número podia aparecer com valores diferentes.</p></div>
+      <div><h3>App e visual remendados</h3><p>O app do vendedor era o site ampliado. Havia quatro estilos de etiqueta de situação, buscas que funcionavam de jeitos diferentes e quatro camadas de estilo sobrepostas.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Como fiz</h2>
+    <ol class="etapas">
+      <li><span class="n">1</span><div><b>Diagnóstico</b><span>Li o sistema inteiro e mapeei como uma venda percorre a operação: viabilidade, lançamento, rota, confirmações, FPD e premiação.</span></div></li>
+      <li><span class="n">2</span><div><b>Duas direções visuais</b><span>Montei dois protótipos navegáveis, "Controle" e "Fluxo", e escolhi a direção A, "Controle": lateral azul-marinho, sem tema escuro e com uma tela de entrada nova.</span></div></li>
+      <li><span class="n">3</span><div><b>Implementação em camadas</b><span>Primeiro mudei a estrutura e o visual de todas as telas; depois refiz as telas principais exatamente como no protótipo aprovado e, por fim, levei as demais telas ao mesmo padrão.</span></div></li>
+      <li><span class="n">4</span><div><b>Conferência tela a tela</b><span>Comparei cada tela lado a lado com o protótipo, no computador e no celular, e conferi cada perfil (gerente, backoffice, supervisor e vendedor).</span></div></li>
+      <li><span class="n">5</span><div><b>Publicação segura</b><span>Cada publicação que faço passa por testes automáticos e por uma auditoria de segurança antes de ir ao ar. Se algo falha, a publicação é barrada.</span></div></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>O que mudou para cada pessoa</h2>
+    <h3>Gerente e gestão</h3>
+    <ul>
+      <li><b>Painel novo, organizado pelas perguntas do gestor:</b> resultado do mês, meta e projeção de fechamento, todas as equipes na mesma régua (com o supervisor de cada uma) e as filas da operação.</li>
+      <li><b>Desvios que pedem atenção:</b> equipes abaixo do ritmo, FPD alto por equipe, instalações atrasadas e vendedores sem vender há dias. Cada item mostra a base do cálculo e leva aos registros.</li>
+      <li><b>Regras únicas:</b> ritmo em "Atenção" abaixo de 75% da meta e FPD com alerta acima de 20% e crítico acima de 25%, iguais em todas as telas.</li>
+      <li><b>Equipes:</b> comparação lado a lado e vendedores agrupados por equipe.</li>
+    </ul>
+    <h3>Backoffice</h3>
+    <ul>
+      <li><b>Filas mais claras:</b> a viabilidade mostra há quanto tempo cada pedido espera, a equipe do vendedor e quando um "não atende" foi contestado.</li>
+      <li><b>Ficha da venda nova:</b> o andamento em etapas (lançamento, confirmações, instalação e primeira fatura), o histórico e o próximo passo à vista.</li>
+      <li><b>Números ao lado de cada página:</b> quantas vendas no mês, pendências abertas, rota de hoje e confirmações do dia.</li>
+    </ul>
+    <h3>Vendedor (app no celular)</h3>
+    <ul>
+      <li><b>Início com o que importa:</b> a meta do mês, o ritmo, a posição na equipe, o que fazer agora e a parcial da premiação.</li>
+      <li><b>Minhas vendas:</b> o nome do cliente e a data da instalação em cada venda. Decidi liberar só o nome e só das próprias vendas: o vendedor continua sem ver CPF, telefone ou endereço.</li>
+      <li><b>Botão "+" no meio da barra:</b> pedir viabilidade, enviar venda Conexão ou Solar e marcar retorno na agenda.</li>
+    </ul>
+    <h3>Para todos</h3>
+    <ul>
+      <li><b>Navegação em cinco módulos:</b> Visão geral, Comercial, Operação, Gestão e Administração. Cada perfil vê só o que usa.</li>
+      <li><b>Tela de entrada nova</b> com o aviso "Nova versão", que mostra onde ficou cada coisa. Reescrevi a Wiki do sistema para a versão nova.</li>
+      <li>O e-mail, a senha, as permissões e todos os registros continuam iguais. Ninguém precisa refazer nada.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>As telas novas</h2>
+    <p class="nota">Telas reais do sistema que publiquei, mostradas com dados de demonstração. Os números das imagens não são os da operação. Clique numa imagem para ver inteira.</p>
+    <div class="telas">
+      <figure><a href="telas/painel.png" target="_blank" rel="noopener"><img src="telas/painel.png" alt="Painel do gerente com resultado do mês, meta e equipes"></a><figcaption><b>Painel do gerente</b>Resultado do mês, projeção contra a meta e equipes na mesma régua.</figcaption></figure>
+      <figure><a href="telas/vendas.png" target="_blank" rel="noopener"><img src="telas/vendas.png" alt="Lista de vendas com filtros e situação"></a><figcaption><b>Vendas</b>Lista do mês com a contagem de cada situação e filtros simples.</figcaption></figure>
+      <figure><a href="telas/viabilidade.png" target="_blank" rel="noopener"><img src="telas/viabilidade.png" alt="Fila de viabilidade do backoffice"></a><figcaption><b>Fila de viabilidade</b>Pedidos por tempo de espera, com a equipe e a resposta na mesma tela.</figcaption></figure>
+      <figure><a href="telas/equipes.png" target="_blank" rel="noopener"><img src="telas/equipes.png" alt="Comparação das equipes"></a><figcaption><b>Equipes</b>Todas as equipes comparadas pela mesma régua: vendida, projeção e meta.</figcaption></figure>
+      <figure class="cel"><a href="telas/app-inicio.png" target="_blank" rel="noopener"><img src="telas/app-inicio.png" alt="Início do app do vendedor"></a><figcaption><b>App: Início</b>O mês do vendedor, o que fazer agora e a premiação parcial.</figcaption></figure>
+      <figure class="cel"><a href="telas/app-vendas.png" target="_blank" rel="noopener"><img src="telas/app-vendas.png" alt="Minhas vendas no app"></a><figcaption><b>App: Minhas vendas</b>Cliente, situação e data da instalação de cada venda.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Os protótipos aprovados</h2>
+    <p>São os desenhos navegáveis que fiz antes de implementar e que guiaram cada tela. Funcionam direto no navegador e usam dados de demonstração.</p>
+    <div class="links">
+      <a href="prototipos/direcao-a.html" target="_blank" rel="noopener"><b>Sistema (computador)</b><span>Painel, Equipes, Viabilidade, Vendas e ficha da venda, na direção A, "Controle".</span><em>Abrir protótipo →</em></a>
+      <a href="prototipos/direcao-a-app.html" target="_blank" rel="noopener"><b>App do vendedor</b><span>Início, Minhas vendas, pedir viabilidade e os estados de envio.</span><em>Abrir protótipo →</em></a>
+      <a href="prototipos/entrada.html" target="_blank" rel="noopener"><b>Tela de entrada</b><span>A entrada nova com o aviso "Nova versão" e a janela "O que mudou".</span><em>Abrir protótipo →</em></a>
+    </div>
+  </section>
+
+  <section>
+    <h2>O que mais fiz no fim de semana</h2>
+    <div class="tabela"><table>
+      <thead><tr><th>O quê</th><th>Para que serve</th></tr></thead>
+      <tbody>
+        <tr><td>Premiação congelada</td><td>Ao fechar o mês, o resultado de cada pessoa fica gravado. Um cancelamento ou um FPD lançado depois não muda mais uma premiação já paga.</td></tr>
+        <tr><td>Rota e venda sincronizadas</td><td>Instalado ou cancelado na rota atualiza a venda, e o contrário também. Cancelar pela rota exige o motivo.</td></tr>
+        <tr><td>Solar no modelo novo</td><td>CPF, contrato, plano, vencimento, agendamento e Multi, com botão para copiar no formato do WhatsApp.</td></tr>
+        <tr><td>Quem está online</td><td>Gerente e backoffice veem quem está com o sistema aberto e quem entrou nas últimas 12 horas.</td></tr>
+        <tr><td>Controle de exportações</td><td>Só gerente e Cadastro exportam vendas, e toda exportação fica registrada no histórico da conta.</td></tr>
+        <tr><td>CPF e CNPJ validados</td><td>O dígito verificador é conferido na venda, na viabilidade e no Solar, o que evita cadastro com documento digitado errado.</td></tr>
+        <tr><td>Base para Power BI</td><td>Camada de dados só de leitura e sem dados pessoais, pronta para relatórios no Power BI ou no Fabric.</td></tr>
+        <tr><td>Segurança das bibliotecas</td><td>Atualizei a biblioteca que comprime as imagens anexadas, para corrigir falhas graves conhecidas.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>O que não mudou</h2>
+    <ul>
+      <li>As regras de acesso de cada perfil. A única ampliação, que decidi de propósito, foi o vendedor ver o nome do cliente e a data de instalação das próprias vendas.</li>
+      <li>Os registros, o histórico de alterações e os cálculos de meta, previsão e premiação. Mudei só a apresentação, e as regras ficaram iguais em todas as telas.</li>
+      <li>O acesso: o mesmo endereço, o mesmo e-mail e a mesma senha.</li>
+    </ul>
+  </section>
+
+  <footer>Seven Telecom · canal Claro · documento interno para o CEO e o time de gestão · 25/10/2026</footer>
+</div></main>
+</body>
+</html>

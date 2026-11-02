@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direção A · Controle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   DIREÇÃO A · CONTROLE
+   Mesa de trabalho precisa: hierarquia pela tipografia e por réguas, quase sem cor.
+   Navegação em dois níveis lado a lado (módulos no trilho, páginas no painel de contexto).
+   ===================================================================== */
+:root{
+  color-scheme:light;
+  --canvas:#f4f4f2; --surface:#ffffff; --surface-2:#fafaf8; --surface-3:#f1f0ed;
+  --line:#e4e3df; --line-2:#d2d0ca;
+  --ink:#17191c; --ink-2:#4a4f57; --ink-3:#6f747c;
+  --brand:#c9202e; --brand-ink:#a3161f; --brand-wash:#fbedee;
+  --ok:#17703f; --ok-mark:#2e9e5b; --ok-wash:#eaf5ee;
+  --warn:#8a5600; --warn-mark:#d4900f; --warn-wash:#fbf3e2;
+  --crit:#b3261e; --crit-mark:#d0393b; --crit-wash:#fbecea;
+  --info:#245fa8; --info-wash:#eaf1fa;
+  --g-real:#2a64ad; --g-proj:#a9c4e8; --g-meta:#17191c; --g-grade:#ecebe7; --g-eixo:#cfcdc7;
+  --st-inst:#2e9e5b; --st-pend:#6f8fbf; --st-canc:#d0393b;
+  /* lateral (trilho + painel de páginas): o azul-marinho do sistema atual (ui.css --menu-bg), mantido a pedido do cliente */
+  --nav:#0c1322; --nav-2:#131c2e; --nav-linha:rgba(255,255,255,.08);
+  --nav-tx:#aab4c5; --nav-tx-2:#8794a8; --nav-forte:#ffffff;
+  --nav-hov:rgba(255,255,255,.06); --nav-on:rgba(255,255,255,.1); --nav-destaque:#ff6b77;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --r:6px; --foco:0 0 0 2px var(--surface),0 0 0 4px var(--ink);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--canvas);color:var(--ink);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased;font-feature-settings:"ss02"}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:0;box-shadow:var(--foco);border-radius:var(--r)}
+.mono{font-family:var(--mono);font-size:.93em;letter-spacing:-.01em}
+.num{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------------- casca: trilho de módulos + painel de contexto + área de trabalho ---------------- */
+.casca{display:grid;grid-template-columns:76px 232px minmax(0,1fr);min-height:100vh}
+body.recolhido .casca{grid-template-columns:76px 0 minmax(0,1fr)}
+.trilho{position:sticky;top:0;height:100vh;background:var(--nav);border-right:1px solid var(--nav-linha);display:flex;flex-direction:column;align-items:stretch;padding:12px 8px;gap:4px;z-index:5}
+.trilho .marca{display:flex;justify-content:center;padding:4px 0 14px;margin-bottom:6px;border-bottom:1px solid var(--nav-linha)}
+.trilho .marca img{width:34px;height:34px}
+.trilho a,.trilho button{display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 2px 8px;border-radius:var(--r);color:var(--nav-tx);font-size:12px;font-weight:500;line-height:1.15;text-align:center;border:0;background:none;cursor:pointer;position:relative}
+.trilho svg{width:21px;height:21px}
+.trilho a:hover,.trilho button:hover{background:var(--nav-hov);color:var(--nav-forte)}
+.trilho a.on{color:var(--nav-forte);background:var(--nav-on);font-weight:600}
+.trilho a.on svg{color:var(--nav-destaque)}
+.trilho a.on::before{content:"";position:absolute;left:-8px;top:10px;bottom:10px;width:3px;border-radius:0 2px 2px 0;background:var(--brand)}
+.trilho .fim{margin-top:auto;display:flex;flex-direction:column;gap:4px}
+.trilho .av{width:34px;height:34px;border-radius:50%;background:var(--nav-on);border:1px solid rgba(255,255,255,.16);display:inline-flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;color:var(--nav-forte)}
+.trilho :focus-visible,.contexto :focus-visible{box-shadow:inset 0 0 0 2px var(--nav-forte)}
+/* sobrevoo do modo recolhido: as páginas do módulo aparecem ao passar o mouse ou focar */
+.voo{display:none;position:absolute;left:68px;top:0;min-width:230px;background:var(--nav-2);border:1px solid var(--nav-linha);border-radius:8px;box-shadow:0 14px 36px rgba(0,0,0,.35);padding:8px;text-align:left;z-index:20}
+body.recolhido .trilho .item:hover .voo,body.recolhido .trilho .item:focus-within .voo{display:block}
+.voo b{display:block;font-size:12px;color:var(--nav-tx-2);font-weight:600;padding:6px 10px 4px}
+.voo a{flex-direction:row;justify-content:space-between;align-items:center;font-size:14px;color:var(--nav-tx);padding:7px 10px;text-align:left}
+.trilho .item{position:relative}
+
+.contexto{position:sticky;top:0;height:100vh;overflow:auto;background:var(--nav);border-right:1px solid var(--nav-linha);padding:18px 12px 16px;display:flex;flex-direction:column;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent}
+body.recolhido .contexto{visibility:hidden;padding:0;border:0}
+.contexto h2{font-size:17px;font-weight:600;margin:2px 10px 14px;letter-spacing:-.01em;color:var(--nav-forte)}
+.contexto .grp{font-size:12px;font-weight:600;color:var(--nav-tx-2);margin:16px 10px 6px}
+.contexto .grp:first-of-type{margin-top:4px}
+.contexto a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 10px;border-radius:var(--r);color:var(--nav-tx);font-size:14px;position:relative}
+.contexto a:hover{background:var(--nav-hov);color:var(--nav-forte)}
+.contexto a.on{background:var(--nav-on);color:var(--nav-forte);font-weight:600}
+.contexto a .cont{font-family:var(--mono);font-size:12.5px;color:var(--nav-tx-2);font-weight:400}
+.contexto a.on .cont{color:var(--nav-tx)}
+.contexto a .cont.alerta{color:var(--nav-destaque)}
+.contexto .rodape{margin-top:auto;padding-top:14px;border-top:1px solid var(--nav-linha)}
+.contexto .rodape button{width:100%;display:flex;align-items:center;gap:8px;background:none;border:0;padding:8px 10px;border-radius:var(--r);color:var(--nav-tx-2);cursor:pointer;font-size:13px}
+.contexto .rodape button:hover{background:var(--nav-hov);color:var(--nav-forte)}
+.trilho .expandir{display:none}
+body.recolhido .trilho .expandir{display:flex}
+
+.trabalho{min-width:0;display:flex;flex-direction:column}
+.barra{position:sticky;top:0;z-index:4;height:56px;display:flex;align-items:center;gap:14px;padding:0 28px;background:color-mix(in srgb,var(--canvas) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.trilha{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-3);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trilha b{color:var(--ink);font-weight:600}
+.trilha i{font-style:normal;color:var(--line-2)}
+.barra .busca{margin-left:auto;position:relative;width:min(340px,34vw)}
+.barra .busca input{width:100%;height:36px;border:1px solid var(--line-2);background:var(--surface);border-radius:var(--r);padding:0 12px 0 34px;font-size:13.5px}
+.barra .busca svg{position:absolute;left:11px;top:10px;width:16px;height:16px;color:var(--ink-3)}
+.barra .busca kbd{position:absolute;right:8px;top:8px;font:500 11px var(--mono);color:var(--ink-3);border:1px solid var(--line-2);border-radius:4px;padding:1px 5px}
+.online{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px 4px 6px;cursor:pointer}
+.online .pts{display:flex}.online .pts span{width:22px;height:22px;border-radius:50%;border:2px solid var(--surface);margin-left:-6px;background:var(--surface-3);font-size:10px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+.online .pts span:first-child{margin-left:0}
+.online .ponto{width:8px;height:8px;border-radius:50%;background:var(--ok-mark)}
+.icone-btn{width:36px;height:36px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;color:var(--ink-2);cursor:pointer}
+.icone-btn svg{width:18px;height:18px}
+.icone-btn:hover{color:var(--ink);border-color:var(--line-2)}
+.conteudo{padding:26px 32px 64px;max-width:1320px;width:100%}
+
+/* ---------------- cabeçalho de página ---------------- */
+.cab{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.cab h1{font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-.02em;margin:0}
+.cab .linha{font-size:13.5px;color:var(--ink-3);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.cab .linha b{color:var(--ink-2);font-weight:500}
+.cab .acoes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* ---------------- botões e campos ---------------- */
+.btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--r);border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font-weight:500;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn svg{width:16px;height:16px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.pri:hover{background:var(--brand-ink);border-color:var(--brand-ink)}
+.btn.leve{border-color:transparent;background:none;color:var(--ink-2)}
+.btn.leve:hover{background:var(--surface-3);color:var(--ink)}
+.btn.perigo{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 35%,var(--line-2))}
+.btn.pq{height:30px;padding:0 10px;font-size:13px}
+.dividido{display:inline-flex}.dividido .btn:first-child{border-radius:var(--r) 0 0 var(--r)}.dividido .btn+.btn{border-radius:0 var(--r) var(--r) 0;border-left:1px solid rgba(255,255,255,.35);padding:0 9px}
+.menu-acao{position:relative}
+.menu-acao .pop{display:none;position:absolute;right:0;top:42px;width:290px;background:var(--surface);border:1px solid var(--line-2);border-radius:8px;box-shadow:0 14px 36px rgba(0,0,0,.14);padding:6px;z-index:10}
+.menu-acao.aberto .pop{display:block}
+.pop a{display:block;padding:9px 10px;border-radius:var(--r)}
+.pop a:hover{background:var(--surface-3)}
+.pop a b{display:block;font-weight:500;font-size:14px}
+.pop a small{display:block;color:var(--ink-3);font-size:12.5px;line-height:1.35;margin-top:1px}
+.campo{display:flex;flex-direction:column;gap:5px;min-width:0}
+.campo>label{font-size:12.5px;font-weight:500;color:var(--ink-2)}
+.campo input,.campo select{height:36px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);padding:0 10px;font-size:14px;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);padding:2px;gap:2px}
+.seg button{border:0;background:none;padding:5px 10px;border-radius:4px;font-size:13px;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.seg button .n{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-left:4px}
+.seg button.on{background:var(--ink);color:var(--surface)}.seg button.on .n{color:var(--surface);opacity:.75}
+
+/* ---------------- seções do painel (réguas, não cartões) ---------------- */
+.secao{border-top:1px solid var(--line-2);padding:20px 0 28px}
+.secao>header{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.secao h2{font-size:16px;font-weight:600;margin:0;letter-spacing:-.01em}
+.secao h2 small{display:block;font-size:13px;font-weight:400;color:var(--ink-3);margin-top:3px;letter-spacing:0}
+.secao header a.ver{font-size:13.5px;color:var(--ink-2);font-weight:500;white-space:nowrap}
+.secao header a.ver:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.livro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.livro>div{padding:16px 18px 18px;min-width:0}
+.livro>div+div{border-left:1px solid var(--line)}
+.rot{font-size:13px;color:var(--ink-2);font-weight:500;display:flex;align-items:center;gap:6px}
+.rot .def{width:16px;height:16px;border-radius:50%;border:1px solid var(--line-2);font-size:10.5px;display:inline-flex;align-items:center;justify-content:center;color:var(--ink-3);cursor:help;font-weight:600}
+.val{font-size:32px;font-weight:600;letter-spacing:-.025em;line-height:1.15;margin:8px 0 4px}
+.val small{font-size:15px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin-left:4px}
+.det{font-size:13px;color:var(--ink-3);line-height:1.45}
+.det b{color:var(--ink-2);font-weight:500}
+.medidor{position:relative;height:8px;background:var(--surface-3);border-radius:2px;margin-top:12px}
+.medidor i{position:absolute;left:0;top:0;bottom:0;background:var(--g-real);border-radius:2px}
+.medidor u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.medidor-leg{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);margin-top:8px}
+.g-pilha{display:flex;gap:2px;height:10px;margin-top:14px}
+.g-pilha-p{display:block;border-radius:2px;min-width:3px}
+.g-pilha-p.inst{background:var(--st-inst)}.g-pilha-p.pend{background:var(--st-pend)}.g-pilha-p.canc{background:var(--st-canc)}
+.leg-est{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;font-size:13px;margin-top:10px;color:var(--ink-2);align-items:center}
+.leg-est i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.leg-est .num{color:var(--ink);font-weight:500;text-align:right}
+
+.meta-grade{display:grid;grid-template-columns:300px minmax(0,1fr);gap:28px;align-items:start}
+.proj-box .val{font-size:44px}
+.proj-box dl{margin:18px 0 0;display:grid;grid-template-columns:1fr auto;gap:10px 16px;font-size:13.5px}
+.proj-box dt{color:var(--ink-2)}
+.proj-box dd{margin:0;text-align:right;font-weight:600}
+.proj-box dd small{display:block;font-weight:400;color:var(--ink-3);font-size:12px}
+.metodo{margin-top:16px;font-size:12.5px;color:var(--ink-3);line-height:1.5;border-left:2px solid var(--line-2);padding-left:10px}
+.grafico{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 10px 6px}
+.legenda{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);padding:0 8px 6px}
+.legenda span{display:inline-flex;align-items:center;gap:7px}
+.chv{display:inline-block;width:18px;height:0;border-top:2px solid var(--g-real)}
+.chv.proj{border-top:2px dashed var(--g-proj)}
+.chv.meta{border-top:1px solid var(--g-meta)}
+.chv.barra{height:10px;width:14px;border:0;background:var(--g-real);border-radius:2px}
+.chv.barra.proj{background:var(--g-proj)}
+.chv.tick{width:2px;height:12px;border:0;background:var(--g-meta)}
+
+/* gráfico de linha (SVG) */
+.g-svg{width:100%;height:auto;display:block;overflow:visible}
+.g-grade{stroke:var(--g-grade);stroke-width:1}
+.g-base{stroke:var(--g-eixo);stroke-width:1}
+.g-tick{fill:var(--ink-3);font-size:11.5px;font-family:var(--sans)}
+.g-meta{stroke:var(--g-meta);stroke-width:1.2}
+.g-rot-meta{fill:var(--ink);font-size:12px;font-weight:600}
+.g-hoje{stroke:var(--line-2);stroke-width:1}
+.g-real{fill:none;stroke:var(--g-real);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.g-real-area{fill:var(--g-real);opacity:.08}
+.g-proj{fill:none;stroke:var(--g-real);stroke-opacity:.55;stroke-width:2;stroke-dasharray:5 5;stroke-linecap:round}
+.g-pt-real{fill:var(--g-real);stroke:var(--surface);stroke-width:2}
+.g-pt-proj{fill:var(--surface);stroke:var(--g-real);stroke-width:2}
+.g-rot-fim{fill:var(--ink);font-size:13px;font-weight:600}
+.g-cruz{stroke:var(--ink-3);stroke-width:1}
+.g-capa{cursor:crosshair}.g-capa:focus{outline:none}
+.g-dica{position:fixed;display:none;z-index:50;min-width:190px;background:var(--surface);border:1px solid var(--line-2);border-radius:6px;box-shadow:0 10px 28px rgba(0,0,0,.14);padding:9px 11px;font-size:12.5px;pointer-events:none}
+.g-dica-t{font-weight:600;color:var(--ink);margin-bottom:6px}
+.g-dica-l{display:grid;grid-template-columns:16px auto 1fr;gap:8px;align-items:center;color:var(--ink-3);line-height:1.6}
+.g-dica-l b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.g-chave{display:block;width:14px;border-top:2px solid var(--k)}
+.g-chave.tracejada{border-top-style:dashed}.g-chave.regua{border-top-width:1px}.g-chave.fina{opacity:.45}
+
+/* barras de meta por equipe */
+.g-bullet{position:relative;height:18px;border-radius:2px;background:var(--surface-3);cursor:default}
+.g-bullet .g-b-proj{position:absolute;left:0;top:4px;bottom:4px;background:var(--g-proj);border-radius:0 2px 2px 0}
+.g-bullet .g-b-real{position:absolute;left:0;top:4px;bottom:4px;background:var(--g-real);border-radius:0 2px 2px 0}
+.g-bullet .g-b-meta{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--g-meta)}
+.g-bullet:focus-visible{box-shadow:var(--foco)}
+
+/* ---------------- tabelas ---------------- */
+.tabela{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tabela th{font-size:12.5px;font-weight:500;color:var(--ink-3);text-align:left;padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--line);white-space:nowrap}
+.tabela td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tabela tr:last-child td{border-bottom:0}
+.tabela tbody tr:hover td{background:var(--surface-2)}
+.tabela .n,.tabela th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tabela td.n b{font-weight:600}
+.tabela .sub{display:block;font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.tabela tfoot td{background:var(--surface-2);font-weight:600;border-top:1px solid var(--line-2)}
+.tabela .larga{width:30%;min-width:200px}
+.tabela.equipes th:first-child,.tabela.equipes td:first-child{min-width:230px}
+.tabela tr.link{cursor:pointer}
+.tabela tr.on td{background:var(--info-wash)}
+.prop{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--info);border:1px dashed color-mix(in srgb,var(--info) 60%,transparent);border-radius:4px;padding:0 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+
+/* situação: sempre texto + ícone (a cor nunca carrega o sentido sozinha) */
+.st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.st.ok{color:var(--ok)}.st.atencao{color:var(--warn)}.st.abaixo{color:var(--crit)}
+.st.atencao::before{border-radius:1px;transform:rotate(45deg);width:7px;height:7px}
+.st.abaixo::before{border-radius:0;width:0;height:0;background:none;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid currentColor}
+.st.inst{color:var(--ok)}.st.pend{color:var(--info)}.st.canc{color:var(--crit)}
+.st.pend::before{background:none;border:2px solid currentColor;width:6px;height:6px}
+.st.canc::before{border-radius:1px}
+.st.neutro{color:var(--ink-2)}.st.neutro::before{background:var(--ink-3)}
+
+/* ---------------- desvios ---------------- */
+.desvios{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.desvio{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:4px 12px;padding:14px 16px;border-top:1px solid var(--line);align-items:start}
+.desvio:first-child{border-top:0}
+.desvio .ic{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px}
+.desvio .ic.abaixo{background:var(--crit-wash);color:var(--crit)}.desvio .ic.atencao{background:var(--warn-wash);color:var(--warn)}
+.desvio b{display:block;font-weight:600;font-size:14.5px}
+.desvio p{margin:3px 0 0;color:var(--ink-2);font-size:13.5px}
+.desvio .base{display:block;margin-top:5px;font-size:12.5px;color:var(--ink-3)}
+.desvio .btn{align-self:center}
+
+/* ---------------- filtros e listas ---------------- */
+.filtros{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:8px 8px 0 0;border-bottom:0}
+.ativos{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;background:var(--surface-2);border:1px solid var(--line);border-bottom:0;font-size:13px;color:var(--ink-3)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:2px 6px 2px 10px;font-size:12.5px;color:var(--ink)}
+.chip button{border:0;background:none;color:var(--ink-3);cursor:pointer;font-size:14px;line-height:1;padding:0 2px}
+.tabela.colada{border-radius:0 0 8px 8px}
+.rodape-tab{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 2px;color:var(--ink-3);font-size:13px}
+.prods{display:flex;gap:4px;flex-wrap:wrap}
+.prods span{font-size:12px;border:1px solid var(--line-2);border-radius:4px;padding:0 6px;color:var(--ink-2);white-space:nowrap;background:var(--surface-2)}
+
+.placeholder{border:1px dashed var(--line-2);border-radius:8px;padding:40px;text-align:center;color:var(--ink-3)}
+
+/* ---------------- fila: lista + painel do pedido ---------------- */
+.fila{display:grid;grid-template-columns:minmax(330px,420px) minmax(0,1fr);border:1px solid var(--line);border-radius:0 0 8px 8px;background:var(--surface);min-height:640px}
+.fila-lista{border-right:1px solid var(--line);overflow:auto;max-height:780px}
+.fila-item{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 16px 13px;cursor:pointer;position:relative}
+.fila-item:hover{background:var(--surface-2)}
+.fila-item.on{background:var(--info-wash)}
+.fila-item.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ink)}
+.fila-item .l1{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-3)}
+.fila-item .idade{font-weight:600;color:var(--ink-2)}
+.fila-item .idade.fora{color:var(--crit)}
+.fila-item .l1 .mono{margin-left:auto}
+.fila-item .end{display:block;font-weight:600;font-size:14px;margin-top:5px;line-height:1.35}
+.fila-item .onde{display:block;font-size:13px;color:var(--ink-2)}
+.fila-item .quem{display:block;font-size:12.5px;color:var(--ink-3);margin-top:5px}
+.checas{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.checas span{font-size:11.5px;border:1px solid var(--line-2);border-radius:4px;padding:0 6px;color:var(--ink-2);background:var(--surface)}
+.marca-cont{font-size:11.5px;font-weight:600;color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);border-radius:4px;padding:0 6px}
+.fila-det{padding:20px 24px 28px;min-width:0}
+.det-cab{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.det-cab h2{margin:0;font-size:19px;font-weight:600;letter-spacing:-.01em}
+.det-cab .linha{font-size:13px;color:var(--ink-3);margin-top:4px}
+.det-cab .linha b{color:var(--ink-2);font-weight:500}
+.bloco{padding:16px 0;border-bottom:1px solid var(--line)}
+.bloco:last-child{border-bottom:0}
+.bloco h3{margin:0 0 10px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bloco h3 small{font-size:12.5px;font-weight:400;color:var(--ink-3)}
+.dados{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px 20px;margin:0}
+.dados dt{font-size:12.5px;color:var(--ink-3)}
+.dados dd{margin:2px 0 0;font-size:14px;color:var(--ink)}
+.resposta{display:grid;grid-template-columns:200px minmax(0,1fr);gap:12px;margin-top:4px}
+.resposta textarea{min-height:64px;resize:vertical;border:1px solid var(--line-2);border-radius:var(--r);padding:8px 10px;background:var(--surface)}
+.campo .ajuda{font-size:12px;color:var(--ink-3)}
+.botoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.btn.sim{border-color:color-mix(in srgb,var(--ok) 45%,var(--line-2));color:var(--ok)}
+.btn.nao{border-color:color-mix(in srgb,var(--crit) 40%,var(--line-2));color:var(--crit)}
+.btn.sim:hover{background:var(--ok-wash)}.btn.nao:hover{background:var(--crit-wash)}
+.aviso-linha{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:9px 12px}
+.conversa{display:flex;flex-direction:column;gap:10px}
+.msg{max-width:80%;font-size:13.5px}
+.msg div{background:var(--surface-3);border-radius:8px;padding:8px 11px}
+.msg small{display:block;color:var(--ink-3);font-size:12px;margin-top:3px}
+.msg.eu{align-self:flex-end}.msg.eu div{background:var(--info-wash)}
+.anexos{display:flex;gap:8px;flex-wrap:wrap}
+.anexo{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:var(--r);padding:6px 10px;font-size:13px;background:var(--surface-2)}
+.anexo i{width:28px;height:28px;border-radius:4px;background:linear-gradient(135deg,#c9d3df,#9aa8b8);display:inline-block}
+.inst-cel{font-size:13px;white-space:nowrap}
+.inst-cel.alerta{color:var(--warn);font-weight:500}.inst-cel.atrasada{color:var(--crit);font-weight:500}
+.pag{display:flex;gap:4px}.pag button{min-width:32px;height:30px;border:1px solid var(--line-2);background:var(--surface);border-radius:var(--r);cursor:pointer;font-size:13px}.pag button.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+
+/* ---------------- detalhe da venda ---------------- */
+.ficha-cab{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 24px;align-items:end;padding-bottom:18px;border-bottom:1px solid var(--line-2);margin-bottom:22px}
+.ficha-cab .sobre{font-size:12.5px;font-weight:600;color:var(--ink-3);letter-spacing:.02em}
+.ficha-cab h1{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:4px 0 0}
+.ficha-cab .linha{font-size:13.5px;color:var(--ink-3);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.ficha-cab .linha b{color:var(--ink-2);font-weight:500}
+.ficha-st{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.st-grande{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--info-wash);color:var(--info)}
+.st-grande::before{content:"";width:9px;height:9px;border-radius:50%;border:2px solid currentColor}
+.ficha{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}
+.cartao{background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:18px}
+.cartao>h3{margin:0;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cartao>h3 small{font-weight:400;color:var(--ink-3);font-size:12.5px}
+.cartao .corpo{padding:14px 16px}
+.proximo{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid color-mix(in srgb,var(--info) 30%,var(--line));background:var(--info-wash);border-radius:8px;margin-bottom:18px}
+.proximo .ic{width:34px;height:34px;border-radius:8px;background:var(--surface);display:inline-flex;align-items:center;justify-content:center;color:var(--info)}
+.proximo b{display:block;font-size:15px}.proximo span{font-size:13px;color:var(--ink-2)}
+.etapas{list-style:none;margin:0;padding:6px 16px 10px}
+.etapas li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;padding:9px 0;align-items:start;position:relative}
+.etapas li::after{content:"";position:absolute;left:10px;top:30px;bottom:-8px;width:2px;background:var(--line)}
+.etapas li:last-child::after{display:none}
+.etapas .pt{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--line-2);background:var(--surface);color:var(--ink-3);z-index:1}
+.etapas .feito .pt{background:var(--ok);border-color:var(--ok);color:#fff}
+.etapas .agora .pt{border-color:var(--info);color:var(--info)}
+.etapas b{font-weight:600;font-size:14px}.etapas span{display:block;font-size:13px;color:var(--ink-3)}
+.etapas time{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.etapas .prop-et{opacity:.85}.etapas .prop-et .pt{border-style:dashed}
+.etapas .prop{display:inline-flex}
+.lado dl{margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 12px;font-size:13.5px}
+.lado dt{color:var(--ink-3)}.lado dd{margin:0;overflow-wrap:anywhere}
+.linha-tempo{list-style:none;margin:0;padding:4px 16px 12px}
+.linha-tempo li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.linha-tempo li:last-child{border-bottom:0}
+.linha-tempo time{color:var(--ink-3);font-size:12.5px;font-family:var(--mono)}
+.linha-tempo small{display:block;color:var(--ink-3);font-size:12.5px;margin-top:2px}
+.linha-tempo .tipo{font-size:11.5px;font-weight:600;color:var(--ink-3);border:1px solid var(--line-2);border-radius:4px;padding:0 5px;margin-right:6px}
+.tab-prod{width:100%;border-collapse:collapse;font-size:13.5px}
+.tab-prod td{padding:8px 0;border-bottom:1px solid var(--line)}
+.tab-prod tr:last-child td{border-bottom:0}
+.tab-prod td.n{text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------------- barra de controle do protótipo (não faz parte do produto) ---------------- */
+.prev{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:6px;background:#111317;color:#e8e9eb;border-radius:999px;padding:6px 8px 6px 14px;box-shadow:0 14px 40px rgba(0,0,0,.35);font:500 12.5px/1 system-ui,sans-serif;max-width:calc(100vw - 24px);overflow-x:auto}
+.prev b{font-weight:600;white-space:nowrap;margin-right:6px;color:#fff}
+.prev button{border:0;background:none;color:#c9ccd1;padding:7px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;font:inherit}
+.prev button:hover{background:#262a31;color:#fff}
+.prev button.on{background:#fff;color:#111317}
+.prev .sep{width:1px;height:18px;background:#33373e;margin:0 4px}
+.prev .demo{color:#f0b24a;white-space:nowrap;padding:0 6px}
+
+@media (max-width:1180px){
+  .casca{grid-template-columns:76px 0 minmax(0,1fr)} .contexto{visibility:hidden;padding:0;border:0}
+  .trilho .item:hover .voo,.trilho .item:focus-within .voo{display:block}
+  .livro{grid-template-columns:repeat(2,minmax(0,1fr))}.livro>div:nth-child(3){border-left:0;border-top:1px solid var(--line)}.livro>div:nth-child(4){border-top:1px solid var(--line)}
+  .meta-grade{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .casca{grid-template-columns:minmax(0,1fr)} .trilho{position:fixed;bottom:0;top:auto;height:64px;width:100%;flex-direction:row;padding:6px;border-right:0;border-top:1px solid var(--nav-linha)}
+  .trilho .marca,.trilho .fim{display:none}.trilho>#modulos{display:flex;flex:1;gap:2px;min-width:0}.trilho .item{flex:1;min-width:0}.trilho a{font-size:11px;padding:6px 0}
+  .trilho a.on::before{left:14px;right:14px;top:-6px;bottom:auto;width:auto;height:3px;border-radius:0 0 3px 3px}
+  .barra{padding:0 16px}.barra .busca{display:none}.conteudo{padding:18px 16px 110px}.livro{grid-template-columns:1fr}.livro>div+div{border-left:0;border-top:1px solid var(--line)}
+  .trilho .voo{display:none!important}
+  /* páginas do módulo: faixa de atalhos rolável logo abaixo do topo (a página em si nunca rola para os lados) */
+  /* aqui o painel de páginas vira faixa de atalhos clara, junto do conteúdo; a barra de módulos embaixo continua azul-marinho */
+  .contexto{visibility:visible;position:static;height:auto;grid-row:1;flex-direction:row;align-items:center;gap:6px;overflow-x:auto;padding:10px 16px!important;border:0;border-bottom:1px solid var(--line)!important;scrollbar-width:none;background:var(--surface-2)}
+  .contexto h2,.contexto .grp,.contexto .rodape{display:none}
+  .contexto a{flex:none;border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;background:var(--surface);color:var(--ink-2)}
+  .contexto a:hover{background:var(--surface-3);color:var(--ink)}
+  .contexto a .cont{color:var(--ink-3)}.contexto a .cont.alerta{color:var(--crit)}
+  .contexto :focus-visible{box-shadow:var(--foco)}
+  .contexto a.on{background:var(--ink);color:var(--surface);box-shadow:none}.contexto a.on .cont{color:var(--surface)}
+  .trabalho{grid-row:2}
+  .cab{flex-direction:column;align-items:stretch}.cab .acoes{justify-content:flex-start}
+  .meta-grade{grid-template-columns:1fr}.fila{grid-template-columns:1fr}.fila-lista{max-height:none;border-right:0}.fila-det{border-top:1px solid var(--line)}
+  .resposta{grid-template-columns:1fr}.ficha,.ficha-cab{grid-template-columns:1fr}.ficha-st{align-items:flex-start}
+  .filtros>.campo{width:100%!important;min-width:0!important}.filtros .seg{overflow-x:auto;max-width:100%}
+  /* tabelas: linhas empilhadas, rótulo à esquerda e valor à direita */
+  .tabela,.tabela tbody,.tabela tfoot,.tabela tr,.tabela td{display:block;width:100%}
+  .tabela thead{display:none}
+  .tabela tr{padding:10px 14px;border-bottom:1px solid var(--line)}
+  .tabela td{display:flex;justify-content:space-between;gap:12px;padding:3px 0;border:0;text-align:right;min-width:0!important}
+  .tabela td::before{content:attr(data-l);color:var(--ink-3);font-size:12.5px;text-align:left;flex:none}
+  .tabela td:first-child{display:block;text-align:left;font-size:15px;padding-bottom:6px}.tabela td:first-child::before{display:none}
+  .tabela td:empty{display:none}.tabela td .g-bullet{flex:1;max-width:60%}
+}
+</style>
+</head>
+<body>
+<div class="casca" id="casca">
+  <nav class="trilho" aria-label="Módulos">
+    <div class="marca"><img src="assets/icone-192.png" alt="Seven Telecom"></div>
+    <div id="modulos"></div>
+    <div class="fim">
+      <button class="expandir" id="expandir" title="Mostrar painel de páginas" aria-label="Mostrar painel de páginas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 7l5 5-5 5"/></svg><span>Páginas</span></button>
+      <button title="Ajuda e manual" aria-label="Ajuda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 014.8.9c0 1.7-2.4 2.2-2.4 3.6M12 17.2v.1"/></svg><span>Ajuda</span></button>
+      <button title="Conta: perfil, notificações, senha e sair" aria-label="Conta"><span class="av">VR</span></button>
+    </div>
+  </nav>
+  <aside class="contexto" id="contexto" aria-label="Páginas do módulo"></aside>
+  <div class="trabalho">
+    <div class="barra">
+      <div class="trilha" id="trilha"></div>
+      <label class="busca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input placeholder="Buscar contrato, cliente ou CPF" aria-label="Buscar contrato, cliente ou CPF"><kbd>/</kbd></label>
+      <button class="online" title="Quem está online"><span class="ponto"></span><span class="pts"><span>JC</span><span>PH</span><span>CM</span></span><span>23 online</span></button>
+    </div>
+    <main class="conteudo" id="tela"></main>
+  </div>
+</div>
+
+<nav class="prev" aria-label="Controles do protótipo">
+  <b>Direção A · Controle</b>
+  <button type="button" onclick="location.href='entrada.html'">0 Entrar</button>
+  <button data-ir="painel">1 Painel</button>
+  <button data-ir="vendas">2 Módulo: Vendas</button>
+  <button data-ir="equipes">3 Equipes</button>
+  <button data-ir="viabilidade">4 Fila</button>
+  <button data-ir="venda">5 Detalhe</button>
+  <button data-ir="app">6–7 App</button>
+  <span class="sep"></span>
+  <span class="demo">dados de demonstração</span>
+</nav>
+
+<script src="dados-demo.js"></script>
+<script src="graficos-demo.js"></script>
+<script>
+"use strict";
+const D = window.DEMO, G = window.GRAF, nf = G.nf;
+const pct = (x, c = 0) => (x * 100).toFixed(c).replace(".", ",") + "%";
+const dec = (x, c = 1) => x.toFixed(c).replace(".", ",");
+const ICO = {
+  visao: '<rect x="3.5" y="3.5" width="7" height="8" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.5"/>',
+  comercial: '<path d="M4 19h16"/><path d="M7 16V10M12 16V6M17 16v-4"/>',
+  operacao: '<path d="M4 6h10M4 12h16M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="15" cy="18" r="2"/>',
+  gestao: '<circle cx="12" cy="12" r="8.5"/><path d="M12 12V3.5M12 12l6.5 4.5"/>',
+  admin: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
+};
+/* Arquitetura proposta (a mesma nas duas direções): poucos módulos, páginas agrupadas por tipo de trabalho. */
+const MODULOS = [
+  { k: "visao", n: "Visão geral", grupos: [["Acompanhamento", [["painel", "Painel"], ["fechamento", "Fechamento do dia"]]]] },
+  { k: "comercial", n: "Comercial", grupos: [["Vendas", [["vendas", "Vendas", nf.format(D.empresa.vendas)], ["crm", "CRM · agenda e clientes"]]], ["Equipes e vendedores", [["equipes", "Equipes", "7"], ["semvenda", "Sem venda hoje", String(D.empresa.semVenda)], ["produtividade", "Produtividade por vendedor"]]]] },
+  { k: "operacao", n: "Operação", grupos: [["Antes do lançamento", [["viabilidade", "Viabilidade", String(D.viabResumo.pendentes + D.viabResumo.analise)], ["conexao", "Conexão / Solar", "7"]]], ["Depois do lançamento", [["confirmacao", "Confirmação D+1 / D+15", "58"], ["rota", "Rota de instalação", "46"], ["pendencias", "Pendências", "64"]]]] },
+  { k: "gestao", n: "Gestão", grupos: [["Análises", [["a-vendas", "Vendas"], ["a-qualidade", "Qualidade (FPD)"], ["a-operacao", "Operação"], ["a-vendedores", "Vendedores"], ["a-geografia", "Geografia"]]], ["Metas e premiação", [["premiacao", "Premiação do mês"], ["plano", "Plano do mês (metas)"]]], ["Financeiro", [["extrato", "Extrato Claro"]]]] },
+  { k: "admin", n: "Administração", curto: "Admin.", grupos: [["Cadastros e controle", [["usuarios", "Usuários e equipes"], ["feriados", "Feriados e dias úteis"], ["central", "Central de alterações"], ["online", "Quem está online", "23"]]]] },
+];
+const moduloDe = (pg) => MODULOS.find((m) => m.grupos.some(([, it]) => it.some(([k]) => k === pg))) || MODULOS[0];
+const nomeDe = (pg) => { for (const m of MODULOS) for (const [, it] of m.grupos) for (const [k, n] of it) if (k === pg) return n; return ""; };
+
+function pintarNavegacao(pg) {
+  const mod = pg === "venda" ? MODULOS[1] : moduloDe(pg);
+  const ativo = pg === "venda" ? "vendas" : pg;
+  document.getElementById("modulos").innerHTML = MODULOS.map((m) => `<div class="item"><a href="#" data-ir="${m.grupos[0][1][0][0]}" class="${m === mod ? "on" : ""}" aria-current="${m === mod ? "page" : "false"}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICO[m.k]}</svg><span>${m.curto || m.n}</span></a>
+      <div class="voo" role="menu"><b>${m.n}</b>${m.grupos.flatMap(([, it]) => it).map(([k, n, c]) => `<a href="#" data-ir="${k}">${n}${c ? `<span class="mono">${c}</span>` : ""}</a>`).join("")}</div></div>`).join("");
+  document.getElementById("contexto").innerHTML = `<h2>${mod.n}</h2>` + mod.grupos.map(([g, it]) => `<div class="grp">${g}</div>` + it.map(([k, n, c]) =>
+    `<a href="#" data-ir="${k}" class="${k === ativo ? "on" : ""}" ${k === ativo ? 'aria-current="page"' : ""}><span>${n}</span>${c ? `<span class="cont ${k === "viabilidade" ? "alerta" : ""}">${c}</span>` : ""}</a>`).join("")).join("")
+    + `<div class="rodape"><button id="recolher"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 7l-5 5 5 5"/></svg>Recolher painel de páginas</button></div>`;
+  document.getElementById("recolher").onclick = () => { document.body.classList.add("recolhido"); document.getElementById("expandir").focus(); };
+  const trilha = pg === "venda" ? `<span>Comercial</span><i>/</i><a href="#" data-ir="vendas">Vendas</a><i>/</i><b>Contrato <span class="mono">${D.venda.contrato}</span></b>`
+    : `<span>${mod.n}</span><i>/</i><b>${nomeDe(pg)}</b>`;
+  document.getElementById("trilha").innerHTML = trilha;
+}
+document.getElementById("expandir").onclick = () => document.body.classList.remove("recolhido");
+
+/* ====================== TELA 1 · PAINEL DO GESTOR ====================== */
+function telaPainel() {
+  const E = D.empresa, DU = D.DU;
+  const esperado = Math.round((E.meta / DU.total) * DU.decorridos);
+  const piores = [...D.equipes].sort((a, b) => a.atinge - b.atinge);
+  const max = G.escalaComum(D.equipes);
+  const stRot = { ok: "No ritmo da meta", atencao: "Atenção", abaixo: "Abaixo do ritmo" };
+  return `
+  <div class="cab"><div><h1>Resultado de outubro</h1>
+    <div class="linha"><span>Atualizado <b>sáb, 24/10 às 14:20</b></span><span>Dia útil <b>18 de 23,5</b> · escala 6x1</span><span>Escopo <b>todas as equipes</b></span></div></div>
+    <div class="acoes"><div class="campo"><label for="f-eq" class="sr">Equipe</label><select id="f-eq"><option>Todas as equipes</option>${D.equipes.map((e) => `<option>${e.nome}</option>`).join("")}</select></div>
+    <div class="campo"><label for="f-mes" class="sr">Mês</label><select id="f-mes"><option>Outubro de 2026</option><option>Setembro de 2026 (fechado)</option></select></div>
+    <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/></svg>Exportar</button></div></div>
+
+  <section class="secao" aria-labelledby="s1"><header><h2 id="s1">Resultado do mês<small>O que já foi realizado de 1º a 24 de outubro</small></h2></header>
+    <div class="livro">
+      <div><div class="rot">BL vendida <span class="def" title="Contratos do mês com banda larga, instalados ou pendentes. Os cancelados não contam. É a mesma base da meta e da projeção.">?</span></div>
+        <div class="val num">${nf.format(E.bl)} <small>de ${nf.format(E.meta)}</small></div>
+        <div class="det"><b>${pct(E.bl / E.meta)}</b> da meta do mês · esperado até hoje: <b>${nf.format(esperado)}</b></div>
+        <div class="medidor" aria-hidden="true"><i style="width:${(E.bl / E.meta) * 100}%"></i><u style="left:${(esperado / E.meta) * 100}%" title="Onde a meta pede estar hoje"></u></div>
+        <div class="medidor-leg"><span>0</span><span>meta ${nf.format(E.meta)}</span></div></div>
+      <div><div class="rot">Vendas válidas <span class="def" title="Contratos de todos os produtos lançados no mês, instalados ou pendentes. Os cancelados não contam.">?</span></div>
+        <div class="val num">${nf.format(E.validas)}</div>
+        <div class="det">de <b>${nf.format(E.vendas)}</b> lançadas · ${nf.format(E.canc)} canceladas<br><b>${dec(E.validas / DU.decorridos)}</b> por dia útil</div></div>
+      <div><div class="rot">Situação das ${nf.format(E.vendas)} vendas lançadas</div>
+        ${G.situacao([{ rot: "Instaladas", v: E.inst, cls: "inst" }, { rot: "Pendentes", v: E.pend, cls: "pend" }, { rot: "Canceladas", v: E.canc, cls: "canc" }])}
+        <div class="leg-est"><i style="background:var(--st-inst)"></i><span>Instaladas</span><span class="num">${nf.format(E.inst)} · ${pct(E.inst / E.vendas)}</span>
+          <i style="background:var(--st-pend)"></i><span>Pendentes</span><span class="num">${nf.format(E.pend)} · ${pct(E.pend / E.vendas)}</span>
+          <i style="background:var(--st-canc)"></i><span>Canceladas</span><span class="num">${nf.format(E.canc)} · ${pct(E.canc / E.vendas)}</span></div></div>
+      <div><div class="rot">FPD · 3 últimas safras <span class="def" title="Primeiras faturas não pagas no prazo ÷ primeiras faturas já resolvidas, nas vendas de julho, agosto e setembro. A safra mais recente ainda está em maturação e tende a subir.">?</span></div>
+        <div class="val num">${dec(E.fpd * 100)}%</div>
+        <div class="det">alerta acima de <b>20%</b> · crítico acima de <b>25%</b><br>${nf.format(E.fpdBase)} faturas resolvidas (jul, ago, set)</div></div>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="s2"><header><h2 id="s2">Meta e fechamento<small>Como estamos em relação à meta e onde o mês deve terminar no ritmo atual</small></h2></header>
+    <div class="meta-grade">
+      <div class="proj-box"><div class="rot">Projeção de fechamento · BL vendida</div>
+        <div class="val num">${nf.format(E.proj)}</div>
+        <div class="det"><span class="st atencao">Atenção</span> &nbsp;${pct(E.atinge)} da meta · faltariam ${nf.format(E.meta - E.proj)}</div>
+        <dl><dt>Ritmo atual</dt><dd class="num">${dec(E.ritmoAtual)}<small>BL por dia útil</small></dd>
+          <dt>Ritmo para bater a meta</dt><dd class="num">${dec(E.ritmoNec)}<small>nos ${dec(DU.restantes)} dias úteis restantes</small></dd></dl>
+        <p class="metodo">Projeção = BL vendida até hoje ÷ dias úteis decorridos × dias úteis do mês. Sábado vale meio dia; domingos e feriados não contam.</p></div>
+      <figure class="grafico" style="margin:0"><div class="legenda"><span><i class="chv"></i>BL vendida acumulada</span><span><i class="chv proj"></i>Projeção pelo ritmo atual</span><span><i class="chv meta"></i>Meta do mês</span></div><div id="g-acum"></div></figure>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="s3"><header><h2 id="s3">Equipes<small>Quem deve ficar abaixo da meta, pela mesma régua para todas · menor projeção primeiro</small></h2><a class="ver" href="#" data-ir="equipes">Comparação completa das equipes →</a></header>
+    <div class="legenda" style="padding:0 0 10px"><span><i class="chv barra"></i>BL vendida até hoje</span><span><i class="chv barra proj"></i>até onde o ritmo atual leva</span><span><i class="chv tick"></i>meta</span></div>
+    <table class="tabela equipes"><thead><tr><th>Equipe</th><th class="larga">BL vendida, projeção e meta</th><th class="n">Vendida</th><th class="n">Projeção</th><th class="n">Meta</th><th class="n">Proj. ÷ meta</th><th>Situação</th></tr></thead>
+      <tbody>${piores.map((e) => `<tr class="link" data-ir="equipes"><td><b>${e.nome}</b><span class="sub">sup. ${e.sup} · ${e.hc} vendedores</span></td>
+        <td>${G.barraMeta(e, max)}</td><td class="n"><b>${e.bl}</b></td><td class="n">${e.proj}</td><td class="n">${e.meta}</td><td class="n">${pct(e.atinge)}</td><td><span class="st ${e.status}">${stRot[e.status]}</span></td></tr>`).join("")}</tbody>
+      <tfoot><tr><td>Empresa</td><td></td><td class="n">${nf.format(E.bl)}</td><td class="n">${nf.format(E.proj)}</td><td class="n">${nf.format(E.meta)}</td><td class="n">${pct(E.atinge)}</td><td></td></tr></tfoot></table>
+  </section>
+
+  <section class="secao" aria-labelledby="s4"><header><h2 id="s4">Desvios que pedem atenção<small>Cada item mostra a base do cálculo e leva aos registros que explicam o número</small></h2></header>
+    <div class="desvios">
+      <div class="desvio"><span class="ic abaixo">!</span><div><b>2 equipes projetam fechar abaixo de 75% da meta</b><p>Recanto das Emas e Riacho Fundo (64%) e Valparaíso de Goiás (74%). No ritmo atual, faltariam 103 BL para as metas dessas duas equipes.</p><span class="base">Base: BL vendida de 1º a 24/10 · projeção pelo ritmo por dia útil de cada pessoa</span></div><a class="btn pq" href="#" data-ir="equipes">Ver equipes</a></div>
+      <div class="desvio"><span class="ic abaixo">!</span><div><b>FPD crítico em 1 equipe e em alerta em outra</b><p>Valparaíso de Goiás 26,8% (257 faturas resolvidas), acima do limite de 25%. Recanto das Emas e Riacho Fundo 22,7% (249), acima do alerta de 20%.</p><span class="base">Base: 3 últimas safras (jul, ago, set) · a de setembro ainda está em maturação</span></div><a class="btn pq" href="#">Ver qualidade</a></div>
+      <div class="desvio"><span class="ic atencao">!</span><div><b>6 instalações atrasadas na rota</b><p>Agendadas para dias anteriores e ainda pendentes de instalação. A mais antiga é de 21/10.</p><span class="base">Base: rota de instalação, situação "pendente", data anterior a hoje</span></div><a class="btn pq" href="#">Abrir atrasadas</a></div>
+      <div class="desvio"><span class="ic atencao">!</span><div><b>14 de 58 vendedores ainda sem venda hoje</b><p>Três estão há 3 dias ou mais sem vender: Vanessa Pires (4 dias), Diego Cardoso (3 dias) e Kelly Antunes (3 dias).</p><span class="base">Base: vendedores ativos em equipe · hoje até 14:20</span></div><a class="btn pq" href="#">Ver lista</a></div>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="s5"><header><h2 id="s5">Filas da operação agora<small>Trabalho aguardando o backoffice de Cadastro</small></h2></header>
+    <table class="tabela"><thead><tr><th>Fila</th><th class="n">Aguardando</th><th>Mais antigo</th><th>Observação</th><th></th></tr></thead><tbody>
+      <tr><td><b>Viabilidade</b></td><td class="n"><b>9</b> <span class="sub">+3 em análise</span></td><td>há 1h33</td><td>41 respondidas hoje · 33 atende</td><td class="n"><a class="btn pq" href="#" data-ir="viabilidade">Abrir fila</a></td></tr>
+      <tr><td><b>Conexão / Solar</b></td><td class="n"><b>7</b></td><td>há 52 min</td><td><span class="st atencao">1 prazo de HP vence em 1h40</span></td><td class="n"><a class="btn pq" href="#">Abrir fila</a></td></tr>
+      <tr><td><b>Confirmação D+1 / D+15</b></td><td class="n"><b>58</b></td><td>—</td><td>37 de D+1 e 21 de D+15 para ligar hoje</td><td class="n"><a class="btn pq" href="#">Abrir fila</a></td></tr>
+      <tr><td><b>Rota de instalação</b></td><td class="n"><b>46</b> <span class="sub">agendadas hoje</span></td><td>—</td><td>9 sem confirmação · 6 atrasadas de dias anteriores</td><td class="n"><a class="btn pq" href="#">Abrir rota</a></td></tr>
+      <tr><td><b>Pendências</b></td><td class="n"><b>64</b></td><td>12 dias</td><td>18 chips a ativar · 11 cadastros em andamento</td><td class="n"><a class="btn pq" href="#">Abrir fila</a></td></tr>
+    </tbody></table>
+  </section>`;
+}
+
+/* ====================== TELA 3 · EQUIPES ====================== */
+function telaEquipes() {
+  const E = D.empresa, max = G.escalaComum(D.equipes);
+  const stRot = { ok: "No ritmo da meta", atencao: "Atenção", abaixo: "Abaixo do ritmo" };
+  const ord = [...D.equipes].sort((a, b) => a.atinge - b.atinge);
+  return `
+  <div class="cab"><div><h1>Equipes</h1>
+    <div class="linha"><span>Outubro de 2026 · <b>dia útil 18 de 23,5</b></span><span><b>58 vendedores</b> em 7 equipes</span><span>Mesma régua para todas as equipes</span></div></div>
+    <div class="acoes"><div class="seg" role="group" aria-label="Ordenar"><button class="on">Menor projeção ÷ meta</button><button>Maior BL vendida</button><button>Nome</button></div>
+      <button class="btn">Exportar</button></div></div>
+
+  <div class="legenda" style="padding:0 0 12px"><span><i class="chv barra"></i>BL vendida até hoje</span><span><i class="chv barra proj"></i>até onde o ritmo atual leva (projeção)</span><span><i class="chv tick"></i>meta do mês</span></div>
+  <table class="tabela equipes">
+    <thead><tr><th>Equipe</th><th class="larga">BL vendida, projeção e meta</th><th class="n">Vendida</th><th class="n">Projeção</th><th class="n">Meta</th><th class="n">Proj. ÷ meta</th><th class="n">Ritmo atual<span class="sub">BL / dia útil</span></th><th class="n">Necessário<span class="sub">BL / dia útil</span></th><th>Situação</th></tr></thead>
+    <tbody>${ord.map((e) => `<tr class="link"><td><b>${e.nome}</b><span class="sub">sup. ${e.sup} · ${e.hc} vendedores</span></td><td>${G.barraMeta(e, max)}</td>
+      <td class="n"><b>${e.bl}</b></td><td class="n">${e.proj}</td><td class="n">${e.meta}</td><td class="n">${pct(e.atinge)}</td><td class="n">${dec(e.ritmoAtual)}</td><td class="n">${e.ritmoNec ? dec(e.ritmoNec) : "—"}</td><td><span class="st ${e.status}">${stRot[e.status]}</span></td></tr>`).join("")}</tbody>
+    <tfoot><tr><td>Empresa</td><td></td><td class="n">${nf.format(E.bl)}</td><td class="n">${nf.format(E.proj)}</td><td class="n">${nf.format(E.meta)}</td><td class="n">${pct(E.atinge)}</td><td class="n">${dec(E.ritmoAtual)}</td><td class="n">${dec(E.ritmoNec)}</td><td></td></tr></tfoot>
+  </table>
+  <p class="metodo" style="margin-top:14px">BL vendida conta contratos do mês com banda larga, instalados ou pendentes (cancelados não contam). Projeção = vendida ÷ dias úteis decorridos × dias úteis do mês, pessoa a pessoa, pelo calendário da cidade da equipe. Situação: no ritmo (projeção ≥ meta), atenção (75% a 99%), abaixo do ritmo (menos de 75%).</p>
+
+  <section class="secao" style="margin-top:22px" aria-labelledby="eq2"><header><h2 id="eq2">Vendas, instalação e qualidade por equipe<small>Mesmas equipes, outros resultados do mês</small></h2></header>
+    <table class="tabela equipes"><thead><tr><th>Equipe</th><th class="n">Lançadas</th><th class="n">Instaladas</th><th class="n">Pendentes</th><th class="n">Canceladas</th><th class="n">% canceladas</th><th class="n">FPD 3 safras<span class="sub">faturas resolvidas</span></th><th class="n">Sem venda hoje</th></tr></thead>
+    <tbody>${ord.map((e) => `<tr><td><b>${e.nome}</b></td><td class="n">${e.vendas}</td><td class="n">${e.inst}</td><td class="n">${e.pend}</td><td class="n">${e.canc}</td><td class="n">${pct(e.canc / e.vendas, 1)}</td>
+      <td class="n">${e.fpdSt === "ok" ? dec(e.fpd * 100) + "%" : `<span class="st ${e.fpdSt}">${dec(e.fpd * 100)}%</span>`}<span class="sub">${e.fpdBase}</span></td><td class="n">${e.semVenda} de ${e.hc}</td></tr>`).join("")}</tbody>
+    <tfoot><tr><td>Empresa</td><td class="n">${nf.format(E.vendas)}</td><td class="n">${E.inst}</td><td class="n">${E.pend}</td><td class="n">${E.canc}</td><td class="n">${pct(E.canc / E.vendas, 1)}</td><td class="n">${dec(E.fpd * 100)}%<span class="sub">${nf.format(E.fpdBase)}</span></td><td class="n">${E.semVenda} de ${E.hc}</td></tr></tfoot></table>
+    <p class="metodo" style="margin-top:12px">Instaladas, pendentes e canceladas são a situação de hoje das vendas lançadas no mês (não as instalações feitas no mês). FPD: alerta acima de 20%, crítico acima de 25%.</p>
+  </section>`;
+}
+
+/* ====================== TELA 4 · FILA OPERACIONAL: VIABILIDADE ====================== */
+function telaViabilidade() {
+  const R = D.viabResumo, sel = D.viabilidade.find((v) => v.id === 1904);
+  const idade = (m) => (m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)}h${String(m % 60).padStart(2, "0")}`);
+  const ST = { PENDENTE: ["Aguardando", "neutro"], ANALISE: ["Em análise", "pend"] };
+  return `
+  <div class="cab"><div><h1>Viabilidade</h1>
+    <div class="linha"><span>Pedidos dos vendedores · <b>mais antigos primeiro</b></span><span>Tempo de referência <b>30 min</b> para começar a análise</span><span>Hoje: <b>${R.respondidasHoje} respondidos</b> (${R.atende} atende, ${R.naoAtende} não atende)</span></div></div>
+    <div class="acoes"><button class="btn leve" title="Som e aviso com o navegador minimizado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9v6h3l5 4V5L9 9H6z"/><path d="M17.5 9.5a4 4 0 010 5"/></svg>Aviso sonoro ligado</button></div></div>
+
+  <div class="filtros">
+    <div class="seg" role="tablist" aria-label="Situação"><button class="on">Na fila <span class="n">${R.pendentes + R.analise}</span></button><button>Atende hoje <span class="n">${R.atende}</span></button><button>Não atende hoje <span class="n">${R.naoAtende}</span></button><button>Todos</button></div>
+    <div class="campo" style="flex:1;min-width:220px"><label for="vb">Buscar</label><input id="vb" placeholder="Rua, bairro, CEP, cliente ou vendedor"></div>
+    <div class="campo" style="width:200px"><label for="vv">Vendedor</label><select id="vv"><option>Todos</option></select></div>
+  </div>
+  <div class="fila">
+    <div class="fila-lista" role="listbox" aria-label="Pedidos aguardando">
+      ${D.viabilidade.map((v) => `<button class="fila-item ${v.id === sel.id ? "on" : ""}" role="option" aria-selected="${v.id === sel.id}">
+        <span class="l1"><span class="idade ${v.st === "PENDENTE" && v.ha > 30 ? "fora" : ""}">${idade(v.ha)}</span><span class="st ${ST[v.st][1]}">${ST[v.st][0]}${v.resp ? " · " + v.resp : ""}</span>${v.cont ? '<span class="marca-cont">contestado</span>' : ""}<span class="mono">nº ${v.id}</span></span>
+        <span class="end">${v.end}</span><span class="onde">${v.bairro} · ${v.cidade}</span>
+        <span class="quem">${v.vendedor} · ${v.equipe}</span>
+        <span class="checas">${v.checa.map((c) => `<span>${c}</span>`).join("")}</span></button>`).join("")}
+      <div style="padding:12px 16px;font-size:12.5px;color:var(--ink-3)">Mostrando 6 de ${R.pendentes + R.analise} na fila (${R.pendentes} aguardando, ${R.analise} em análise)</div>
+    </div>
+    <div class="fila-det">
+      <div class="det-cab"><div><h2>${sel.end}</h2>
+        <div class="linha">Viabilidade <span class="mono">nº ${sel.id}</span> · pedida às <b>${sel.quando}</b> por <b>${sel.vendedor}</b> (${sel.equipe}) · <span class="st neutro">Aguardando ${idade(sel.ha)}</span></div></div>
+        <div class="botoes" style="margin:0"><button class="btn pri">Pegar para análise</button><button class="btn leve">Ver no mapa ↗</button></div></div>
+
+      <div class="bloco"><h3>Endereço</h3>
+        <dl class="dados"><div><dt>Logradouro</dt><dd>${sel.end}</dd></div><div><dt>Bairro</dt><dd>${sel.bairro}</dd></div><div><dt>Cidade</dt><dd>${sel.cidade}</dd></div><div><dt>CEP</dt><dd class="mono">${sel.cep}</dd></div><div><dt>Ponto de referência</dt><dd>Ao lado da Praça da Bíblia</dd></div><div><dt>Cliente</dt><dd>Roberto Dias</dd></div><div><dt>Telefone</dt><dd class="mono">(61) 98456-0371</dd></div></dl></div>
+
+      <div class="bloco"><h3>Resposta do endereço <small>vale para a venda inteira</small></h3>
+        <div class="resposta"><div class="campo"><label for="hp">HP <span class="ajuda">obrigatório para atender</span></label><input id="hp" inputmode="numeric" placeholder="Somente números"></div>
+          <div class="campo"><label for="rv">Resposta para o vendedor <span class="ajuda">obrigatória se não atender</span></label><textarea id="rv" placeholder="Ex.: endereço fora da área de cobertura"></textarea></div></div>
+        <div class="botoes"><button class="btn sim">✓ Atende</button><button class="btn nao">✕ Não atende</button><span class="det">Ninguém pegou este pedido ainda: ao pegar, os outros veem que ele está com você.</span></div></div>
+
+      <div class="bloco"><h3>Checagem de crédito <small>pedida junto com o endereço</small></h3>
+        <dl class="dados"><div><dt>Nome completo</dt><dd>Roberto Dias de Almeida</dd></div><div><dt>CPF</dt><dd class="mono">***.416.508-**</dd></div><div><dt>Nascimento</dt><dd>02/09/1979</dd></div><div><dt>Cidade</dt><dd>Valparaíso de Goiás/GO</dd></div></dl>
+        <div class="botoes"><button class="btn sim">✓ Aprovado</button><button class="btn sim">✓ Aprovado (Oferta Single)</button><button class="btn nao">✕ Reprovado</button></div></div>
+
+      <div class="bloco"><h3>Conversa com o vendedor <small>1 observação · 1 anexo</small></h3>
+        <div class="conversa"><div class="msg"><div>Cliente mora na casa dos fundos, entrada pela rua lateral. Foto da fachada anexada.</div><small>Mateus Rocha · 13:12</small></div></div>
+        <div class="anexos" style="margin-top:10px"><span class="anexo"><i></i>fachada.jpg · 1,8 MB</span></div>
+        <div class="campo" style="margin-top:12px"><label for="ob" class="sr">Nova observação</label><input id="ob" placeholder="Escrever para o vendedor…"></div></div>
+    </div>
+  </div>`;
+}
+
+/* ====================== TELA 2 · MÓDULO COMERCIAL › VENDAS ====================== */
+function telaVendas() {
+  const e = D.equipes.find((x) => x.nome === "Samambaia");
+  const ST = { inst: "Instalada", pend: "Pendente", canc: "Cancelada" };
+  return `
+  <div class="cab"><div><h1>Vendas</h1>
+    <div class="linha"><span><b>${e.vendas} lançadas</b> em outubro na equipe Samambaia</span><span>${e.validas} válidas · ${e.canc} canceladas</span><span>Situação de hoje de cada venda</span></div></div>
+    <div class="acoes"><button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/></svg>Exportar ${e.vendas} (CSV)</button>
+      <div class="menu-acao" id="ma"><div class="dividido"><button class="btn pri">+ Nova venda</button><button class="btn pri" aria-label="Outras formas de lançar" aria-expanded="false" id="ma-b">▾</button></div>
+        <div class="pop" role="menu"><a href="#"><b>Nova venda</b><small>Uma venda: cliente, produtos, pagamento e agendamento</small></a><a href="#"><b>Lançamento em lote</b><small>Várias vendas coladas de uma planilha (até 500 linhas)</small></a><a href="#"><b>Importar planilha da Claro</b><small>Exportação de vendas do portal: cria as novas e atualiza situações</small></a></div></div></div></div>
+
+  <div class="filtros">
+    <div class="campo" style="width:180px"><label for="fp">Período</label><select id="fp"><option>Outubro de 2026</option></select></div>
+    <div class="campo"><label>Situação</label><div class="seg"><button class="on">Todas <span class="n">${e.vendas}</span></button><button>Instaladas <span class="n">${e.inst}</span></button><button>Pendentes <span class="n">${e.pend}</span></button><button>Canceladas <span class="n">${e.canc}</span></button></div></div>
+    <div class="campo" style="width:190px"><label for="fe">Equipe</label><select id="fe"><option>Samambaia</option></select></div>
+    <div class="campo" style="width:190px"><label for="fv">Vendedor</label><select id="fv"><option>Todos</option></select></div>
+    <div class="campo" style="flex:1;min-width:200px"><label for="fb">Buscar</label><input id="fb" placeholder="Cliente, contrato ou CPF"></div>
+  </div>
+  <div class="ativos"><span>Filtros ativos:</span><span class="chip">Outubro de 2026</span><span class="chip">Equipe: Samambaia <button aria-label="Remover filtro">×</button></span><button class="btn leve pq">Limpar filtros</button><span style="margin-left:auto">Colunas: <a href="#" style="text-decoration:underline">escolher</a></span></div>
+  <table class="tabela colada">
+    <thead><tr><th>Data</th><th>Contrato</th><th>Cliente</th><th>Vendedor</th><th>Produtos <span class="prop" title="A consulta da lista ainda não traz os produtos; o dado já existe.">◆ proposta</span></th><th>Situação</th><th>Instalação <span class="prop" title="A consulta da lista ainda não traz o agendamento; o dado já existe na venda e na rota.">◆ proposta</span></th></tr></thead>
+    <tbody>${D.vendasLista.map((v) => `<tr class="link ${v.contrato === D.venda.contrato ? "on" : ""}" data-ir="${v.contrato === D.venda.contrato ? "venda" : ""}">
+      <td class="num">${v.data}</td><td class="mono">${v.contrato}</td><td><b>${v.cliente}</b><span class="sub">${v.bairro}</span></td><td>${v.vendedor}</td>
+      <td><span class="prods">${v.prods.map((p) => `<span>${p}</span>`).join("")}</span></td><td><span class="st ${v.st}">${ST[v.st]}</span></td>
+      <td><span class="inst-cel ${v.alerta ? "alerta" : ""} ${v.atrasada ? "atrasada" : ""}">${v.inst}</span></td></tr>`).join("")}</tbody></table>
+  <div class="rodape-tab"><span>1–10 de ${e.vendas} · ordenadas pela data da venda</span><div class="pag"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><span style="padding:0 6px">…</span><button>15</button><button>›</button></div></div>`;
+}
+
+/* ====================== TELA 5 · DETALHE DA VENDA ====================== */
+function telaVenda() {
+  const V = D.venda;
+  const TIPO = { rota: "Rota", confirmacao: "Confirmação", status: "Situação", externa: "Solar", viab: "Viabilidade" };
+  return `
+  <div class="ficha-cab"><div><div class="sobre">VENDA · CONTRATO <span class="mono">${V.contrato}</span></div><h1>${V.cliente}</h1>
+    <div class="linha"><span>Lançada em <b>${V.dataVenda}</b> por <b>Juliana Castro</b> (Cadastro)</span><span>Vendedor <b>${V.vendedor}</b> · ${V.equipe}</span><span>Origem <b>${V.origem}</b> · finalizada no <b>${V.canal}</b></span></div></div>
+    <div class="ficha-st"><span class="st-grande">${V.situacaoRot}</span>
+      <div class="botoes" style="margin:0"><button class="btn">Editar venda</button><button class="btn">Reagendar instalação</button><button class="btn leve" aria-label="Mais ações">Mais ▾</button></div></div></div>
+
+  <div class="ficha">
+    <div>
+      <div class="proximo"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
+        <div><b>Próximo passo: instalação na segunda, 26/10, de manhã <span class="prop" title="A data e o turno já vêm da venda. A confirmação com a cliente vem da rota, que o detalhe ainda não consulta: é um ajuste de consulta, sem regra nova.">◆ proposta</span></b><span>Confirmada com a cliente em 24/10 às 09:40 por Juliana Castro. Depois dela: confirmação D+15 em 03/11.</span></div>
+        <a class="btn pq" href="#">Abrir na rota</a></div>
+
+      <section class="cartao"><h3><span>Andamento <span class="prop" title="Confirmações e rota já ficam gravadas por venda, mas o detalhe ainda não as consulta. Juntar aqui é ajuste de consulta, sem regra nova.">◆ proposta</span></span><small>do lançamento à primeira fatura</small></h3>
+        <ol class="etapas">
+          <li class="prop-et"><span class="pt">✓</span><div><b>Antes do lançamento <span class="prop" title="Hoje a viabilidade e o envio ao Solar não ficam ligados à venda: o vínculo seria uma funcionalidade nova.">◆ proposta</span></b><span>Viabilidade nº 1847 (Atende, 19/10 09:31) e Solar nº 2318 (Finalizado, 19/10 15:40)</span></div><time>19/10</time></li>
+          <li class="feito"><span class="pt">✓</span><div><b>Venda lançada</b><span>Pendente, com agendamento para 26/10 (manhã)</span></div><time>19/10 16:02</time></li>
+          <li class="feito"><span class="pt">✓</span><div><b>Confirmação D+1</b><span>Confirmado por Juliana Castro: “Cliente confirmou endereço e horário.”</span></div><time>20/10 10:14</time></li>
+          <li class="agora"><span class="pt">•</span><div><b>Instalação</b><span>Agendada para 26/10, manhã · confirmada com a cliente</span></div><time>26/10</time></li>
+          <li><span class="pt"></span><div><b>Confirmação D+15</b><span>Ligação de pós-venda</span></div><time>03/11</time></li>
+          <li><span class="pt"></span><div><b>Primeira fatura</b><span>Vencimento dia 10 · entra no FPD da safra de outubro</span></div><time>10/11</time></li>
+        </ol></section>
+
+      <section class="cartao"><h3>Produtos e pagamento</h3><div class="corpo">
+        <table class="tab-prod">${V.produtos.map((p) => `<tr><td><b>${p.nome}</b> <span class="sub" style="display:inline;color:var(--ink-3)">· ${p.cat}${p.adesao ? " · " + p.adesao : ""}</span></td><td class="n">${p.qtd}×</td></tr>`).join("")}
+          <tr><td>Pagamento</td><td class="n">${V.pagamento} · vencimento dia ${V.vencimento}</td></tr>
+          <tr><td>Pacote <span style="color:var(--ink-3)">(visível só para gerência)</span></td><td class="n">R$ 189,90</td></tr></table></div></section>
+
+      <section class="cartao"><h3>Histórico <small>situação, contatos e alterações, do mais recente ao mais antigo</small></h3>
+        <div class="corpo" style="padding-bottom:0"><div class="seg"><button class="on">Tudo</button><button>Situação</button><button>Contatos</button><button>Alterações</button></div></div>
+        <ol class="linha-tempo">${V.historico.map((h) => `<li><time>${h.quando}</time><div><span class="tipo">${TIPO[h.tipo]}</span>${h.txt}${["externa", "viab"].includes(h.tipo) ? ' <span class="prop">◆ proposta</span>' : ""}<small>${h.por}</small></div></li>`).join("")}</ol></section>
+    </div>
+
+    <aside class="lado">
+      <section class="cartao"><h3>Cliente</h3><div class="corpo"><dl>
+        <dt>Nome</dt><dd>${V.cliente}</dd><dt>CPF</dt><dd class="mono">${V.doc}</dd><dt>Telefone</dt><dd><span class="mono">(61) 99812-4410</span> · <a href="#" style="text-decoration:underline">WhatsApp</a></dd>
+        <dt>Nascimento</dt><dd>${V.nascimento}</dd><dt>Endereço</dt><dd>${V.endereco}<br>${V.bairro} · ${V.cidade}</dd><dt>Imóvel</dt><dd>${V.imovel}</dd></dl></div></section>
+      <section class="cartao"><h3>Responsáveis</h3><div class="corpo"><dl>
+        <dt>Vendedor</dt><dd>${V.vendedor}<br><span style="color:var(--ink-3)">${V.equipe} · sup. ${V.supervisor}</span></dd><dt>Lançamento</dt><dd>Juliana Castro · Cadastro</dd><dt>Tipo</dt><dd>${V.tipo} · ${V.origem}</dd></dl></div></section>
+      <section class="cartao"><h3>Observações da cliente <small>${V.obs.length}</small></h3><div class="corpo">
+        ${V.obs.map((o) => `<p style="margin:0;font-size:13.5px">${o.txt}</p><p style="margin:4px 0 12px;font-size:12.5px;color:var(--ink-3)">${o.por} · ${o.quando}</p>`).join("")}
+        <div class="campo"><label for="no" class="sr">Nova observação</label><input id="no" placeholder="Anotar algo sobre a cliente…"></div></div></section>
+    </aside>
+  </div>`;
+}
+
+const TELAS = { painel: telaPainel, equipes: telaEquipes, viabilidade: telaViabilidade, vendas: telaVendas, venda: telaVenda };
+function ir(pg) {
+  if (pg === "app") { location.href = "direcao-a-app.html"; return; }
+  const f = TELAS[pg];
+  pintarNavegacao(pg);
+  const alvo = document.getElementById("tela");
+  alvo.innerHTML = f ? f() : `<div class="cab"><div><h1>${nomeDe(pg) || "Página"}</h1></div></div><div class="placeholder">Esta página não faz parte da prévia. Ela mantém o conteúdo atual, com o novo padrão visual aplicado na implementação.</div>`;
+  if (pg === "painel") G.acumulado(document.getElementById("g-acum"), { dias: D.dias, meta: D.empresa.meta });
+  G.ligarBullets(alvo); G.rotularTabelas(alvo);
+  document.querySelectorAll(".prev [data-ir]").forEach((b) => b.classList.toggle("on", b.dataset.ir === pg));
+  window.scrollTo(0, 0);
+  history.replaceState(null, "", "#" + pg);
+}
+document.addEventListener("click", (ev) => {
+  const a = ev.target.closest("[data-ir]"); if (!a) return;
+  ev.preventDefault(); ir(a.dataset.ir);
+});
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "/" && document.activeElement.tagName !== "INPUT") { ev.preventDefault(); document.querySelector(".busca input").focus(); }
+  if (ev.key === "Escape") document.getElementById("ma")?.classList.remove("aberto");
+});
+/* menu de lançamento (Nova venda ▾): abre ao clicar, fecha ao clicar fora ou com Esc */
+document.addEventListener("click", (ev) => {
+  const ma = document.getElementById("ma"); if (!ma) return;
+  if (ev.target.closest("#ma-b")) { const ab = ma.classList.toggle("aberto"); ev.target.closest("#ma-b").setAttribute("aria-expanded", ab); return; }
+  if (!ev.target.closest("#ma")) ma.classList.remove("aberto");
+});
+ir((location.hash || "#painel").slice(1));
+</script>
+<script src="prototipo.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+/* Telas: fechamento — regras próprias destas telas, no sistema visual do seven.css (tokens e componentes). */
+
+/* ---------- Fechamento do dia (e a tabela de vendedores de Equipes, que usa as mesmas peças) no visual novo ---------- */
+/* dados em azul: instalado em azul cheio, pendente em azul listrado (antes, verde) */
+div:has(>.fx-cab),.tela-equipes{--fx-c:var(--c-real)}
+/* dia: setas dos lados da data, numa linha só */
+.dia-nav{flex-wrap:nowrap}
+.dia-nav input[type=date]{width:150px!important;flex:none}
+/* cabeçalho: relatório não tem ação principal em vermelho; o vermelho fica para ações */
+.fx-cab .acoes .btn:not(.sec):not(.leve){background:var(--surface);border-color:var(--line-2);color:var(--ink);font-weight:500}
+.fx-cab .acoes .btn:not(.sec):not(.leve):hover{border-color:var(--ink-3)}
+/* cartões sem faixa nem fundo vermelho */
+.fx-card{box-shadow:none;border-color:var(--line);border-radius:var(--r-cartao);background:var(--surface)}
+.fx-dia{background:var(--surface)}
+.fx-dia::before{display:none}
+.fx-mix{box-shadow:none;border-color:var(--line);border-radius:var(--r-cartao)}
+.fx-mix-t{color:var(--ink-3)}
+/* títulos dos grupos de colunas em cinza, como os demais cabeçalhos */
+.fx-tabela .fx-gh th{color:var(--ink-3);font-weight:600}
+/* linha de total clara, igual às tabelas novas */
+.fx-t td,.fx-t td.fx-c1{background:var(--surface-2)!important;color:var(--ink)!important;font-weight:600;border-top:1px solid var(--line-2)!important}
+.fx-t td small,.fx-t td.fx-c1 small,.fx-t .fx-meta-n small{color:var(--ink-3)!important}
+.fx-t .fx-z{color:var(--ink-3)!important}
+.fx-t .fx-bar{background:var(--surface-3)}
+.fx-t .fx-bar b{background:var(--ink);box-shadow:0 0 0 2px var(--surface-2)}
+.fx-t .fx-neg{color:var(--crit)!important}
+/* ritmo: texto com símbolo (círculo no ritmo, losango atenção, triângulo abaixo), sem pílula colorida */
+.fx-pill{display:inline-flex;align-items:center;gap:6px;background:none!important;border:0!important;padding:0;font-size:12.5px;font-weight:600}
+.fx-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.fx-pill.ok{color:var(--ok)}.fx-pill.alerta{color:var(--warn)}.fx-pill.ruim{color:var(--crit)}
+.fx-pill.alerta::before{border-radius:1px;transform:rotate(45deg);width:7px;height:7px}
+.fx-pill.ruim::before{border-radius:0;width:0;height:0;background:none;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid currentColor}
+
+/* celular: cada filtro numa linha (Dia e Agrupar por precisam da largura toda; Equipe e Cidade dividem uma linha). Antes os dois primeiros ficavam lado a lado e o "Hoje" cobria os botões do agrupamento. */
+@media (max-width:640px){
+  .fx-filtros>.campo{flex:1 1 100%;min-width:0}
+  .fx-filtros>.campo:has(#fq),.fx-filtros>.campo:has(#fc){flex-basis:calc(50% - 6px)}
+  .fx-filtros .dia-nav{width:100%}
+  .fx-filtros .dia-nav input[type=date]{flex:1 1 0;width:auto!important;min-width:0}
+  .fx-filtros .seg{display:flex;width:100%}
+  .fx-filtros .seg button{flex:1 1 auto}
+}

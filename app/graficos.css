@@ -1,0 +1,211 @@
+/* Gráficos (charts.js) no visual da direção A: tinta escura sobre branco, grade recessiva, um azul para o realizado.
+   Cores só por token (seven.css: --c-* e tons de estado). Sem tema escuro. */
+
+/* ---------------------------------------------------------------- 1. moldura e texto */
+svg.chart{display:block;overflow:visible;font-family:var(--sans);font-variant-numeric:tabular-nums;-webkit-user-select:none;user-select:none}
+.chart text{font-family:var(--sans)}
+.chart .tk{fill:var(--c-suave);font-size:11px}
+.chart .tk.un{fill:var(--ink-2);font-weight:500}
+.chart .tk.rf{fill:var(--c-ref);font-weight:500}
+.chart .vl{fill:var(--c-texto);font-weight:600;font-size:11.5px}
+.chart .rt{fill:var(--c-texto);font-size:12px}
+.chart .big{fill:var(--c-texto);font-size:28px;font-weight:600;letter-spacing:-.02em}
+.chart .inv,.chart .vl.inv{fill:var(--c-fundo)}
+/* estado: a cor nunca vem sozinha (charts.js põe o símbolo ▲ ◆ ● junto) */
+.chart .okt{fill:var(--ok);font-weight:600}
+.chart .alt{fill:var(--warn);font-weight:600}
+.chart .rmt{fill:var(--crit);font-weight:600}
+
+/* ---------------------------------------------------------------- 2. grade, eixos e referências */
+.chart line.gr{stroke:var(--c-grade);stroke-width:1}
+.chart line.eixo{stroke:var(--c-eixo);stroke-width:1}
+.chart line.ref{stroke:var(--c-ref);stroke-width:1;stroke-dasharray:4 4}
+.chart line.meta{stroke:var(--c-meta);stroke-width:2;stroke-linecap:butt}
+.chart .prev{fill:var(--c-proj)}
+.chart .pista{fill:var(--c-trilho)}
+
+/* ---------------------------------------------------------------- 3. marcas e passagem do mouse */
+.chart .hit{fill:transparent;transition:fill .12s}
+.chart .pt:hover .hit{fill:var(--c-hover)}
+.chart .b{transition:opacity .15s}
+.chart:has(.pt:hover) .pt:not(:hover) .b{opacity:.55}
+.chart .guia{stroke:var(--c-suave);stroke-width:1;opacity:0}
+.chart .col:hover .guia,.chart .col.on .guia{opacity:1}
+.chart .col .dot{opacity:0;transition:opacity .1s}
+.chart .col:hover .dot,.chart .col.on .dot{opacity:1}
+.chart .dp .dot{transition:r .1s}
+.chart .dp:hover .dot{r:8;fill-opacity:1}
+.chart .fat{transition:transform .18s;transform-box:fill-box;transform-origin:center}
+.chart .fatia:hover .fat{transform:scale(1.03)}
+.chart .tm .b0,.chart .cel .b0{transition:opacity .12s,stroke .12s}
+.chart.treemap:has(.pt:hover) .pt:not(:hover) .b0{opacity:.6}
+.chart .cel:hover .b0{stroke:var(--c-texto);stroke-width:1.5}
+.chart .cel .b0.hoje{stroke:var(--c-meta);stroke-width:2}
+.chart [data-go]:focus-visible{outline:none}
+
+/* ---------------------------------------------------------------- 4. acumulado do mês (CH.acumulado) */
+.chart .ac-real{fill:none;stroke:var(--c-real);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chart .ac-area{fill:var(--c-real);opacity:.08}
+.chart .ac-proj{fill:none;stroke:var(--c-proj);stroke-width:2;stroke-dasharray:5 4;stroke-linecap:round}
+.chart .ac-meta{stroke:var(--c-meta);stroke-width:1.25}
+.chart .ac-hoje{stroke:var(--c-eixo);stroke-width:1}
+.chart .ac-pt-real{fill:var(--c-real);stroke:var(--c-fundo);stroke-width:2}
+.chart .ac-pt-proj{fill:var(--c-fundo);stroke:var(--c-real);stroke-width:2}
+.chart .ac-rot{fill:var(--c-texto);font-size:12.5px;font-weight:600}
+.chart .teclas{outline:none}
+.chart:has(.teclas:focus-visible){outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
+
+/* chaves da legenda fixa (acumulado, metas, dispersão): desenho da marca + nome */
+.chart .ch-linha{stroke:var(--c-real);stroke-width:2;stroke-linecap:round}
+.chart .ch-proj{stroke:var(--c-proj);stroke-width:2;stroke-dasharray:4 3;stroke-linecap:round}
+.chart .ch-regua{stroke:var(--c-meta);stroke-width:1.25}
+.chart .ch-marca{stroke:var(--c-meta);stroke-width:2}
+
+/* ---------------------------------------------------------------- 5. legendas clicáveis */
+.chart .leg{cursor:pointer}
+.chart .leg-bg{fill:var(--surface);stroke:var(--line-2);stroke-width:1}
+.chart .leg:hover .leg-bg{stroke:var(--ink-3)}
+.chart .leg text{fill:var(--ink-2)}
+.chart .leg:hover text{fill:var(--c-texto)}
+.chart .leg.off{opacity:.45}
+.chart .leg.off text{text-decoration:line-through}
+.chart .leg-row{fill:transparent}
+.chart .leg:hover .leg-row{fill:var(--c-hover)}
+.chart .leg:focus{outline:none}
+.chart .leg:focus-visible .leg-bg,.chart .leg:focus-visible .leg-row{stroke:var(--ink);stroke-width:2}
+
+/* ---------------------------------------------------------------- 6. dica (#tip): cartão claro, valores alinhados */
+#tip{position:fixed;z-index:80;display:none;pointer-events:none;min-width:180px;max-width:300px;background:var(--surface);color:var(--ink);border:1px solid var(--line-2);border-radius:var(--r);box-shadow:var(--sombra-alta);padding:9px 11px;font:12.5px/1.45 var(--sans)}
+#tip .th{font-weight:600;color:var(--ink);margin-bottom:5px}
+#tip .tl{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:1px 0}
+#tip .tl i{display:block;width:10px;height:10px;border-radius:2px}
+#tip .tl i.linha,#tip .tl i.tracejada,#tip .tl i.regua{width:14px;height:0;border-radius:0;background:none!important;border-top:2px solid var(--k)}
+#tip .tl i.tracejada{border-top-style:dashed}
+#tip .tl i.regua{border-top-width:1px}
+#tip .tl i.fina{opacity:.45}
+#tip .tl span{color:var(--ink-3)}
+#tip .tl span:first-child{grid-column:1/3}
+#tip .tl b{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+#tip .tf{margin-top:6px;padding-top:6px;border-top:1px solid var(--line);color:var(--ink-3);white-space:pre-line}
+
+/* ---------------------------------------------------------------- 7. botões do título do painel e "ver os números" */
+.painel>h2 .csv{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin:-4px 0;padding:0;flex:none;background:none;border:1px solid transparent;border-radius:var(--r);color:var(--ink-3);cursor:pointer}
+.painel>h2 .csv.tbl{margin-left:auto}
+.painel>h2 .csv:hover{background:var(--surface-3);color:var(--ink)}
+.painel>h2 .csv.on{background:var(--surface-3);border-color:var(--line-2);color:var(--ink)}
+.painel>h2 .csv:focus-visible{outline:none;box-shadow:var(--foco)}
+.tv{margin:0}
+.painel .tv.tab{max-height:340px;overflow:auto;margin:0}
+.tv table{font-size:13px}
+
+/* ---------------------------------------------------------------- 8. peças pequenas: barrinha de tabela, minigráfico, vazio */
+.minibar{display:inline-block;position:relative;height:6px;border-radius:3px;background:var(--c-trilho);vertical-align:middle;margin-left:8px;overflow:hidden}
+.minibar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+svg.spark{display:block;overflow:visible}
+.legenda-vazia{color:var(--ink-3);text-align:center;padding:32px 12px;font-size:13.5px;margin:0}
+
+/* ---------------------------------------------------------------- 9. entrada animada (uma vez; nunca ao redesenhar) */
+@keyframes g-cresce{from{transform:scaleY(0)}}
+@keyframes g-cresceH{from{transform:scaleX(0)}}
+@keyframes g-traca{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes g-surge{from{opacity:0}}
+.chart .b{transform-box:fill-box;transform-origin:50% 100%;animation:g-cresce .45s cubic-bezier(.2,.7,.2,1) both}
+.chart .b.bh{transform-origin:0 50%;animation-name:g-cresceH}
+.chart .b.fat{animation:g-surge .5s both}
+.chart .ln{stroke-dasharray:1;animation:g-traca .8s ease-out both}
+.chart .area,.chart .ac-area,.chart .ac-proj,.chart .dp .dot{animation:g-surge .6s both}
+.chart.sem-anim *{animation:none!important}
+@media (prefers-reduced-motion:reduce){
+  .chart *{animation:none!important;transition:none!important}
+}
+
+/* ---------------------------------------------------------------- 10. aplicativo do vendedor: letras maiores (charts.js aumenta as áreas de rótulo) */
+body.app-vendedor .chart .tk{font-size:13px}
+body.app-vendedor .chart .vl,body.app-vendedor .chart .rt,body.app-vendedor .chart .ac-rot{font-size:14.5px}
+body.app-vendedor .chart .big{font-size:36px}
+body.app-vendedor .chart text[font-size="10"],body.app-vendedor .chart text[font-size="10.5"],body.app-vendedor .chart text[font-size="11"]{font-size:13px}
+body.app-vendedor .chart text[font-size="11.5"]{font-size:14px}
+body.app-vendedor #tip{font-size:14px}
+
+/* halo da cor do fundo: rótulos de valor continuam legíveis quando uma linha de grade ou referência passa por trás */
+.chart:is(.colunas,.linhas,.disp,.acumulado) :is(.vl,.rt,.ac-rot,.tk.rf){paint-order:stroke;stroke:var(--c-fundo);stroke-width:3px;stroke-linejoin:round}
+
+/* ---------------------------------------------------------------- 11. régua das equipes (CH.regua): HTML, mesma escala para todas as linhas
+   As posições das duas leituras vêm prontas em variáveis (--wq/--wp largura, --xq/--xp posição); a classe .pct ou .qtd escolhe qual vale. */
+.rg{display:grid;gap:10px}
+.rg-ctl{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between}
+.rg-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--ink-2)}
+.rg-leg span{display:inline-flex;align-items:center;gap:6px}
+.rg .chv{display:inline-block;width:14px;height:10px;border-radius:2px;background:var(--c-real)}
+.rg .chv.proj{background:var(--c-proj)}
+.rg .chv.tick{width:2px;height:12px;border-radius:0;background:var(--c-meta)}
+.rg .chv.esp{width:0;height:12px;border-radius:0;background:none;border-left:1.5px dashed var(--ink-2)}
+.rg-lista{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-cartao);overflow:hidden}
+.rg-lin{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr) 200px;gap:0 18px;align-items:center;padding:10px 16px;border:0;border-top:1px solid var(--line);background:none;width:100%;text-align:left;font:inherit;color:inherit;text-decoration:none}
+.rg-lista>.rg-lin:first-child{border-top:0}
+a.rg-lin,button.rg-lin{cursor:pointer}
+a.rg-lin:hover,button.rg-lin:hover{background:var(--surface-2)}
+a.rg-lin:focus-visible,button.rg-lin:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.rg-cab{padding-block:8px 4px;font-size:12px;color:var(--ink-3)}
+.rg-tot{background:var(--surface-2);border-top:1px solid var(--line-2)}
+.rg-nome{min-width:0}
+.rg-nome b{display:block;font-weight:600;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rg-nome span{display:block;font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rg-trilho{position:relative;height:22px}
+.rg-trilho .pista{position:absolute;left:0;right:0;top:4px;bottom:4px;border-radius:2px;background:var(--c-trilho)}
+.rg-trilho .pr,.rg-trilho .re{position:absolute;left:0;top:7px;bottom:7px;border-radius:0 2px 2px 0;width:var(--wq);transition:width .3s cubic-bezier(.2,.7,.2,1)}
+.rg-trilho .pr{background:var(--c-proj)}
+.rg-trilho .re{background:var(--c-real)}
+.rg-trilho .mt{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--c-meta);left:var(--xq);transition:left .3s cubic-bezier(.2,.7,.2,1)}
+.rg-trilho .esp{position:absolute;top:-9px;bottom:-9px;width:0;border-left:1.5px dashed var(--ink-2);left:var(--xq);transition:left .3s cubic-bezier(.2,.7,.2,1)}
+.rg.pct .rg-trilho .pr,.rg.pct .rg-trilho .re{width:var(--wp)}
+.rg.pct .rg-trilho .mt,.rg.pct .rg-trilho .esp{left:var(--xp)}
+.rg-eixo{position:relative;height:18px}
+.rg-eixo span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.rg-eixo span:first-child{transform:none}
+.rg.pct .rg-eixo .q,.rg.qtd .rg-eixo .p{display:none}
+.rg.qtd .rg-tot .rg-trilho{visibility:hidden}   /* em quantidade o total não cabe na régua das equipes: fica só com os números */
+.rg.qtd .rg-eixo .q:first-of-type{transform:none}
+.rg-num{display:grid;grid-template-columns:auto 1fr;gap:0 10px;align-items:baseline;font-size:12.5px;font-variant-numeric:tabular-nums}
+.rg-num .v{font-weight:600;font-size:14px}
+.rg-num .v small{font-weight:400;font-size:12px;color:var(--ink-3)}
+.rg-num .s{text-align:right;font-weight:600;white-space:nowrap}
+.rg-num .s.okt{color:var(--ok)}.rg-num .s.alt{color:var(--warn)}.rg-num .s.rmt{color:var(--crit)}
+.rg-num .f{grid-column:1/-1;font-size:12px;color:var(--ink-3)}
+.rg-cab .rg-num{display:block}
+
+/* ---------------------------------------------------------------- 12. trajetórias (CH.trajetoria): pequenos múltiplos em % da meta */
+.chart .tr-ideal{fill:none;stroke:var(--c-suave);stroke-width:1.5;stroke-dasharray:1.5 3;opacity:.8}
+.trajs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.traj{display:grid;gap:2px;align-content:start;padding:12px 12px 8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-cartao);text-align:left;font:inherit;color:inherit;min-width:0}
+button.traj{cursor:pointer}
+button.traj:hover{border-color:var(--line-2);box-shadow:var(--sombra-alta)}
+.traj.tot{background:var(--surface-2)}
+.traj b{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.traj .st-t{font-size:12px;font-weight:600}
+.traj .st-t small{font-weight:400;font-size:12px;color:var(--ink-3)}
+.traj .st-t.okt{color:var(--ok)}.traj .st-t.alt{color:var(--warn)}.traj .st-t.rmt{color:var(--crit)}
+.trajs-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--ink-2)}
+.trajs-leg span{display:inline-flex;align-items:center;gap:6px}
+.trajs-leg i{display:inline-block;width:16px;height:0;border-top:2px solid var(--c-real)}
+.trajs-leg i.proj{border-top:2px dashed var(--c-proj)}.trajs-leg i.meta{border-top:1.25px solid var(--c-meta)}.trajs-leg i.ideal{border-top:1.5px dotted var(--c-suave)}
+@media (max-width:1180px){ .trajs{grid-template-columns:repeat(2,minmax(0,1fr))} .rg-lin{grid-template-columns:minmax(130px,180px) minmax(0,1fr) 180px} }
+@media (prefers-reduced-motion:reduce){ .rg-trilho *{transition:none!important} }
+
+/* celular: cada equipe em duas linhas (nome e números em cima, barra embaixo), em vez de um cartão com uma linha por número */
+@media (max-width:760px){
+  .rg-ctl .seg{width:100%}
+  .rg-ctl .seg button{flex:1}
+  .rg-lin{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"nome num" "bar bar";gap:6px 12px;padding:10px 12px}
+  .rg-nome{grid-area:nome}.rg-num{grid-area:num}.rg-lin>.rg-trilho,.rg-lin>.rg-eixo{grid-area:bar}
+  .rg-cab{grid-template-areas:"bar bar"}
+  .rg-cab .rg-nome,.rg-cab .rg-num{display:none}
+  .rg-num{grid-template-columns:auto;justify-items:end;gap:0}
+  .rg-num .f{display:none}
+  .trajs{gap:8px}
+  .traj{padding:10px 8px 6px}
+}
+
+/* ---------------------------------------------------------------- 10. acabamento sóbrio (v123): trilho nas barras horizontais; resto como antes */
+.chart .pista{fill:var(--c-trilho)}
+.chart .vl{font-weight:600}

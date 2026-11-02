@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrada no app · nova versão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Entrada no app: é a mesma página do computador (entrada.html), mostrada em aparelhos de 375 px em cada situação. */
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:#dcdcd7;color:#17191c;font:16px/1.45 "IBM Plex Sans","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.palco{padding:32px 28px 120px;max-width:1760px;margin:0 auto}
+.palco>header{max-width:980px;margin:0 0 26px}
+.palco h1{font-size:22px;margin:0 0 6px;letter-spacing:-.01em}
+.palco p{margin:0;color:#4a4f57;font-size:15px;line-height:1.5}
+.fileira{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+figure{margin:0}
+figcaption{font:600 13px/1.4 system-ui,sans-serif;color:#33363b;margin:0 0 10px}
+figcaption small{display:block;font-weight:400;color:#5b6068;margin-top:2px;max-width:375px}
+/* aparelho: 375 × 812 com barra de status de 44 px; a página começa logo abaixo, no mesmo azul-marinho */
+.cel{width:375px;height:812px;border-radius:46px;background:#0c1322;position:relative;overflow:hidden;box-shadow:0 0 0 10px #16181b,0 0 0 11px #3a3d42,0 30px 60px rgba(0,0,0,.28)}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 28px 0 32px;font:600 15px system-ui,sans-serif;color:#fff;background:#0c1322;position:relative;z-index:2}
+.status i{width:120px;height:30px;border-radius:20px;background:#000;position:absolute;left:50%;top:8px;transform:translateX(-50%)}
+.cel iframe{position:absolute;top:44px;left:0;width:375px;height:768px;border:0;background:#fff}
+.home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#8794a8;z-index:3}
+/* barra de controle do protótipo (não faz parte do produto) */
+.prev{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:6px;background:#111317;color:#e8e9eb;border-radius:999px;padding:6px 8px 6px 14px;box-shadow:0 14px 40px rgba(0,0,0,.35);font:500 12.5px/1 system-ui,sans-serif;max-width:calc(100vw - 24px);overflow-x:auto}
+.prev b{font-weight:600;white-space:nowrap;margin-right:6px;color:#fff}
+.prev button{border:0;background:none;color:#c9ccd1;padding:7px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;font:inherit}
+.prev button:hover{background:#262a31;color:#fff}
+.prev .sep{width:1px;height:18px;background:#33373e;margin:0 4px;flex:none}
+.prev .demo{color:#f0b24a;white-space:nowrap;padding:0 6px}
+</style>
+</head>
+<body>
+<div class="palco">
+  <header><h1>Entrada no app · nova versão</h1>
+    <p>A mesma página do computador, no celular: fundo no azul-marinho da lateral, a etiqueta “Nova versão” no alto e o formulário num cartão branco da largura da tela. Campos de 50 px e teclado de e-mail no campo de e-mail.</p></header>
+  <div class="fileira" id="fileira"></div>
+</div>
+<nav class="prev" aria-label="Controles do protótipo">
+  <b>Entrada no app</b>
+  <button type="button" onclick="location.href='entrada.html'">Ver no computador</button>
+  <button type="button" onclick="location.href='direcao-a-app.html'">App</button>
+  <span class="sep"></span>
+  <span class="demo">dados de demonstração</span>
+</nav>
+<script>
+"use strict";
+const TELAS = [
+  ["entrar", "Entrar", "A etiqueta “Nova versão”, acima do cartão, abre o que mudou. E-mail e senha continuam os mesmos."],
+  ["novidades", "O que mudou", "Folha com o que continua igual, onde ficou cada coisa e o que mudou no app. Fecha com “Entendi”."],
+  ["erro", "Senha errada", "A mensagem do servidor aparece junto do formulário, com ícone e texto; os campos continuam preenchidos."],
+  ["semconexao", "Sem internet", "Hoje aparece “Failed to fetch”. A tela nova diz o que fazer e não promete funcionar sem internet."],
+  ["enviado", "Esqueci a senha", "O mesmo texto que o servidor já devolve: o link vale 60 minutos e pode cair no spam."],
+];
+document.getElementById("fileira").innerHTML = TELAS.map(([t, nome, txt], i) => `<figure><figcaption>${i + 1} · ${nome}<small>${txt}</small></figcaption>
+  <div class="cel"><div class="status"><span>14:20</span><i></i><span>5G ▮▮▮</span></div><iframe src="entrada.html?captura#${t}" title="Entrada no app: ${nome}" loading="eager"></iframe><span class="home"></span></div></figure>`).join("");
+</script>
+<script src="prototipo.js"></script>
+</body>
+</html>

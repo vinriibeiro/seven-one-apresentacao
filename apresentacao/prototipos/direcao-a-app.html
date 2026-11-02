@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direção A · App do vendedor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Direção A · Controle — app do vendedor (PWA). Mesmos tokens do sistema web, organização própria para o celular. */
+:root{color-scheme:light;
+  --canvas:#f4f4f2;--surface:#fff;--surface-2:#fafaf8;--surface-3:#f1f0ed;--line:#e4e3df;--line-2:#d2d0ca;
+  --ink:#17191c;--ink-2:#4a4f57;--ink-3:#6f747c;--brand:#c9202e;--brand-ink:#a3161f;
+  --ok:#17703f;--ok-wash:#eaf5ee;--warn:#8a5600;--warn-wash:#fbf3e2;--crit:#b3261e;--crit-wash:#fbecea;--info:#245fa8;--info-wash:#eaf1fa;
+  --g-real:#2a64ad;--sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#dcdcd7;color:var(--ink);font:16px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
+.palco{padding:32px 28px 120px;max-width:1700px;margin:0 auto}
+.palco>header{max-width:980px;margin:0 0 26px}
+.palco h1{font-size:22px;margin:0 0 6px;letter-spacing:-.01em}
+.palco p{margin:0;color:#4a4f57;font-size:15px;line-height:1.5}
+.fileira{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+figure{margin:0}
+figcaption{font:600 13px/1.4 system-ui,sans-serif;color:#33363b;margin:0 0 10px}
+figcaption small{display:block;font-weight:400;color:#5b6068;margin-top:2px;max-width:375px}
+
+/* ----- aparelho: 375 × 812 com áreas seguras (barra de status 44 px, indicador 34 px) ----- */
+.cel{width:375px;height:812px;border-radius:46px;background:var(--canvas);position:relative;overflow:hidden;box-shadow:0 0 0 10px #16181b,0 0 0 11px #3a3d42,0 30px 60px rgba(0,0,0,.28)}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 28px 0 32px;font:600 15px system-ui,sans-serif;color:var(--ink);background:var(--surface)}
+.status i{width:120px;height:30px;border-radius:20px;background:#0b0c0e;position:absolute;left:50%;top:8px;transform:translateX(-50%)}
+.home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:var(--ink);opacity:.85;z-index:9}
+.tela{position:absolute;top:44px;bottom:0;left:0;right:0;display:flex;flex-direction:column}
+.rolagem{flex:1;overflow:auto;padding-bottom:20px}
+.topo{background:var(--surface);border-bottom:1px solid var(--line);padding:10px 18px 12px;display:flex;align-items:center;gap:12px}
+.topo h2{margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em;flex:1}
+.topo .sub{display:block;font-size:13px;color:var(--ink-3);font-weight:400;margin-top:1px}
+.av{width:40px;height:40px;border-radius:50%;background:var(--surface-3);border:1px solid var(--line-2);display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+.ic-btn{width:44px;height:44px;border-radius:10px;border:0;background:none;display:inline-flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.ic-btn svg{width:22px;height:22px}
+.sec{padding:16px 18px 4px}
+.sec h3{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--ink-2);display:flex;justify-content:space-between;align-items:baseline}
+.sec h3 a{font-weight:500;font-size:14px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.bloco{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.mes{padding:14px 16px 16px}
+.mes .rot{font-size:13.5px;color:var(--ink-2);font-weight:500}
+.mes .val{font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1.1;margin-top:6px}
+.mes .val small{font-size:16px;font-weight:500;color:var(--ink-3);letter-spacing:0}
+.medidor{position:relative;height:8px;background:var(--surface-3);border-radius:2px;margin:12px 0 6px}
+.medidor i{position:absolute;left:0;top:0;bottom:0;background:var(--g-real);border-radius:2px}
+.medidor u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.leg{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-3)}
+.st{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:500}
+.st::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
+.st.ok{color:var(--ok)}.st.pend{color:var(--info)}.st.pend::before{background:none;border:2px solid currentColor;width:7px;height:7px}.st.canc{color:var(--crit)}.st.canc::before{border-radius:1px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:14px}
+.trio div{padding:12px 6px 0 0}.trio div+div{padding-left:12px;border-left:1px solid var(--line)}
+.trio b{display:block;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.trio span{display:block;font-size:12.5px;color:var(--ink-3);line-height:1.3;margin-top:2px}
+.lista{list-style:none;margin:0;padding:0}
+.lista li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--line);min-height:64px}
+.lista li:first-child{border-top:0}
+.lista .ico{width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+.ico.hp{background:var(--crit-wash);color:var(--crit)}.ico.viab{background:var(--ok-wash);color:var(--ok)}.ico.crm{background:var(--info-wash);color:var(--info)}.ico.pend{background:var(--warn-wash);color:var(--warn)}
+.lista b{display:block;font-size:15px;font-weight:600;line-height:1.3}
+.lista small{display:block;font-size:13.5px;color:var(--ink-2);line-height:1.35}
+.lista time{font-size:12.5px;color:var(--ink-3);text-align:right}
+.lista .chev{color:var(--ink-3);font-size:20px}
+.linha-simples{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;gap:10px}
+.linha-simples b{font-size:15px}.linha-simples small{display:block;color:var(--ink-3);font-size:13px}
+.linha-simples .valor{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* barra inferior com ação central */
+.abas{display:grid;grid-template-columns:repeat(5,1fr);align-items:end;background:var(--surface);border-top:1px solid var(--line);padding:6px 6px 34px;position:relative}
+.abas a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:500;color:var(--ink-3);text-decoration:none;padding:6px 0;min-height:48px;position:relative}
+.abas a svg{width:24px;height:24px}
+.abas a.on{color:var(--ink);font-weight:600}
+.abas a.on::before{content:"";position:absolute;top:-7px;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--brand)}
+.abas .mais{align-self:center;justify-self:center;width:56px;height:56px;border-radius:50%;background:var(--brand);color:#fff;border:0;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(201,32,46,.35);margin-top:-22px}
+.abas .mais svg{width:26px;height:26px}
+.abas .bolha{position:absolute;top:2px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--brand);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* vendas: segmentos e lista */
+.segs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--surface-3);border-radius:10px;padding:4px;margin:12px 18px 10px}
+.segs button{border:0;background:none;border-radius:7px;font:inherit;font-size:13.5px;font-weight:500;color:var(--ink-2);padding:8px 2px;min-height:40px;line-height:1.2}
+.segs button b{display:block;font-size:12px;font-weight:500;color:var(--ink-3)}
+.segs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08);font-weight:600}
+.busca{margin:0 18px 10px;position:relative}
+.busca input{width:100%;height:46px;border:1px solid var(--line-2);border-radius:10px;padding:0 14px 0 42px;font:inherit;font-size:16px;background:var(--surface)}
+.busca svg{position:absolute;left:14px;top:13px;width:20px;height:20px;color:var(--ink-3)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 18px 10px;scrollbar-width:none}
+.chips button{flex:none;height:36px;border-radius:18px;border:1px solid var(--line-2);background:var(--surface);padding:0 14px;font:inherit;font-size:14px;color:var(--ink-2)}
+.chips button.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.vendas{list-style:none;margin:0;padding:0;background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.vendas li{padding:13px 18px;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 10px}
+.vendas li:first-child{border-top:0}
+.vendas b{font-size:15.5px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.vendas .meta{grid-column:1/-1;font-size:13px;color:var(--ink-3)}
+.vendas .mono{font-family:var(--mono);font-size:12.5px}
+.vendas .prox{grid-column:1/-1;font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.vendas .prox::before{content:"→";color:var(--ink-3)}
+.vendas .prox.alerta{color:var(--warn);font-weight:500}
+.prop{display:inline-block;font-size:10.5px;font-weight:600;color:var(--info);border:1px dashed var(--info);border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:middle}
+
+/* formulário */
+.form-topo{display:flex;align-items:center;justify-content:space-between;padding:8px 10px 10px;background:var(--surface);border-bottom:1px solid var(--line)}
+.form-topo b{font-size:17px}
+.form-topo button{border:0;background:none;font:inherit;font-size:16px;color:var(--ink-2);min-height:44px;padding:0 8px}
+.grupo{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:14px;padding:4px 18px 16px}
+.grupo h4{margin:12px 0 4px;font-size:14px;font-weight:600;color:var(--ink-2)}
+.grupo h4 small{font-weight:400;color:var(--ink-3)}
+.checa{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.checa label{display:flex;align-items:center;gap:10px;min-height:48px;border:1px solid var(--line-2);border-radius:10px;padding:0 12px;font-size:15px;background:var(--surface)}
+.checa label.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.checa .cx{width:20px;height:20px;border-radius:5px;border:2px solid var(--line-2);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex:none}
+.checa label.on .cx{background:var(--ink);border-color:var(--ink)}
+.f{display:flex;flex-direction:column;gap:5px;margin-top:12px}
+.f label{font-size:14px;font-weight:500;color:var(--ink-2)}
+.f label .obr{color:var(--crit);margin-left:2px}
+.f input,.f select,.f textarea{height:48px;border:1px solid var(--line-2);border-radius:10px;padding:0 14px;font:inherit;font-size:16px;background:var(--surface);width:100%}
+.f textarea{height:76px;padding:10px 14px;resize:none}
+.f .ajuda{font-size:13px;color:var(--ink-3)}
+.f.erro input{border-color:var(--crit);box-shadow:inset 0 0 0 1px var(--crit)}
+.f .msg-erro{font-size:13.5px;color:var(--crit);display:flex;gap:6px;align-items:flex-start}
+.dois{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dois .f{margin-top:12px}
+.anexar{display:flex;align-items:center;gap:10px;min-height:48px;border:1px dashed var(--line-2);border-radius:10px;padding:0 14px;color:var(--ink-2);font-size:15px;margin-top:12px}
+.rodape-form{background:var(--surface);border-top:1px solid var(--line);padding:12px 18px 34px}
+.btn{width:100%;height:52px;border-radius:12px;border:0;background:var(--brand);color:#fff;font:inherit;font-size:16px;font-weight:600}
+.rodape-form small{display:block;text-align:center;font-size:13px;color:var(--ink-3);margin-top:8px}
+
+/* estados de envio */
+.estados{width:375px;display:flex;flex-direction:column;gap:12px}
+.aviso{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:14.5px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.aviso b{display:block;font-size:15px}
+.aviso span{color:var(--ink-2)}
+.aviso .i{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.aviso.env .i{background:var(--surface-3);color:var(--ink-2)}
+.aviso.ok .i{background:var(--ok-wash);color:var(--ok)}
+.aviso.err .i{background:var(--crit-wash);color:var(--crit)}
+.aviso.off .i{background:var(--warn-wash);color:var(--warn)}
+.aviso .acao{margin-top:8px;display:inline-block;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.girando{width:16px;height:16px;border:2px solid var(--line-2);border-top-color:var(--ink);border-radius:50%;animation:g 1s linear infinite}
+@keyframes g{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.girando{animation:none}}
+
+.prev{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:6px;background:#111317;color:#e8e9eb;border-radius:999px;padding:6px 8px 6px 14px;box-shadow:0 14px 40px rgba(0,0,0,.35);font:500 12.5px/1 system-ui,sans-serif;max-width:calc(100vw - 24px);overflow-x:auto}
+.prev b{font-weight:600;white-space:nowrap;margin-right:6px;color:#fff}
+.prev a,.prev button{border:0;background:none;color:#c9ccd1;padding:7px 10px;border-radius:999px;cursor:pointer;white-space:nowrap;font:inherit;text-decoration:none}
+.prev a:hover,.prev button:hover{background:#262a31;color:#fff}
+.prev .on{background:#fff;color:#111317}
+.prev .sep{width:1px;height:18px;background:#33373e;margin:0 4px}
+.prev .demo{color:#f0b24a;white-space:nowrap;padding:0 6px}
+</style>
+</head>
+<body>
+<div class="palco">
+  <header><h1>App do vendedor · Direção A</h1>
+    <p>Mesma identidade do sistema web, organizada para o uso diário no celular. Continua sendo o mesmo PWA de hoje (instalável, com notificações), sem prometer funcionamento offline: o app só mostra uma ação como concluída depois que o servidor confirma.</p></header>
+  <div class="fileira" id="fileira"></div>
+</div>
+<nav class="prev" aria-label="Controles do protótipo">
+  <b>Direção A · Controle</b>
+  <a href="entrada-app.html">0 Entrar</a><a href="direcao-a.html#painel">1 Painel</a><a href="direcao-a.html#vendas">2 Módulo: Vendas</a><a href="direcao-a.html#equipes">3 Equipes</a><a href="direcao-a.html#viabilidade">4 Fila</a><a href="direcao-a.html#venda">5 Detalhe</a><a class="on" href="#">6–7 App</a>
+  <span class="sep"></span><span class="demo">dados de demonstração</span>
+</nav>
+<script src="dados-demo.js"></script>
+<script>
+"use strict";
+const D = window.DEMO, A = D.app, nf = new Intl.NumberFormat("pt-BR");
+const dec = (x, c = 1) => x.toFixed(c).replace(".", ",");
+const I = {
+  inicio: '<path d="M4 11l8-6.5 8 6.5V20a1 1 0 01-1 1h-5v-6h-4v6H5a1 1 0 01-1-1z"/>',
+  vendas: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+  agenda: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  premio: '<circle cx="12" cy="9" r="5.5"/><path d="M8.6 13.6L7.5 21l4.5-2.5 4.5 2.5-1.1-7.4"/>',
+  mais: '<path d="M12 5v14M5 12h14"/>', busca: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+};
+const svg = (k, w = 1.8) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
+const abas = (on) => `<nav class="abas" aria-label="Navegação principal">
+  <a href="#" class="${on === "inicio" ? "on" : ""}">${svg("inicio")}Início</a>
+  <a href="#" class="${on === "vendas" ? "on" : ""}">${svg("vendas")}<span class="bolha">2</span>Vendas</a>
+  <button class="mais" aria-label="Registrar: viabilidade, venda Conexão ou Solar, retorno na agenda">${svg("mais", 2.2)}</button>
+  <a href="#" class="${on === "agenda" ? "on" : ""}">${svg("agenda")}Agenda</a>
+  <a href="#" class="${on === "premio" ? "on" : ""}">${svg("premio")}Premiação</a></nav>`;
+const cel = (conteudo) => `<div class="cel"><div class="status"><span>14:20</span><i></i><span>5G ▮▮▮</span></div><div class="tela">${conteudo}</div><span class="home"></span></div>`;
+
+/* 6 · Início */
+const esperado = Math.round((A.meta / D.DU.total) * D.DU.decorridos);
+const nec = (A.meta - A.bl) / D.DU.restantes;
+const ICO = { hp: "!", viab: "✓", crm: "☎", pend: "…" };
+const inicio = cel(`
+  <div class="topo"><h2>Boa tarde, ${A.primeiro}<span class="sub">${A.equipe} · sábado, 24 de outubro</span></h2><span class="av" aria-label="Conta e mais opções">RM</span></div>
+  <div class="rolagem">
+    <div class="sec"><h3>Meu mês</h3>
+      <div class="bloco mes"><div class="rot">BL vendida · meta do plano</div>
+        <div class="val">${A.bl} <small>de ${A.meta}</small></div>
+        <div class="medidor" aria-hidden="true"><i style="width:${(A.bl / A.meta) * 100}%"></i><u style="left:${(esperado / A.meta) * 100}%"></u></div>
+        <div class="leg"><span>esperado até hoje: ${esperado}</span><span>meta ${A.meta}</span></div>
+        <div style="margin-top:10px"><span class="st ok">No ritmo da meta · projeção ${A.proj}</span></div>
+        <div class="trio"><div><b>${dec(nec)}</b><span>BL por dia útil para a meta</span></div><div><b>${A.vendas - A.canc}</b><span>vendas válidas no mês</span></div><div><b>${A.posicao}º de ${A.equipeTam}</b><span>na equipe em BL</span></div></div></div></div>
+    <div class="sec"><h3>Para fazer agora <a href="#">Ver tudo</a></h3>
+      <ul class="bloco lista">${A.acoes.map((a) => `<li><span class="ico ${a.tipo}">${ICO[a.tipo]}</span><div><b>${a.tit}</b><small>${a.txt}</small></div><time>${a.quando}<br><span class="chev">›</span></time></li>`).join("")}</ul></div>
+    <div class="sec"><h3>Premiação</h3>
+      <div class="bloco linha-simples"><div><b>Parcial de outubro</b><small>Pelas vendas instaladas até hoje · regra do plano</small></div><span class="valor">R$ ${nf.format(A.premiacao)},00</span></div></div>
+  </div>${abas("inicio")}`);
+
+/* 7a · Vendas (lista) */
+const ST = { Pendente: "pend", Instalada: "ok", Cancelada: "canc" };
+const lista = cel(`
+  <div class="topo"><h2>Minhas vendas<span class="sub">Outubro · ${A.vendas} contratos lançados</span></h2></div>
+  <div class="segs" role="tablist"><button>Viabilidade<b>3 abertas</b></button><button>Conexão / Solar<b>2 em andamento</b></button><button class="on">Contratos<b>${A.vendas} no mês</b></button></div>
+  <label class="busca">${svg("busca")}<input inputmode="numeric" placeholder="Buscar pelo nº do contrato" aria-label="Buscar pelo número do contrato"></label>
+  <div class="chips"><button>Outubro ▾</button><button class="on">Todas ${A.vendas}</button><button>Pendentes ${A.pend}</button><button>Instaladas ${A.inst}</button><button>Canceladas ${A.canc}</button></div>
+  <div class="rolagem"><ul class="vendas">${A.lista.map((v) => `<li><b>${v.cliente}</b><span class="st ${ST[v.st]}">${v.st}</span>
+      <span class="meta"><span class="mono">${v.contrato}</span> · ${v.data} · ${v.produtos}</span>
+      <span class="prox ${v.prox.startsWith("Pendência") ? "alerta" : ""}">${v.prox}${v.st === "Pendente" ? '<span class="prop" title="O próximo passo usa o agendamento e as pendências da venda: ajuste de consulta da lista do vendedor.">◆</span>' : ""}</span></li>`).join("")}</ul></div>${abas("vendas")}`);
+
+/* 7b · Formulário: pedir viabilidade */
+const form = cel(`
+  <div class="form-topo"><button>Cancelar</button><b>Pedir viabilidade</b><button aria-hidden="true" style="visibility:hidden">Cancelar</button></div>
+  <div class="rolagem" style="padding-bottom:0">
+    <div class="grupo" style="margin-top:0;border-top:0"><h4>O que verificar? <small>marque uma ou mais</small></h4>
+      <div class="checa"><label class="on"><span class="cx">✓</span>Endereço</label><label class="on"><span class="cx">✓</span>Crédito</label><label><span class="cx"></span>Linha móvel</label><label><span class="cx"></span>Link de biometria</label></div></div>
+    <div class="grupo"><h4>Endereço</h4>
+      <div class="f"><label for="cep">CEP<span class="obr">*</span></label><input id="cep" inputmode="numeric" autocomplete="postal-code" value="72405-120"><span class="ajuda">Rua, bairro e cidade são preenchidos pelo CEP.</span></div>
+      <div class="f"><label for="rua">Rua ou avenida<span class="obr">*</span></label><input id="rua" value="QR 407 Conjunto 3"></div>
+      <div class="dois"><div class="f"><label for="num">Número<span class="obr">*</span></label><input id="num" inputmode="numeric" value="15"></div><div class="f"><label for="comp">Complemento</label><input id="comp" placeholder="Casa, apto…"></div></div>
+      <div class="f"><label for="ref">Ponto de referência</label><input id="ref" placeholder="Ex.: ao lado do mercado"></div></div>
+    <div class="grupo"><h4>Crédito <small>dados do titular</small></h4>
+      <div class="f"><label for="nome">Nome completo<span class="obr">*</span></label><input id="nome" autocomplete="name" value="Sônia Aparecida Martins"></div>
+      <div class="f erro"><label for="cpf">CPF<span class="obr">*</span></label><input id="cpf" inputmode="numeric" value="412.633.508-10" aria-invalid="true" aria-describedby="cpf-e"><span class="msg-erro" id="cpf-e">⚠ CPF inválido: os dígitos verificadores não batem. Confira os números.</span></div>
+      <div class="f"><label for="nasc">Data de nascimento<span class="obr">*</span></label><input id="nasc" type="date" value="1971-05-30"></div></div>
+    <div class="grupo"><h4>Para o backoffice <small>opcional</small></h4>
+      <div class="f"><label for="obs">Observação</label><textarea id="obs" placeholder="Algo que ajude na verificação"></textarea></div>
+      <div class="anexar">＋ Anexar foto ou PDF (até 10 MB)</div></div>
+  </div>
+  <div class="rodape-form"><button class="btn">Enviar para verificação</button><small>Você recebe um aviso quando o backoffice responder.</small></div>`);
+
+/* estados de envio */
+const estados = `<div class="estados">
+  <div class="aviso env"><span class="i"><span class="girando"></span></span><div><b>Enviando o pedido…</b><span>Não feche o app. O pedido só aparece na sua lista quando o servidor confirmar.</span></div></div>
+  <div class="aviso ok"><span class="i">✓</span><div><b>Pedido nº 1913 enviado</b><span>O backoffice de Cadastro já foi avisado. Você recebe a resposta aqui e no celular.</span><br><a class="acao" href="#">Ver o pedido</a></div></div>
+  <div class="aviso err"><span class="i">!</span><div><b>O pedido não foi enviado</b><span>Já existe um pedido aberto para este endereço (nº 1898). Os dados que você preencheu continuam no formulário.</span><br><a class="acao" href="#">Abrir o pedido existente</a></div></div>
+  <div class="aviso off"><span class="i">⟳</span><div><b>Sem conexão com a internet</b><span>Nada foi enviado. Quando a conexão voltar, toque em Enviar de novo: os dados continuam preenchidos.</span></div></div></div>`;
+
+document.getElementById("fileira").innerHTML = `
+  <figure><figcaption>6 · Início<small>Resultado do mês, avanço da meta e o que precisa de ação agora (avisos que o sistema já calcula).</small></figcaption>${inicio}</figure>
+  <figure><figcaption>7 · Vendas<small>As três etapas do vendedor no mesmo lugar: viabilidade, envios ao Conexão/Solar e contratos lançados.</small></figcaption>${lista}</figure>
+  <figure><figcaption>7 · Formulário<small>Pedir viabilidade: só as seções marcadas aparecem; teclado certo em cada campo; erro junto do campo, sem apagar nada.</small></figcaption>${form}</figure>
+  <figure><figcaption>Mensagens de envio<small>Envio, sucesso, falha e falta de conexão: nada aparece como concluído antes da confirmação do servidor.</small></figcaption>${estados}</figure>`;
+</script>
+<script src="prototipo.js"></script>
+</body>
+</html>
