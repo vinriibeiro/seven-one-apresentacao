@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/icone-seven-one.png">
+<title>Seven One · apresentação para a operação</title>
+<!-- Apresentação para a operação (vendedores, backoffice, supervisores, coordenadores e gerência).
+     Motor e estilo base: ../sistema/tour.js e tour.css · conteúdo: cenas-operacao.js · roteiro de ensaio: roteiro.html.
+     Os botões "Abrir no sistema" mostram a demonstração (../sistema/demo/), com dados fictícios; nada é gravado. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../sistema/tour.css?v=4">
+<link rel="stylesheet" href="operacao.css?v=1">
+</head>
+<body>
+<div id="moldura"><div id="palco" aria-live="polite"></div></div>
+<div id="progresso" style="width:0"></div>
+<div id="capitulo-atual"></div>
+
+<div id="ctl" role="toolbar" aria-label="Controles da apresentação">
+  <button class="ant" title="Voltar (←)"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+  <span class="pos"></span>
+  <button class="prox" title="Avançar (→ ou espaço)"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+  <span class="tempo" title="Tempo decorrido (T zera)">00:00</span>
+  <button class="caps" title="Capítulos (C)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Capítulos</button>
+  <button class="notas" title="Notas do apresentador (N)"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>Notas</button>
+  <button class="apres" title="Abrir as notas numa segunda janela"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 5v14"/></svg></button>
+  <button class="cheia" title="Tela cheia (F)"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <button class="reiniciar" title="Reiniciar (R)"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.7"/><path d="M4 4v5h5"/></svg></button>
+</div>
+
+<aside id="notas" hidden aria-label="Notas do apresentador">
+  <button class="fechar" title="Fechar (Esc)">×</button>
+  <div class="topo"><div class="cap-n"></div><h2></h2></div>
+  <div class="relogios"></div>
+  <div class="corpo"></div>
+  <div class="atalhos">→ espaço avançar · ← voltar · C capítulos · N notas · F tela cheia · R reiniciar · T zera o relógio · Alt+1…8 capítulo · ? ajuda</div>
+</aside>
+
+<div id="caps" hidden><button class="fechar" title="Fechar (Esc)">×</button><h2>Capítulos</h2><p>Percurso de cerca de 25 minutos: primeiro o que vale para todos, depois um bloco por função. Os botões escuros nas cenas abrem o sistema com dados fictícios.</p><div class="grade"></div></div>
+
+<div id="janela" hidden><div class="caixa"><header><h2></h2><span class="etiq info"></span><button class="fechar" title="Fechar (Esc)">×</button></header><div class="corpo"></div></div></div>
+
+<div id="ajuda" hidden><div class="caixa"><h2>Atalhos</h2><table>
+  <tr><td>→ · espaço · Enter</td><td>avançar (clique à direita do palco também)</td></tr>
+  <tr><td>← · Backspace</td><td>voltar (clique na faixa esquerda do palco)</td></tr>
+  <tr><td>C</td><td>capítulos</td></tr><tr><td>N</td><td>notas do apresentador (gaveta)</td></tr>
+  <tr><td>F</td><td>tela cheia</td></tr><tr><td>R</td><td>reiniciar do começo</td></tr><tr><td>T</td><td>zerar o relógio</td></tr>
+  <tr><td>Alt+1 … Alt+8</td><td>ir ao capítulo (1 a 8)</td></tr><tr><td>Esc</td><td>fechar janela / notas</td></tr>
+  <tr><td>?</td><td>esta ajuda</td></tr></table>
+  <p style="color:#8794a8;font-size:14px;margin:14px 0 0">Segunda janela do apresentador: botão ▯ nos controles (abre <code>?apresentador</code>; as setas nela também avançam a apresentação).</p></div></div>
+
+<script src="../sistema/tour.js?v=4"></script>
+<script src="cenas-operacao.js?v=1"></script>
+</body>
+</html>

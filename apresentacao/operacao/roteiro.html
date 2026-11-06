@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Seven One · roteiro da apresentação para a operação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f4f2;color:#17191c;font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+.col{max-width:900px;margin:0 auto;padding:40px 20px 80px}
+h1{font-size:30px;margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:#4a4f57;margin:0 0 24px}
+.resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:18px 0 30px}
+.resumo div{background:#fff;border:1px solid #e4e3df;border-radius:10px;padding:12px 14px;font-size:14px;color:#4a4f57}
+.resumo b{display:block;font:500 24px/1.1 "IBM Plex Mono",monospace;color:#17191c}
+table.plano{border-collapse:collapse;width:100%;background:#fff;border:1px solid #e4e3df;font-size:14.5px;margin-bottom:34px}
+table.plano th,table.plano td{text-align:left;padding:8px 12px;border-bottom:1px solid #e4e3df}
+table.plano th{font-size:12.5px;color:#6f747c;background:#fafaf8}
+.cap{margin-top:40px;border-top:3px solid #0c1322;padding-top:14px;page-break-before:always}
+.cap h2{font-size:24px;margin:0 0 2px}
+.cap .meta{font-family:"IBM Plex Mono",monospace;font-size:13px;color:#6f747c;margin-bottom:12px}
+.passo{background:#fff;border:1px solid #e4e3df;border-radius:12px;padding:18px 22px;margin:14px 0;page-break-inside:avoid}
+.passo h3{margin:0 0 4px;font-size:18px;display:flex;justify-content:space-between;gap:12px}
+.passo h3 span{font:500 13px/1.6 "IBM Plex Mono",monospace;color:#6f747c;white-space:nowrap}
+.passo h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6f747c;margin:14px 0 4px}
+.passo p{margin:0;color:#4a4f57;white-space:pre-line}
+.fala{border-left:3px solid #c9202e;padding-left:12px;color:#17191c;font-size:16.5px;white-space:pre-line}
+.simulado{background:#fbf3e2;border:1px solid #efd9a6;border-radius:8px;padding:8px 12px;color:#8a5600;font-size:14px;white-space:pre-line}
+.evid{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:#6f747c;white-space:pre-line}
+.topo-links a{margin-right:14px;color:#245fa8}
+@media print{body{background:#fff}.col{max-width:none;padding:0}.passo{border-color:#ccc}.topo-links{display:none}}
+</style>
+</head>
+<body><div class="col">
+<h1>Roteiro de ensaio · Seven One para a operação</h1>
+<p class="sub">Falas em primeira pessoa, o que clicar, o que o público deve observar, tempo e transição de cada cena. Gerado a partir das mesmas cenas da apresentação (cenas-operacao.js). <span class="topo-links"><a href="./">Abrir a apresentação</a><a href="?apresentador" onclick="window.print();return false">Imprimir</a></span></p>
+<div id="resumo" class="resumo"></div>
+<table class="plano" id="plano"><thead><tr><th>#</th><th>Capítulo</th><th>Cenas</th><th>Duração</th><th>Começa aos</th></tr></thead><tbody></tbody></table>
+<div id="caps"></div>
+</div>
+<script src="../sistema/tour.js?v=4"></script>
+<script src="cenas-operacao.js?v=1"></script>
+<script>
+(() => {
+  const T = window.TOUR, esc = T.esc, mmss = T.mmss;
+  const total = T.tempoTotal();
+  document.getElementById("resumo").innerHTML = `<div><b>${T.CAPS.length}</b>capítulos</div><div><b>${T.PASSOS.length}</b>cenas no percurso principal</div><div><b>${mmss(total)}</b>previsto (limite 30:00)</div><div><b>${Object.keys(T.APROF).length}</b>telas do sistema para abrir ao vivo</div><div><b>${mmss(1800 - total)}</b>de folga para perguntas</div>`;
+  document.querySelector("#plano tbody").innerHTML = T.CAPS.map((c, n) => { const ps = T.PASSOS.filter((p) => p.cap === c.id); const k = T.PASSOS.indexOf(ps[0]); return `<tr><td>${n + 1}</td><td><b>${esc(c.titulo)}</b><br><span style="color:#6f747c;font-size:13px">${esc(c.resumo || "")}</span></td><td>${ps.length}</td><td>${mmss(T.tempoCap(c.id))}</td><td>${mmss(T.tempoAte(k))}</td></tr>`; }).join("");
+  const bloco = (t, v, cls) => v ? `<h4>${t}</h4>${cls === "fala" ? `<div class="fala">${esc(v)}</div>` : cls === "simulado" ? `<div class="simulado">${esc(v)}</div>` : cls === "evid" ? `<div class="evid">${esc(v)}</div>` : `<p>${esc(v)}</p>`}` : "";
+  document.getElementById("caps").innerHTML = T.CAPS.map((c, n) => {
+    const ps = T.PASSOS.filter((p) => p.cap === c.id);
+    return `<section class="cap"><h2>${n + 1}. ${esc(c.titulo)}</h2><div class="meta">${ps.length} cenas · ${mmss(T.tempoCap(c.id))} · começa aos ${mmss(T.tempoAte(T.PASSOS.indexOf(ps[0])))}</div>` +
+      ps.map((p, k) => { const i = T.PASSOS.indexOf(p), nn = p.notas || {}, prox = T.PASSOS[i + 1];
+        return `<article class="passo"><h3>${n + 1}.${k + 1} ${esc(p.titulo)}<span>${mmss(p.tempo || 0)} · aos ${mmss(T.tempoAte(i))}</span></h3>
+          ${bloco("Objetivo da cena", nn.objetivo)}${bloco("Fala sugerida", nn.fala, "fala")}${bloco("O que clicar", nn.clicar)}${bloco("O que o público deve observar", nn.observar)}${bloco("Simulado × real", nn.simulado, "simulado")}${bloco("Evidência", nn.evidencia, "evid")}
+          <h4>Transição</h4><p>${prox ? `Próximo: <b>${esc(prox.titulo)}</b>${nn.transicao ? " — " + esc(nn.transicao) : ""}` : "Fim do percurso."}</p></article>`; }).join("") + `</section>`;
+  }).join("");
+})();
+</script>
+</body>
+</html>

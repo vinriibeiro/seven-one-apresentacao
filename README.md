@@ -9,6 +9,8 @@
 | O quê | Link |
 |---|---|
 | Apresentação | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/sistema/#capa |
+| Apresentação para a operação | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/operacao/#capa |
+| Roteiro da apresentação para a operação | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/operacao/roteiro.html |
 | Protótipo navegável (gerente) | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/sistema/demo/?perfil=gestor#/dashboard |
 | App do vendedor | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/sistema/celular.html |
 | Roteiro do apresentador | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/sistema/roteiro.html |

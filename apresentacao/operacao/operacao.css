@@ -1,0 +1,165 @@
+/* Seven One · apresentação para a operação. Complementa ../sistema/tour.css (mesmos tokens e motor).
+   Cores por função: vendedor = vermelho da marca, Cadastro = azul, Qualidade = verde, liderança = âmbar, gerência = navy. */
+:root{--f-vend:var(--brand);--f-cad:var(--info-mark);--f-qua:var(--ok-mark);--f-lid:var(--warn-mark);--f-ger:var(--nav)}
+
+/* etiqueta da função no alto da cena */
+.linha-f{display:flex;align-items:center;gap:20px;margin-bottom:14px}
+.linha-f .cap-n{font-family:var(--mono);font-size:20px;color:var(--brand);letter-spacing:.06em}
+.funcao{display:inline-flex;align-items:center;gap:10px;font:600 19px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:8px 16px 8px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink-2)}
+.funcao i{width:14px;height:14px;border-radius:50%;background:var(--c,var(--ink-3))}
+.f-vend{--c:var(--f-vend)} .f-cad{--c:var(--f-cad)} .f-qua{--c:var(--f-qua)} .f-lid{--c:var(--f-lid)} .f-ger{--c:var(--f-ger)} .f-todos{--c:var(--ink-3)}
+
+/* capturas do sistema */
+.print{display:block;border-radius:14px;border:1px solid var(--line-2);box-shadow:0 18px 50px rgba(12,19,34,.16);background:#fff;object-fit:cover;object-position:top left}
+.print.web{width:100%;aspect-ratio:1440/900}
+.print.cel{height:100%;max-height:760px;aspect-ratio:390/844;border-radius:30px;border:8px solid #1d2638}
+.print-wrap{position:relative;min-height:0;display:flex;flex-direction:column;gap:10px}
+.print-wrap .leg{font-size:18px;color:var(--ink-3)}
+.cels{display:flex;gap:26px;align-items:flex-start;height:100%;min-height:0}
+.cels figure{margin:0;display:flex;flex-direction:column;gap:12px;height:100%;min-height:0;align-items:center}
+.cels figure .print.cel{height:auto;flex:1;min-height:0;width:auto}
+.cels figcaption{font-size:20px;color:var(--ink-2);text-align:center;max-width:330px}
+.cels figcaption b{display:block;font-size:22px}
+
+/* marcadores numerados ao lado da captura */
+.marc{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:m}
+.marc li{counter-increment:m;display:grid;grid-template-columns:42px 1fr;gap:14px;font-size:22px;color:var(--ink-2);align-items:start}
+.marc li::before{content:counter(m);width:38px;height:38px;border-radius:50%;background:var(--c,var(--brand));color:#fff;font:600 19px/38px var(--sans);text-align:center}
+.marc li b{color:var(--ink)}
+.marc.compacta{gap:10px} .marc.compacta li{font-size:20px}
+
+/* caixa de dica / atenção */
+.dica{border-radius:12px;padding:14px 20px;font-size:20px;line-height:1.4;background:var(--info-wash);border:1px solid var(--info-line);color:var(--ink-2)}
+.dica b{color:var(--info)}
+.dica.at{background:var(--warn-wash);border-color:var(--warn-line)} .dica.at b{color:var(--warn)}
+.dica.ok{background:var(--ok-wash);border-color:var(--ok-line)} .dica.ok b{color:var(--ok)}
+
+/* botão que abre o sistema de verdade (demonstração) */
+.btn-demo{display:inline-flex;align-items:center;gap:12px;border:0;border-radius:12px;background:var(--nav);color:#fff;font:600 21px/1 var(--sans);padding:15px 22px;box-shadow:0 8px 24px rgba(12,19,34,.2)}
+.btn-demo::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--nav-destaque);box-shadow:0 0 0 5px rgba(255,107,119,.22)}
+.btn-demo:hover{background:#1b2740}
+.demos{display:flex;gap:14px;flex-wrap:wrap;margin-top:auto;padding-top:18px}
+
+/* agenda e escolha de função */
+.papeis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px}
+.papel{min-height:300px;text-align:left;background:#fff;border:1px solid var(--line);border-top:8px solid var(--c);border-radius:14px;padding:22px 22px 20px;display:flex;flex-direction:column;gap:8px;color:var(--ink)}
+.papel b{font-size:27px}
+.papel span{font-size:19px;color:var(--ink-2);line-height:1.35}
+.papel em{font-style:normal;font-size:16px;color:var(--ink-3);margin-top:auto;padding-top:10px;font-family:var(--mono)}
+button.papel:hover{box-shadow:0 10px 30px rgba(12,19,34,.12);transform:translateY(-2px)}
+button.papel{transition:transform .15s,box-shadow .15s}
+
+.roteiro-hoje{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-bottom:28px}
+.roteiro-hoje div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px;font-size:20px;color:var(--ink-2)}
+.roteiro-hoje div b{display:block;font-size:24px;margin-bottom:4px}
+.roteiro-hoje div .n{font:500 18px/1 var(--mono);color:var(--brand);margin-bottom:10px;display:block}
+
+/* antes x agora */
+.troca{display:grid;grid-template-columns:1fr 70px 1fr;gap:0;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.troca>div{padding:17px 26px;font-size:22px;border-top:1px solid var(--line);display:flex;align-items:center;color:var(--ink-2)}
+.troca>div:nth-child(-n+3){border-top:0}
+.troca .h{font:600 17px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);background:var(--surface-2);padding:14px 26px}
+.troca .seta{justify-content:center;color:var(--ink-3);font-size:26px;padding:0}
+.troca .agora{color:var(--ink);background:var(--ok-wash)}
+.troca .agora b{color:var(--ok)}
+.troca .h.agora{color:var(--ok)}
+
+/* quem vê o quê */
+.tab{border-collapse:separate;border-spacing:0;width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:21px}
+.tab th,.tab td{padding:13px 20px;text-align:left;border-top:1px solid var(--line);vertical-align:top;color:var(--ink-2)}
+.tab tr:first-child th{border-top:0}
+.tab th{font:600 16px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);background:var(--surface-2)}
+.tab td:first-child{white-space:nowrap;color:var(--ink);font-weight:600}
+.tab td:first-child i{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--c);margin-right:10px;vertical-align:1px}
+.tab .sim{color:var(--ok);font-weight:600} .tab .nao{color:var(--ink-3)}
+
+/* raias: o caminho da venda, quem faz o quê */
+.raias{display:grid;grid-template-columns:230px repeat(6,minmax(0,1fr));background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;font-size:18px}
+.raias>div{border-top:1px solid var(--line);border-left:1px solid var(--line);padding:14px 16px;min-height:118px;color:var(--ink-2);line-height:1.3;font-size:19px}
+.raias>div:nth-child(7n+1){border-left:0}
+.raias .et{min-height:0;background:var(--nav);color:#fff;font-weight:600;font-size:19px;border-top:0;border-left-color:var(--nav-linha);padding:14px}
+.raias .et small{display:block;font:500 14px/1.2 var(--mono);color:var(--nav-destaque);margin-bottom:4px;letter-spacing:.04em}
+.raias .et.vazio{background:var(--nav)}
+.raias .q{display:flex;align-items:center;gap:10px;font-weight:600;font-size:20px;color:var(--ink);background:var(--surface-2)}
+.raias .q i{width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
+.raias .faz{background:color-mix(in srgb,var(--c) 11%,#fff);color:var(--ink);font-weight:500}
+.raias .faz::before{content:"";display:block;width:26px;height:4px;border-radius:2px;background:var(--c);margin-bottom:8px}
+.raias .ve{color:var(--ink-3);font-size:17px}
+
+/* mock simples (filas da Qualidade) */
+.filas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.fila{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 24px;display:flex;flex-direction:column;gap:12px}
+.fila .tag{display:inline-block;align-self:flex-start;background:var(--nav);color:#fff;border-radius:8px;font:600 20px/1 var(--mono);padding:10px 12px}
+.fila h3{font-size:26px;margin:0}
+.fila p{font-size:20px;margin:0}
+.fila .cli{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface-2);font-size:18px;color:var(--ink-2)}
+.fila .cli b{display:block;font-size:20px}
+.fila .bots{display:flex;flex-wrap:wrap;gap:8px}
+.fila .bots span{border:1px solid var(--line-2);border-radius:8px;padding:6px 10px;font-size:16px;background:#fff;color:var(--ink)}
+.fila .bots span.on{background:var(--brand);border-color:var(--brand);color:#fff}
+
+/* rotina (dia, semana, mês) */
+.rotina{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.rotina.pilha{grid-template-columns:1fr;gap:14px}
+.rotina.pilha>div{display:grid;grid-template-columns:150px 1fr;grid-template-rows:auto 1fr;gap:0 18px;padding:16px 22px}
+.rotina.pilha .lista{grid-column:2;grid-row:1 / span 2}
+.rotina>div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+.rotina h3{font-size:24px;margin:0 0 4px} .rotina .t{font:500 16px/1 var(--mono);color:var(--ink-3);margin-bottom:12px;display:block}
+.rotina .lista li{font-size:19px} .rotina .lista{gap:8px} .rotina .lista li::before{top:10px;background:var(--f-ger)}
+
+/* combinados */
+.combinados{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px;counter-reset:c}
+.combinados div{counter-increment:c;display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 22px}
+.combinados div::before{content:counter(c,decimal-leading-zero);font:600 34px/1 var(--mono);color:var(--brand);padding-top:4px}
+.combinados b{display:block;font-size:24px;margin-bottom:2px}
+.combinados span{font-size:19px;color:var(--ink-2);line-height:1.35}
+
+/* primeira semana */
+.semana{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.semana>div{background:#fff;border:1px solid var(--line);border-top:8px solid var(--c);border-radius:14px;padding:16px 18px}
+.semana h3{font-size:22px;margin:0 0 12px}
+.semana ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.semana li{font-size:17px;line-height:1.3;color:var(--ink-2);padding-left:30px;position:relative}
+.semana li::before{content:"";position:absolute;left:0;top:1px;width:18px;height:18px;border:2px solid var(--line-2);border-radius:5px;background:#fff}
+
+/* caminho da ajuda */
+.ajuda-cam{display:flex;align-items:stretch;gap:0;margin:10px 0 0}
+.ajuda-cam>div{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--nav-linha);padding:22px 24px;font-size:20px;color:var(--nav-tx);position:relative}
+.ajuda-cam>div:first-child{border-radius:14px 0 0 14px} .ajuda-cam>div:last-child{border-radius:0 14px 14px 0}
+.ajuda-cam>div+div{border-left:0}
+.ajuda-cam b{display:block;font-size:26px;color:#fff;margin-bottom:6px}
+.ajuda-cam .n{font:500 16px/1 var(--mono);color:var(--nav-destaque);display:block;margin-bottom:10px}
+
+/* números grandes do vendedor (meta) */
+.conta-dia{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.conta-dia div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--ink-3)}
+.conta-dia div b{display:block;font:600 34px/1.1 var(--mono);color:var(--ink);margin-bottom:4px}
+
+/* capa e encerramento */
+.capa .publico{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+.capa .publico span{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--nav-linha);background:rgba(255,255,255,.05);border-radius:999px;padding:9px 20px;font-size:22px;color:#fff}
+.capa .publico i{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.capa .publico .f-ger i{background:#aab4c5}
+.capa .marca-one img{width:auto;height:84px;border-radius:0}
+.fim .ajuda-cam{margin-top:30px}
+.fim .links{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap}
+.fim .links .btn-demo{background:#fff;color:var(--nav)}
+.fim .links .btn-demo:hover{background:#e9edf3}
+
+/* leitura à distância: as cenas de texto ocupam a tela inteira */
+.marc+.dica,.troca+.dica,.tab+.dica,.filas+.dica,.cartoes+.dica{margin-top:22px}
+.troca>div{font-size:25px;padding:21px 28px}
+.tab{font-size:24px} .tab th,.tab td{padding:19px 24px} .tab th{font-size:17px}
+.tab+.dica{font-size:23px;padding:18px 24px}
+.combinados{gap:20px 28px} .combinados div{padding:24px 28px;grid-template-columns:76px 1fr}
+.combinados div::before{font-size:40px} .combinados b{font-size:29px;margin-bottom:4px} .combinados span{font-size:22px}
+.semana{gap:18px} .semana>div{padding:22px 22px 26px} .semana h3{font-size:27px;margin-bottom:16px} .semana ul{gap:16px}
+.semana li{font-size:21px;padding-left:36px} .semana li::before{width:22px;height:22px;top:2px}
+.fila{padding:26px 28px;gap:16px} .fila h3{font-size:30px} .fila p{font-size:22px} .fila .cli{font-size:20px;padding:14px 16px} .fila .cli b{font-size:22px} .fila .bots span{font-size:18px;padding:8px 12px}
+.grande-txt .cartao{padding:26px 30px} .grande-txt .cartao h3{font-size:30px;margin-bottom:12px} .grande-txt .cartao p{font-size:24px;line-height:1.45}
+.grande-txt .cartoes{gap:26px}
+.glos{display:grid;grid-template-columns:auto 1fr;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.glos h3{grid-column:1/-1;margin:0;padding:16px 24px;font-size:17px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);background:var(--surface-2)}
+.glos b,.glos span{padding:14px 24px;border-top:1px solid var(--line);font-size:22px}
+.glos b{font-family:var(--mono);color:var(--brand);white-space:nowrap} .glos span{color:var(--ink-2)}
+.marc.solta{gap:22px} .marc.solta li{font-size:24px}
