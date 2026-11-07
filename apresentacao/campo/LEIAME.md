@@ -13,16 +13,19 @@ A venda no app, em **modo vídeo**: narração por cena e telas do celular que s
 
 ## Áudio (ElevenLabs ou outro)
 
+**Um áudio só (mais simples):** cole `narracao/narracao-unica.txt` inteiro na ElevenLabs e salve como `audio/narracao.mp3`. As tags `<break time="2.5s" />` entre as cenas viram pausas longas; o player decodifica o áudio no navegador, acha as pausas e corta por cena. Se o número de trechos não bater com o de cenas, aparece "cortes?" no controle: crie `audio/cortes.json` com os segundos em que cada cena começa.
+
+**Ou um arquivo por cena:**
 1. `node ferramentas/apresentacao/narracao-campo.mjs` gera `narracao/NN-<id>.txt`, um por cena, e um LEIAME com a tabela.
 2. Gere o MP3 de cada arquivo (voz em português do Brasil) e salve em `audio/<id>.mp3` (ex.: `audio/viab-form.mp3`).
-3. Pronto: a apresentação carrega o áudio sozinha. Os parágrafos de cada texto são os momentos da cena; o player os distribui pela duração do áudio, proporcional ao tamanho. Para acertar na mão, `momentos: [seg, seg, …]` na cena.
+3. Pronto: a apresentação carrega o áudio sozinha (o arquivo da cena vale antes do áudio único). Os parágrafos de cada texto são os momentos da cena; o player os distribui pela duração do áudio, proporcional ao tamanho. Para acertar na mão, `momentos: [seg, seg, …]` na cena.
 
 ## Arquivos
 
 | Arquivo | O quê |
 |---|---|
 | `index.html` | a página; motor e estilo base de `../sistema/` (`tour.js`, `tour.css`) e `../operacao/operacao.css` |
-| `player.js` | modo vídeo: áudio por cena, momentos (`data-m`), legenda, avanço automático, `?tudo`, `?assistir` |
+| `player.js` | modo vídeo: áudio por cena ou único (corte pelas pausas), momentos (`data-m`), legenda, avanço automático, `?tudo`, `?assistir` |
 | `cenas-campo.js` | conteúdo: capítulos, cenas, narração (`narracao`) e notas. No alto, `PERFIL` e os personagens |
 | `campo.css` | estilo próprio (momentos, legenda, controles, cartões) |
 | `roteiro.html` | roteiro gerado das mesmas cenas, com a narração de cada uma |

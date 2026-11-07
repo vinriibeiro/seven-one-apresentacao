@@ -12,6 +12,54 @@ window.PLAYER = (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const AUDIO_DIR = "audio/";
   const TUDO = new URLSearchParams(location.search).has("tudo");
+  /* Áudio único (audio/narracao.mp3): a narração inteira num arquivo, com uma pausa longa (>= 1,6 s) entre as cenas.
+     O player decodifica o áudio uma vez, acha as pausas e corta por cena, na ordem das cenas. audio/cortes.json (lista
+     de segundos em que cada cena começa) substitui a detecção. Se houver audio/<id>.mp3 para uma cena, ele vale primeiro. */
+  const UNICO = AUDIO_DIR + "narracao.mp3", CORTES_MANUAL = AUDIO_DIR + "cortes.json", PAUSA_MIN = 1.6;
+  let cortes = null;   // [{inicio, fim}] por cena, na ordem de T.PASSOS; null = sem áudio único
+  let unicoPronto = null;
+  async function prepararUnico() {
+    if (unicoPronto) return unicoPronto;
+    unicoPronto = (async () => {
+      const r = await fetch(UNICO, { cache: "force-cache" }).catch(() => null);
+      if (!r || !r.ok) return null;
+      const buf = await r.arrayBuffer();
+      const chave = "seven_campo_cortes:" + buf.byteLength + ":" + T.PASSOS.length;
+      const manual = await fetch(CORTES_MANUAL).then((x) => (x.ok ? x.json() : null)).catch(() => null);
+      let inicios = Array.isArray(manual) && manual.length === T.PASSOS.length ? manual.map(Number) : null;
+      let total = 0;
+      const guardado = !inicios && localStorage.getItem(chave);
+      if (guardado) { const g = JSON.parse(guardado); inicios = g.inicios; total = g.total; }
+      if (!inicios || !total) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const dados = await ctx.decodeAudioData(buf.slice(0));
+        total = dados.duration;
+        const achados = detectarInicios(dados);
+        ctx.close?.();
+        if (!inicios) inicios = achados;
+        if (inicios.length === T.PASSOS.length) localStorage.setItem(chave, JSON.stringify({ inicios, total }));
+        else console.warn(`Áudio único: ${inicios.length} trechos encontrados, ${T.PASSOS.length} cenas. Ajuste as pausas ou crie ${CORTES_MANUAL}.`, inicios);
+      }
+      console.info(`Áudio único: ${inicios.length} trechos para ${T.PASSOS.length} cenas · duração ${Math.round(total)} s`, inicios.map((x) => Math.round(x * 10) / 10));
+      if (inicios.length !== T.PASSOS.length) { $("#ctl .player")?.classList.add("cortes-errados"); return null; }
+      return inicios.map((ini, i) => ({ inicio: ini, fim: i + 1 < inicios.length ? inicios[i + 1] : total }));
+    })();
+    return unicoPronto;
+  }
+  /** instantes em que começa cada trecho falado, separados por silêncio de PAUSA_MIN ou mais (energia RMS em janelas de 50 ms) */
+  function detectarInicios(dados) {
+    const canal = dados.getChannelData(0), sr = dados.sampleRate, jan = Math.round(sr * 0.05);
+    const rms = [];
+    for (let i = 0; i + jan <= canal.length; i += jan) { let s = 0; for (let j = i; j < i + jan; j++) s += canal[j] * canal[j]; rms.push(Math.sqrt(s / jan)); }
+    let pico = 0; for (const v of rms) if (v > pico) pico = v;
+    const limiar = Math.max(pico * 0.04, 0.004);
+    const inicios = []; let silencio = 0, falando = false;
+    for (let k = 0; k < rms.length; k++) {
+      if (rms[k] < limiar) { silencio++; if (falando && silencio * 0.05 >= PAUSA_MIN) falando = false; }
+      else { if (!falando) inicios.push(Math.max(0, k * 0.05 - 0.15)); falando = true; silencio = 0; }
+    }
+    return inicios;
+  }
   let tocando = false, audio = null, timer = null, t0 = 0, momento = 0, cenaId = null, dur = 0, legenda = localStorage.getItem("seven_campo_legenda") !== "0", semAudio = false;
 
   const passoAtual = () => T.PASSOS[T.i];
@@ -47,7 +95,7 @@ window.PLAYER = (() => {
 
   /* ---------- reprodução ---------- */
   function pararAudio() {
-    if (audio) { audio.pause(); audio.src = ""; audio = null; }
+    if (audio) { audio.pause(); audio.removeAttribute("src"); audio = null; }
     clearInterval(timer); timer = null;
   }
   function tocar() {
@@ -63,17 +111,32 @@ window.PLAYER = (() => {
       const barra = $("#ctl .player .barra i"); if (barra) barra.style.width = Math.min(100, seg / (dur || p.tempo || 20) * 100) + "%";
     };
     const terminou = () => { if (!tocando || cenaId !== p.id) return; aplicarMomento(ultimoMomento(p)); setTimeout(() => { if (tocando && cenaId === p.id) proximaCena(); }, 900); };
-    audio = new Audio(AUDIO_DIR + p.id + ".mp3");
-    audio.preload = "auto";
-    audio.addEventListener("loadedmetadata", () => { dur = audio.duration || 0; });
-    audio.addEventListener("timeupdate", () => tick(audio.currentTime));
-    audio.addEventListener("ended", terminou);
-    audio.addEventListener("error", () => {   // sem arquivo: relógio pelo tempo previsto da cena
-      semAudio = true; dur = p.tempo || 20; $("#ctl .player")?.classList.add("sem-audio");
+    const relogio = () => {   // sem arquivo: relógio pelo tempo previsto da cena
+      if (semAudio || !tocando || cenaId !== p.id) return;
+      semAudio = true; dur = p.tempo || 20; t0 = Date.now(); $("#ctl .player")?.classList.add("sem-audio");
       timer = setInterval(() => { const seg = (Date.now() - t0) / 1000; tick(seg); if (seg >= dur) { clearInterval(timer); terminou(); } }, 100);
-    });
+    };
     $("#ctl .player")?.classList.remove("sem-audio");
-    audio.play().catch(() => { if (!semAudio) audio?.dispatchEvent(new Event("error")); });   // sem gesto do usuário o navegador bloqueia o som: segue pelo relógio
+    const proprio = new Audio(AUDIO_DIR + p.id + ".mp3");
+    proprio.preload = "auto";
+    audio = proprio;
+    proprio.addEventListener("loadedmetadata", () => { dur = proprio.duration || 0; });
+    proprio.addEventListener("timeupdate", () => tick(proprio.currentTime));
+    proprio.addEventListener("ended", terminou);
+    proprio.addEventListener("error", async () => {   // não há audio/<id>.mp3: tenta o áudio único, depois o relógio
+      if (!tocando || cenaId !== p.id) return;
+      const k = T.PASSOS.indexOf(p);
+      const c = (cortes || (cortes = await prepararUnico()))?.[k];
+      if (!tocando || cenaId !== p.id) return;
+      if (!c) return relogio();
+      const u = new Audio(UNICO); audio = u; dur = c.fim - c.inicio;
+      u.addEventListener("loadedmetadata", () => { u.currentTime = c.inicio; });
+      u.addEventListener("timeupdate", () => { const seg = u.currentTime - c.inicio; tick(Math.max(0, seg)); if (u.currentTime >= c.fim - 0.05) { u.pause(); terminou(); } });
+      u.addEventListener("ended", terminou);
+      u.addEventListener("error", relogio);
+      u.play().catch(relogio);
+    });
+    proprio.play().catch(() => { if (!semAudio && audio === proprio) proprio.dispatchEvent(new Event("error")); });   // sem gesto do usuário o navegador bloqueia o som
   }
   function pausar() { tocando = false; document.body.classList.remove("tocando"); pararAudio(); atualizarBotao(); }
   function alternar() { tocando ? pausar() : tocar(); }
@@ -119,7 +182,7 @@ window.PLAYER = (() => {
   function montarControles() {
     const ctl = $("#ctl"); if (!ctl) return;
     const box = document.createElement("span"); box.className = "player";
-    box.innerHTML = `<button class="play"></button><span class="barra" title="Narração desta cena"><i></i></span><span class="aviso-audio" title="Sem áudio para esta cena: o relógio usa o tempo previsto">sem áudio</span>`;
+    box.innerHTML = `<button class="play"></button><span class="barra" title="Narração desta cena"><i></i></span><span class="aviso-audio" title="Sem áudio para esta cena: o relógio usa o tempo previsto">sem áudio</span><span class="aviso-cortes" title="audio/narracao.mp3 existe, mas o número de trechos entre pausas não bate com o de cenas">cortes?</span>`;
     ctl.insertBefore(box, ctl.querySelector(".tempo"));
     box.querySelector(".play").addEventListener("click", alternar);
     const leg = document.createElement("button"); leg.className = "legenda " + (legenda ? "on" : ""); leg.title = "Legenda (L)";
@@ -130,5 +193,5 @@ window.PLAYER = (() => {
   }
   addEventListener("DOMContentLoaded", () => { if (!$("#palco")) return; montarControles(); cenaMudou(); if (new URLSearchParams(location.search).has("assistir")) tocar(); });
 
-  return { tocar, pausar, alternar, get tocando() { return tocando; }, get momento() { return momento; }, trechos, instantes };
+  return { tocar, pausar, alternar, detectarInicios, prepararUnico, get tocando() { return tocando; }, get momento() { return momento; }, trechos, instantes };
 })();

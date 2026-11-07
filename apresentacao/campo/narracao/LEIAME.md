@@ -1,4 +1,12 @@
-# Narração · um arquivo por cena
+# Narração
+
+## Jeito mais simples: um áudio só
+
+Cole `narracao-unica.txt` inteiro no ElevenLabs (modelo Multilingual v2 ou v3, voz em português do Brasil) e salve o MP3 como `../audio/narracao.mp3`. As tags `<break time="2.5s" />` entre as cenas viram pausas longas: o player decodifica o áudio no navegador, acha essas pausas e corta por cena sozinho. Dentro da cena, as quebras de linha são só pausas curtas.
+
+Se o número de trechos encontrados não bater com o de cenas (aparece "cortes?" no controle), crie `../audio/cortes.json` com a lista dos segundos em que cada cena começa, na ordem, ex.: `[0, 14.2, 31.9, …]`.
+
+## Ou um arquivo por cena
 
 Gere o áudio de cada arquivo (ex.: ElevenLabs, voz em português do Brasil, velocidade normal) e salve o MP3 em `../audio/` com o **nome da cena**: a apresentação carrega `audio/<id>.mp3` sozinha. Cena sem áudio toca pelo relógio, com a legenda.
 

@@ -1,0 +1,110 @@
+Seven One. A venda no app, do pedido de viabilidade até a venda finalizada. Esta apresentação é para quem está na rua: o vendedor, e para quem acompanha a equipe: o supervisor.
+
+<break time="2.5s" />
+
+São três momentos.
+Primeiro: o vendedor pede a viabilidade no celular e recebe a resposta na hora.
+Segundo: fechou a venda no Conexão ou no Solar? Envia pelo app, e o Cadastro responde no próprio pedido.
+Terceiro: o supervisor acompanha as vendas da equipe no celular e no computador, sem precisar perguntar a ninguém.
+
+<break time="2.5s" />
+
+Rafael é vendedor da equipe Samambaia e está na porta do cliente. Abre o app do Seven One no celular.
+Tudo que ele registra sai do botão vermelho, no meio da barra de baixo.
+Toca no mais, e aparecem três opções: pedir viabilidade, enviar venda Conexão ou Solar, e marcar um retorno na agenda.
+Primeiro passo: saber se o endereço atende. Pedir viabilidade.
+
+<break time="2.5s" />
+
+O pedido é rápido.
+Rafael digita o CEP, e rua, bairro e cidade vêm sozinhos.
+Completa o número da casa. Marca o que precisa verificar: endereço e, se o cliente vai fechar hoje, o crédito também. Pode colocar o nome do cliente.
+Agora a parte mais importante: a observação. Rafael escreve o que o backoffice precisa saber: casa dos fundos, entrada pela rua lateral, fecha hoje se o crédito aprovar.
+Envia. Pronto: o pedido entrou na fila do Cadastro, com hora e com o nome dele.
+
+<break time="2.5s" />
+
+Enviou, e agora? Em Vendas, na aba Viabilidade, Rafael vê todos os pedidos dele.
+O que acabou de mandar aparece como Aguardando, com o tempo desde o envio.
+Quando o Cadastro pegar para analisar, muda para Em análise, com o nome de quem está respondendo.
+Não precisa mandar mensagem no grupo nem ligar para ninguém. A fila é a mesma que o backoffice vê, e o pedido mais antigo é o primeiro da vez.
+
+<break time="2.5s" />
+
+Rafael segue a conversa com o cliente. Seis minutos depois...
+O celular avisa: viabilidade respondida.
+Rafael abre: Atende. HP criado, crédito aprovado, e a mensagem da Juliana, do Cadastro: pode finalizar no Solar.
+Repare que o próprio pedido já mostra o próximo passo: encaminhar a venda para o Solar. Esse botão só aparece depois do Atende.
+Da porta do cliente, sem sair do app, Rafael já sabe que pode fechar.
+
+<break time="2.5s" />
+
+E quando a resposta é Não atende?
+Ela vem com o motivo. Neste exemplo: endereço fora da área de cobertura, e uma dica: o prédio vizinho atende.
+Ficou com dúvida? Responda no próprio pedido. A conversa fica ali, com hora, para os dois lados.
+O que não dá é mandar outro pedido igual: o sistema recusa pedido repetido no mesmo endereço. Converse no pedido que já existe.
+
+<break time="2.5s" />
+
+Rafael fechou a venda no Solar, o sistema da Claro. Agora ele avisa o Cadastro pelo app: toca no mais, enviar venda Conexão ou Solar.
+Escolhe o sistema. No Solar, informa CPF do cliente, número do contrato e o plano.
+Vencimento, se é Multi, e o agendamento com o turno que combinou com o cliente.
+A viabilidade que acabou de ser aprovada já vem ligada ao pedido. E a observação: cliente pediu ligação trinta minutos antes do técnico.
+Envia. A venda cai na fila do Cadastro, que vai conferir, lançar o contrato e responder ali mesmo.
+
+<break time="2.5s" />
+
+Depois que envia, a venda aparece na aba Conexão Solar, e cada retorno do Cadastro muda a situação dela.
+Pendente de tratamento: chegou e está na fila.
+Criação de HP: o Cadastro abriu a criação do HP na Claro e o pedido ganha um prazo, em horas, que você acompanha no app.
+Pendência: falta alguma coisa. Vem sempre com uma mensagem dizendo o quê, e você resolve pelo próprio pedido.
+Correção de venda: algum dado veio errado; corrija e reenvie.
+Finalizado: o contrato foi lançado. A partir daqui a venda aparece em Contratos, como pendente de instalação.
+
+<break time="2.5s" />
+
+Falta uma coisa: a conversa da venda.
+Toda mensagem do Cadastro na venda chega como notificação no celular, mesmo com o app fechado.
+Juliana escreveu: falta o comprovante de endereço. Rafael abre, anexa o comprovante e responde na mesma conversa.
+Nada de foto de documento no grupo do WhatsApp. O dado do cliente fica dentro do sistema, na venda, com quem mandou e quando.
+
+<break time="2.5s" />
+
+Resumindo o lado do vendedor, tudo no celular.
+Um: pedir viabilidade com observação. Dois: receber a resposta no mesmo pedido. Três: vender na Claro e enviar pelo app. Quatro: acompanhar os retornos e responder na venda.
+O que não está no app não tem fila, não tem dono e não tem histórico.
+
+<break time="2.5s" />
+
+Agora o supervisor. Rodrigo cuida da equipe Samambaia e também tem o app no celular.
+Em Vendas da equipe, ele vê cada venda lançada pelo Cadastro para a equipe dele: cliente, vendedor, produtos e a situação. Pendente, instalada ou cancelada, com a data da instalação ou o motivo.
+Quer ver só um vendedor? Filtra pelo nome.
+A venda do Rafael, que acabou de ser lançada, já está lá: pendente, instalação terça de manhã.
+Ou seja: o supervisor acompanha a venda do vendedor sem pedir print, sem pedir planilha.
+
+<break time="2.5s" />
+
+No computador, a mesma tela, com mais espaço.
+Em cima, os filtros: período, situação, vendedor e busca por cliente ou contrato.
+Na lista, uma linha por venda: data, contrato, cliente, vendedor, produtos, situação e instalação. Instalação atrasada aparece em vermelho.
+Clicar na linha abre a ficha da venda. E o botão Exportar baixa a lista filtrada para conferir com a equipe.
+
+<break time="2.5s" />
+
+A última tela do supervisor é a Visão da equipe.
+Ali ele vê o ritmo do time: quanto a equipe já vendeu no mês, contra a meta, e a projeção.
+Tocando na equipe, abre vendedor por vendedor: vendas do mês, quantas instalaram e há quantos dias cada um não vende.
+Uma rotina simples: todo dia de manhã, olhar quem está há três ou quatro dias sem venda. Essa é a primeira conversa do dia.
+
+<break time="2.5s" />
+
+Para fechar, cinco combinados.
+Viabilidade e venda, sempre pelo app, nunca pelo grupo.
+Observação clara, dos dois lados.
+Olhe no app antes de perguntar: a situação já está lá.
+Documento e dado de cliente ficam no sistema, não em grupo.
+E supervisor acompanha pelo app, não por print.
+
+<break time="2.5s" />
+
+Dúvida depois de hoje? Primeiro o botão Ajuda, dentro do app: a Wiki abre no assunto da tela. Depois, o seu supervisor. E viabilidade, venda e instalação, direto no pedido, com o Cadastro. Obrigado.
