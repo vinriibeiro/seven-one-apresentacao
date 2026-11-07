@@ -1,0 +1,9 @@
+O pedido é rápido.
+
+Rafael digita o CEP, e rua, bairro e cidade vêm sozinhos.
+
+Completa o número da casa. Marca o que precisa verificar: endereço e, se o cliente vai fechar hoje, o crédito também. Pode colocar o nome do cliente.
+
+Agora a parte mais importante: a observação. Rafael escreve o que o backoffice precisa saber: casa dos fundos, entrada pela rua lateral, fecha hoje se o crédito aprovar.
+
+Envia. Pronto: o pedido entrou na fila do Cadastro, com hora e com o nome dele.

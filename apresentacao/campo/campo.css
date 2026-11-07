@@ -1,0 +1,75 @@
+/* Seven One · apresentação para vendedores e supervisores. Por cima de ../sistema/tour.css e ../operacao/operacao.css. */
+:root{--f-sup:var(--warn-mark)}
+.f-sup{--c:var(--f-sup)} .capa .publico .f-sup i{background:var(--f-sup)}
+
+/* ---------- momentos: aparecem no tempo da narração ---------- */
+#palco [data-m]{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease}
+#palco [data-m].m-on{opacity:1;transform:none}
+#palco .cel .checks span[data-m]{opacity:1;transform:none}
+#palco .cel .checks span.liga.m-on{background:var(--nav);color:#fff;border-color:var(--nav)}
+#palco .dest-m.m-agora{outline:4px solid var(--dest);outline-offset:4px;animation:pulso 1.6s ease-in-out 2}
+#palco .marc li[data-m]{color:var(--ink-3)} #palco .marc li[data-m].m-on{color:var(--ink-2)} #palco .marc li.m-agora{color:var(--ink)}
+#palco .marc li.m-agora::before{box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 25%,transparent)}
+.marc li{font-size:24px} .marc{gap:18px}
+.lado .col .dica{margin-top:22px;font-size:22px}
+
+/* botão grande da capa */
+.assistir{margin-top:44px;align-self:flex-start;display:inline-flex;align-items:center;gap:16px;border:0;border-radius:16px;background:var(--brand);color:#fff;font:700 30px/1 var(--sans);padding:22px 36px;box-shadow:0 14px 40px rgba(201,32,46,.35)}
+.assistir svg{width:30px;height:30px;fill:currentColor}
+.assistir:hover{background:var(--brand-ink)}
+body.tocando .assistir{display:none}
+
+/* legenda dentro do palco */
+#legenda{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);max-width:1560px;background:rgba(12,19,34,.9);color:#fff;font-size:30px;line-height:1.35;padding:16px 30px;border-radius:14px;z-index:8;text-align:center;text-wrap:balance;pointer-events:none}
+.cena.escura+#legenda,.cena.escura ~ #legenda{background:rgba(255,255,255,.1)}
+
+/* controles do player */
+#ctl .player{display:inline-flex;align-items:center;gap:8px}
+#ctl .player .play{background:var(--brand);color:#fff;font-weight:600;padding:8px 14px}
+#ctl .player .play:hover{background:var(--brand-ink)}
+#ctl .player .barra{width:120px;height:6px;border-radius:3px;background:rgba(255,255,255,.15);overflow:hidden}
+#ctl .player .barra i{display:block;height:100%;width:0;background:#fff;transition:width .2s linear}
+#ctl .player .aviso-audio{display:none;font-size:12px;color:#ffb020}
+#ctl .player.sem-audio .aviso-audio{display:inline}
+#ctl .legenda.on{color:#fff;background:rgba(255,255,255,.12)}
+
+/* três momentos e quatro toques */
+.tres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
+.tres>div{background:#fff;border:1px solid var(--line);border-top:10px solid var(--c);border-radius:16px;padding:30px 30px 34px;display:flex;flex-direction:column;gap:10px}
+.tres .n{font:600 20px/1 var(--mono);color:var(--c);letter-spacing:.08em}
+.tres b{font-size:34px;line-height:1.15} .tres span{font-size:24px;color:var(--ink-2);line-height:1.4}
+.quatro{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.quatro>div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 26px 30px;display:flex;flex-direction:column;gap:8px}
+.quatro .n{width:52px;height:52px;border-radius:50%;background:var(--brand);color:#fff;font:700 26px/52px var(--mono);text-align:center;margin-bottom:8px}
+.quatro b{font-size:28px} .quatro span{font-size:21px;color:var(--ink-2);line-height:1.4}
+.quatro+.dica{margin-top:28px;font-size:24px;padding:20px 26px}
+.combinados.cinco{grid-template-columns:1fr 1fr}
+.combinados.cinco div{padding:24px 28px}
+
+/* marcadores numerados sobre a captura */
+.print-wrap{position:relative}
+.marcador{position:absolute;width:52px;height:52px;border-radius:50%;background:var(--f-sup);color:#fff;font:700 26px/52px var(--sans);text-align:center;box-shadow:0 0 0 6px rgba(212,144,15,.3),0 10px 30px rgba(0,0,0,.25);z-index:4}
+
+/* celular do supervisor: 3 abas */
+.cel .abas-fim.sup{grid-template-columns:repeat(3,1fr)}
+.cel .abas-fim div{font-size:11px}
+.cel .push{top:10px}
+.cel .folha h5{margin:0 0 10px;font-size:15px}
+.cel .folha .op small{color:var(--ink-3);font-size:12px}
+.cel .folha .op .ic{width:36px;height:36px;border-radius:10px;background:var(--brand-wash);color:var(--brand);display:grid;place-items:center;flex:none}
+.cel .folha .op .ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.cel .campo div.vazio{color:var(--ink-3)}
+.cel .etiq{font-size:13px;padding:3px 10px}
+
+/* capa e fim */
+.capa .publico span.f-vend i{background:var(--brand)}
+.fim .ajuda-cam>div{flex:1}
+
+/* com a legenda ligada, o conteúdo sobe para não ficar por baixo dela */
+#palco.com-legenda .pad{padding-bottom:140px}
+#palco.com-legenda .capa{padding-bottom:200px}
+.lado .col{align-self:center}
+.cel .app-corpo.compacto{padding:8px 14px;gap:8px}
+.cel .app-corpo.compacto .card{padding:10px 12px}
+.cel .app-corpo.compacto .campo label{font-size:11px;margin-bottom:2px}
+.cel .app-corpo.compacto .campo div{padding:6px 9px;font-size:13px;min-height:0}

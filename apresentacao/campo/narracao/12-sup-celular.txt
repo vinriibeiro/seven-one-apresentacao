@@ -1,0 +1,9 @@
+Agora o supervisor. Rodrigo cuida da equipe Samambaia e também tem o app no celular.
+
+Em Vendas da equipe, ele vê cada venda lançada pelo Cadastro para a equipe dele: cliente, vendedor, produtos e a situação. Pendente, instalada ou cancelada, com a data da instalação ou o motivo.
+
+Quer ver só um vendedor? Filtra pelo nome.
+
+A venda do Rafael, que acabou de ser lançada, já está lá: pendente, instalação terça de manhã.
+
+Ou seja: o supervisor acompanha a venda do vendedor sem pedir print, sem pedir planilha.

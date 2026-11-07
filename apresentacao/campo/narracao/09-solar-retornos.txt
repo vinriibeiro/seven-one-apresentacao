@@ -1,0 +1,11 @@
+Depois que envia, a venda aparece na aba Conexão Solar, e cada retorno do Cadastro muda a situação dela.
+
+Pendente de tratamento: chegou e está na fila.
+
+Criação de HP: o Cadastro abriu a criação do HP na Claro e o pedido ganha um prazo, em horas, que você acompanha no app.
+
+Pendência: falta alguma coisa. Vem sempre com uma mensagem dizendo o quê, e você resolve pelo próprio pedido.
+
+Correção de venda: algum dado veio errado; corrija e reenvie.
+
+Finalizado: o contrato foi lançado. A partir daqui a venda aparece em Contratos, como pendente de instalação.

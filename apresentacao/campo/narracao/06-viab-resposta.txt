@@ -1,0 +1,9 @@
+Rafael segue a conversa com o cliente. Seis minutos depois...
+
+O celular avisa: viabilidade respondida.
+
+Rafael abre: Atende. HP criado, crédito aprovado, e a mensagem da Juliana, do Cadastro: pode finalizar no Solar.
+
+Repare que o próprio pedido já mostra o próximo passo: encaminhar a venda para o Solar. Esse botão só aparece depois do Atende.
+
+Da porta do cliente, sem sair do app, Rafael já sabe que pode fechar.

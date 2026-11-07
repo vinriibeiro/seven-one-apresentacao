@@ -1,0 +1,7 @@
+E quando a resposta é Não atende?
+
+Ela vem com o motivo. Neste exemplo: endereço fora da área de cobertura, e uma dica: o prédio vizinho atende.
+
+Ficou com dúvida? Responda no próprio pedido. A conversa fica ali, com hora, para os dois lados.
+
+O que não dá é mandar outro pedido igual: o sistema recusa pedido repetido no mesmo endereço. Converse no pedido que já existe.

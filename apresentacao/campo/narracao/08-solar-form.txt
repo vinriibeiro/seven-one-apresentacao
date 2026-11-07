@@ -1,0 +1,9 @@
+Rafael fechou a venda no Solar, o sistema da Claro. Agora ele avisa o Cadastro pelo app: toca no mais, enviar venda Conexão ou Solar.
+
+Escolhe o sistema. No Solar, informa CPF do cliente, número do contrato e o plano.
+
+Vencimento, se é Multi, e o agendamento com o turno que combinou com o cliente.
+
+A viabilidade que acabou de ser aprovada já vem ligada ao pedido. E a observação: cliente pediu ligação trinta minutos antes do técnico.
+
+Envia. A venda cai na fila do Cadastro, que vai conferir, lançar o contrato e responder ali mesmo.

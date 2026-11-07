@@ -1,0 +1,7 @@
+Enviou, e agora? Em Vendas, na aba Viabilidade, Rafael vê todos os pedidos dele.
+
+O que acabou de mandar aparece como Aguardando, com o tempo desde o envio.
+
+Quando o Cadastro pegar para analisar, muda para Em análise, com o nome de quem está respondendo.
+
+Não precisa mandar mensagem no grupo nem ligar para ninguém. A fila é a mesma que o backoffice vê, e o pedido mais antigo é o primeiro da vez.

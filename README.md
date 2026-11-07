@@ -10,6 +10,8 @@
 |---|---|
 | Apresentação | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/sistema/#capa |
 | Apresentação para a operação | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/operacao/#capa |
+| Vendedores e supervisores · modo vídeo | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/campo/#capa |
+| Roteiro de vendedores e supervisores | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/campo/roteiro.html |
 | Roteiro da apresentação para a operação | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/operacao/roteiro.html |
 | Protótipo navegável (gerente) | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/sistema/demo/?perfil=gestor#/dashboard |
 | App do vendedor | https://vinriibeiro.github.io/seven-one-apresentacao/apresentacao/sistema/celular.html |

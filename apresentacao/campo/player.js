@@ -1,0 +1,134 @@
+"use strict";
+/* Seven One · modo vídeo por cima do motor do tour (../sistema/tour.js).
+   - Cada cena pode ter `narracao`: lista de trechos. Cada trecho é um "momento": quando ele começa, os elementos da cena
+     marcados com data-m="N" (N = índice do trecho) aparecem. Assim a tela vai se montando junto com a voz.
+   - Áudio: audio/<id da cena>.mp3 (gerado fora, ex.: ElevenLabs, a partir de narracao/<id>.txt). Com o áudio, os momentos
+     seguem o tempo do arquivo (proporcional ao tamanho dos trechos, ou `momentos: [seg, seg, ...]` na cena). Sem o áudio,
+     um relógio usa `tempo` da cena. No fim, a cena seguinte entra sozinha.
+   - Sem reprodução (modo manual), → mostra o próximo momento e, no último, avança a cena. Espaço: tocar/pausar. L: legenda.
+   Nada aqui fala com o servidor. */
+window.PLAYER = (() => {
+  const T = window.TOUR;
+  const $ = (s, r = document) => r.querySelector(s);
+  const AUDIO_DIR = "audio/";
+  const TUDO = new URLSearchParams(location.search).has("tudo");
+  let tocando = false, audio = null, timer = null, t0 = 0, momento = 0, cenaId = null, dur = 0, legenda = localStorage.getItem("seven_campo_legenda") !== "0", semAudio = false;
+
+  const passoAtual = () => T.PASSOS[T.i];
+  const trechos = (p) => Array.isArray(p?.narracao) ? p.narracao : p?.narracao ? [p.narracao] : [];
+
+  /* ---------- momentos ---------- */
+  function aplicarMomento(n) {
+    momento = n;
+    const palco = $("#palco");
+    palco.querySelectorAll("[data-m]").forEach((el) => {
+      const k = Number(el.dataset.m);
+      el.classList.toggle("m-on", k <= n);
+      el.classList.toggle("m-agora", k === n);
+    });
+    const p = passoAtual(), ts = trechos(p);
+    let leg = $("#legenda", palco);   // dentro do palco, para escalar junto com a cena
+    if (!leg) { leg = document.createElement("div"); leg.id = "legenda"; palco.appendChild(leg); }
+    leg.textContent = ts[n] || ts[0] || ""; leg.hidden = !legenda || !leg.textContent;
+    palco.classList.toggle("com-legenda", !leg.hidden);
+    const el = palco.querySelector(`[data-m="${n}"][data-rolar]`);
+    if (el) el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+  /** instantes (s) em que cada momento começa: `momentos` da cena, ou proporcional ao tamanho dos trechos */
+  function instantes(p, total) {
+    const ts = trechos(p);
+    if (Array.isArray(p.momentos) && p.momentos.length >= ts.length - 1) return [0, ...p.momentos.slice(0, ts.length - 1)];
+    const tam = ts.map((t) => t.length + 25), soma = tam.reduce((a, b) => a + b, 0) || 1;
+    const out = [0]; let acc = 0;
+    for (let i = 0; i < ts.length - 1; i++) { acc += tam[i]; out.push(total * acc / soma); }
+    return out;
+  }
+  const ultimoMomento = (p) => Math.max(0, trechos(p).length - 1, ...[...$("#palco").querySelectorAll("[data-m]")].map((e) => Number(e.dataset.m)));
+
+  /* ---------- reprodução ---------- */
+  function pararAudio() {
+    if (audio) { audio.pause(); audio.src = ""; audio = null; }
+    clearInterval(timer); timer = null;
+  }
+  function tocar() {
+    const p = passoAtual(); if (!p) return;
+    tocando = true; document.body.classList.add("tocando"); atualizarBotao();
+    pararAudio();
+    cenaId = p.id; t0 = Date.now(); semAudio = false;
+    const inst = () => instantes(p, dur || p.tempo || 20);
+    const tick = (seg) => {
+      const ins = inst(); let n = 0;
+      for (let i = 0; i < ins.length; i++) if (seg >= ins[i]) n = i;
+      if (n !== momento) aplicarMomento(n);
+      const barra = $("#ctl .player .barra i"); if (barra) barra.style.width = Math.min(100, seg / (dur || p.tempo || 20) * 100) + "%";
+    };
+    const terminou = () => { if (!tocando || cenaId !== p.id) return; aplicarMomento(ultimoMomento(p)); setTimeout(() => { if (tocando && cenaId === p.id) proximaCena(); }, 900); };
+    audio = new Audio(AUDIO_DIR + p.id + ".mp3");
+    audio.preload = "auto";
+    audio.addEventListener("loadedmetadata", () => { dur = audio.duration || 0; });
+    audio.addEventListener("timeupdate", () => tick(audio.currentTime));
+    audio.addEventListener("ended", terminou);
+    audio.addEventListener("error", () => {   // sem arquivo: relógio pelo tempo previsto da cena
+      semAudio = true; dur = p.tempo || 20; $("#ctl .player")?.classList.add("sem-audio");
+      timer = setInterval(() => { const seg = (Date.now() - t0) / 1000; tick(seg); if (seg >= dur) { clearInterval(timer); terminou(); } }, 100);
+    });
+    $("#ctl .player")?.classList.remove("sem-audio");
+    audio.play().catch(() => { if (!semAudio) audio?.dispatchEvent(new Event("error")); });   // sem gesto do usuário o navegador bloqueia o som: segue pelo relógio
+  }
+  function pausar() { tocando = false; document.body.classList.remove("tocando"); pararAudio(); atualizarBotao(); }
+  function alternar() { tocando ? pausar() : tocar(); }
+  function proximaCena() { if (T.i >= T.PASSOS.length - 1) { pausar(); return; } T.prox(); }
+
+  function atualizarBotao() {
+    const b = $("#ctl .player .play"); if (!b) return;
+    b.innerHTML = tocando ? `<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>Pausar` : `<svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z"/></svg>Assistir`;
+    b.title = tocando ? "Pausar (espaço)" : "Assistir: narração e telas no tempo certo (espaço)";
+  }
+
+  /* ---------- quando a cena muda (o tour renderiza; aqui observamos o palco) ---------- */
+  function cenaMudou() {
+    const p = passoAtual(); if (!p) return;
+    const barra = $("#ctl .player .barra i"); if (barra) barra.style.width = "0";
+    dur = 0;
+    aplicarMomento(TUDO ? ultimoMomento(p) : 0);   // ?tudo mostra a cena inteira (impressão, conferência)
+    if (tocando) tocar(); else { cenaId = p.id; pararAudio(); }
+    $("#palco .assistir")?.addEventListener("click", (e) => { e.stopPropagation(); if (!tocando) tocar(); });
+  }
+  if ($("#palco")) new MutationObserver((ms) => { if (ms.some((m) => [...m.addedNodes].some((n) => n.nodeType === 1 && n.classList?.contains("cena")))) cenaMudou(); })
+    .observe($("#palco"), { childList: true });   // roteiro.html não tem palco: só usa os dados
+
+  /* ---------- teclado e clique, antes do tour (fase de captura) ---------- */
+  document.addEventListener("keydown", (e) => {
+    if (e.target.matches("input,textarea,select")) return;
+    const aberto = !$("#caps").hidden || !$("#janela").hidden || !$("#ajuda").hidden;
+    if (aberto) return;
+    if (e.key === " ") { e.preventDefault(); e.stopImmediatePropagation(); alternar(); return; }
+    if (e.key === "l" || e.key === "L") { legenda = !legenda; localStorage.setItem("seven_campo_legenda", legenda ? "1" : "0"); aplicarMomento(momento); $("#ctl .legenda")?.classList.toggle("on", legenda); return; }
+    if (!tocando && ["ArrowRight", "Enter", "PageDown", "ArrowDown"].includes(e.key)) {
+      if (momento < ultimoMomento(passoAtual())) { e.preventDefault(); e.stopImmediatePropagation(); aplicarMomento(momento + 1); }
+    }
+  }, true);
+  document.addEventListener("click", (e) => {
+    const palco = $("#palco"); if (!palco.contains(e.target) || e.target.closest("button,a,[data-aprofundar],[data-ir]")) return;
+    const r = palco.getBoundingClientRect();
+    if ((e.clientX - r.left) / r.width < 0.12) return;   // faixa da esquerda: volta (o tour cuida)
+    if (!tocando && momento < ultimoMomento(passoAtual())) { e.stopImmediatePropagation(); aplicarMomento(momento + 1); }
+  }, true);
+
+  /* ---------- controles ---------- */
+  function montarControles() {
+    const ctl = $("#ctl"); if (!ctl) return;
+    const box = document.createElement("span"); box.className = "player";
+    box.innerHTML = `<button class="play"></button><span class="barra" title="Narração desta cena"><i></i></span><span class="aviso-audio" title="Sem áudio para esta cena: o relógio usa o tempo previsto">sem áudio</span>`;
+    ctl.insertBefore(box, ctl.querySelector(".tempo"));
+    box.querySelector(".play").addEventListener("click", alternar);
+    const leg = document.createElement("button"); leg.className = "legenda " + (legenda ? "on" : ""); leg.title = "Legenda (L)";
+    leg.innerHTML = `<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 13h5M14 13h3"/></svg>Legenda`;
+    leg.addEventListener("click", () => { legenda = !legenda; localStorage.setItem("seven_campo_legenda", legenda ? "1" : "0"); aplicarMomento(momento); leg.classList.toggle("on", legenda); });
+    ctl.insertBefore(leg, ctl.querySelector(".cheia"));
+    atualizarBotao();
+  }
+  addEventListener("DOMContentLoaded", () => { if (!$("#palco")) return; montarControles(); cenaMudou(); if (new URLSearchParams(location.search).has("assistir")) tocar(); });
+
+  return { tocar, pausar, alternar, get tocando() { return tocando; }, get momento() { return momento; }, trechos, instantes };
+})();

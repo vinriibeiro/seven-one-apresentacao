@@ -1,0 +1,7 @@
+Falta uma coisa: a conversa da venda.
+
+Toda mensagem do Cadastro na venda chega como notificação no celular, mesmo com o app fechado.
+
+Juliana escreveu: falta o comprovante de endereço. Rafael abre, anexa o comprovante e responde na mesma conversa.
+
+Nada de foto de documento no grupo do WhatsApp. O dado do cliente fica dentro do sistema, na venda, com quem mandou e quando.

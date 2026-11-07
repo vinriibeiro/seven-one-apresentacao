@@ -1,0 +1,7 @@
+No computador, a mesma tela, com mais espaço.
+
+Em cima, os filtros: período, situação, vendedor e busca por cliente ou contrato.
+
+Na lista, uma linha por venda: data, contrato, cliente, vendedor, produtos, situação e instalação. Instalação atrasada aparece em vermelho.
+
+Clicar na linha abre a ficha da venda. E o botão Exportar baixa a lista filtrada para conferir com a equipe.

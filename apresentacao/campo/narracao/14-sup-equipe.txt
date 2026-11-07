@@ -1,0 +1,7 @@
+A última tela do supervisor é a Visão da equipe.
+
+Ali ele vê o ritmo do time: quanto a equipe já vendeu no mês, contra a meta, e a projeção.
+
+Tocando na equipe, abre vendedor por vendedor: vendas do mês, quantas instalaram e há quantos dias cada um não vende.
+
+Uma rotina simples: todo dia de manhã, olhar quem está há três ou quatro dias sem venda. Essa é a primeira conversa do dia.
