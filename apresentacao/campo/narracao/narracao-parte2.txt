@@ -1,0 +1,32 @@
+Agora o supervisor. Rodrigo cuida da equipe Samambaia e também tem o app no celular.
+Em Vendas da equipe, ele vê cada venda lançada pelo Cadastro para a equipe dele: cliente, vendedor, produtos e a situação. Pendente, instalada ou cancelada, com a data da instalação ou o motivo.
+Quer ver só um vendedor? Filtra pelo nome.
+A venda do Rafael, que acabou de ser lançada, já está lá: pendente, instalação terça de manhã.
+Ou seja: o supervisor acompanha a venda do vendedor sem pedir print, sem pedir planilha.
+
+<break time="2.5s" />
+
+No computador, a mesma tela, com mais espaço.
+Em cima, os filtros: período, situação, vendedor e busca por cliente ou contrato.
+Na lista, uma linha por venda: data, contrato, cliente, vendedor, produtos, situação e instalação. Instalação atrasada aparece em vermelho.
+Clicar na linha abre a ficha da venda. E o botão Exportar baixa a lista filtrada para conferir com a equipe.
+
+<break time="2.5s" />
+
+A última tela do supervisor é a Visão da equipe.
+Ali ele vê o ritmo do time: quanto a equipe já vendeu no mês, contra a meta, e a projeção.
+Tocando na equipe, abre vendedor por vendedor: vendas do mês, quantas instalaram e há quantos dias cada um não vende.
+Uma rotina simples: todo dia de manhã, olhar quem está há três ou quatro dias sem venda. Essa é a primeira conversa do dia.
+
+<break time="2.5s" />
+
+Para fechar, cinco combinados.
+Viabilidade e venda, sempre pelo app, nunca pelo grupo.
+Observação clara, dos dois lados.
+Olhe no app antes de perguntar: a situação já está lá.
+Documento e dado de cliente ficam no sistema, não em grupo.
+E supervisor acompanha pelo app, não por print.
+
+<break time="2.5s" />
+
+Dúvida depois de hoje? Primeiro o botão Ajuda, dentro do app: a Wiki abre no assunto da tela. Depois, o seu supervisor. E viabilidade, venda e instalação, direto no pedido, com o Cadastro. Obrigado.

@@ -4,6 +4,8 @@
 
 Cole `narracao-unica.txt` inteiro no ElevenLabs (modelo Multilingual v2 ou v3, voz em português do Brasil) e salve o MP3 como `../audio/narracao.mp3`. As tags `<break time="2.5s" />` entre as cenas viram pausas longas: o player decodifica o áudio no navegador, acha essas pausas e corta por cena sozinho. Dentro da cena, as quebras de linha são só pausas curtas.
 
+A ElevenLabs aceita 5000 caracteres por vez: use `narracao-parte1.txt`, `narracao-parte2.txt`… (cortados entre cenas) e salve como `../audio/narracao-1.mp3`, `narracao-2.mp3`… na mesma ordem. O player emenda as partes.
+
 Se o número de trechos encontrados não bater com o de cenas (aparece "cortes?" no controle), crie `../audio/cortes.json` com a lista dos segundos em que cada cena começa, na ordem, ex.: `[0, 14.2, 31.9, …]`.
 
 ## Ou um arquivo por cena

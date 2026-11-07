@@ -13,7 +13,7 @@ A venda no app, em **modo vídeo**: narração por cena e telas do celular que s
 
 ## Áudio (ElevenLabs ou outro)
 
-**Um áudio só (mais simples):** cole `narracao/narracao-unica.txt` inteiro na ElevenLabs e salve como `audio/narracao.mp3`. As tags `<break time="2.5s" />` entre as cenas viram pausas longas; o player decodifica o áudio no navegador, acha as pausas e corta por cena. Se o número de trechos não bater com o de cenas, aparece "cortes?" no controle: crie `audio/cortes.json` com os segundos em que cada cena começa.
+**Um áudio só (mais simples):** cole `narracao/narracao-unica.txt` na ElevenLabs e salve como `audio/narracao.mp3`; como ela aceita 5000 caracteres por vez, use `narracao-parte1.txt`, `narracao-parte2.txt`… e salve como `audio/narracao-1.mp3`, `narracao-2.mp3`… (o player emenda as partes). As tags `<break time="2.5s" />` entre as cenas viram pausas longas; o player decodifica o áudio no navegador, acha as pausas e corta por cena. Se o número de trechos não bater com o de cenas, aparece "cortes?" no controle: crie `audio/cortes.json` com os segundos em que cada cena começa.
 
 **Ou um arquivo por cena:**
 1. `node ferramentas/apresentacao/narracao-campo.mjs` gera `narracao/NN-<id>.txt`, um por cena, e um LEIAME com a tabela.

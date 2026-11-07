@@ -12,37 +12,46 @@ window.PLAYER = (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const AUDIO_DIR = "audio/";
   const TUDO = new URLSearchParams(location.search).has("tudo");
-  /* Áudio único (audio/narracao.mp3): a narração inteira num arquivo, com uma pausa longa (>= 1,6 s) entre as cenas.
-     O player decodifica o áudio uma vez, acha as pausas e corta por cena, na ordem das cenas. audio/cortes.json (lista
-     de segundos em que cada cena começa) substitui a detecção. Se houver audio/<id>.mp3 para uma cena, ele vale primeiro. */
+  /* Áudio único (audio/narracao.mp3) ou em partes (audio/narracao-1.mp3, narracao-2.mp3, ...): a narração inteira, com
+     uma pausa longa (>= 1,6 s) entre as cenas. O player decodifica cada arquivo uma vez, acha as pausas e corta por cena,
+     na ordem das cenas (as partes se emendam). audio/cortes.json (lista de segundos em que cada cena começa, só para o
+     arquivo único) substitui a detecção. Se houver audio/<id>.mp3 para uma cena, ele vale primeiro. */
   const UNICO = AUDIO_DIR + "narracao.mp3", CORTES_MANUAL = AUDIO_DIR + "cortes.json", PAUSA_MIN = 1.6;
   let cortes = null;   // [{inicio, fim}] por cena, na ordem de T.PASSOS; null = sem áudio único
   let unicoPronto = null;
   async function prepararUnico() {
     if (unicoPronto) return unicoPronto;
     unicoPronto = (async () => {
-      const r = await fetch(UNICO, { cache: "force-cache" }).catch(() => null);
-      if (!r || !r.ok) return null;
-      const buf = await r.arrayBuffer();
-      const chave = "seven_campo_cortes:" + buf.byteLength + ":" + T.PASSOS.length;
-      const manual = await fetch(CORTES_MANUAL).then((x) => (x.ok ? x.json() : null)).catch(() => null);
-      let inicios = Array.isArray(manual) && manual.length === T.PASSOS.length ? manual.map(Number) : null;
-      let total = 0;
-      const guardado = !inicios && localStorage.getItem(chave);
-      if (guardado) { const g = JSON.parse(guardado); inicios = g.inicios; total = g.total; }
-      if (!inicios || !total) {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const dados = await ctx.decodeAudioData(buf.slice(0));
-        total = dados.duration;
-        const achados = detectarInicios(dados);
-        ctx.close?.();
-        if (!inicios) inicios = achados;
-        if (inicios.length === T.PASSOS.length) localStorage.setItem(chave, JSON.stringify({ inicios, total }));
-        else console.warn(`Áudio único: ${inicios.length} trechos encontrados, ${T.PASSOS.length} cenas. Ajuste as pausas ou crie ${CORTES_MANUAL}.`, inicios);
+      // arquivos: narracao.mp3 ou narracao-1.mp3, narracao-2.mp3, ... (em ordem, até faltar um)
+      const arquivos = [];
+      const r0 = await fetch(UNICO, { cache: "force-cache" }).catch(() => null);
+      if (r0 && r0.ok) arquivos.push([UNICO, await r0.arrayBuffer()]);
+      else for (let n = 1; n <= 20; n++) {
+        const r = await fetch(AUDIO_DIR + "narracao-" + n + ".mp3", { cache: "force-cache" }).catch(() => null);
+        if (!r || !r.ok) break;
+        arquivos.push([AUDIO_DIR + "narracao-" + n + ".mp3", await r.arrayBuffer()]);
       }
-      console.info(`Áudio único: ${inicios.length} trechos para ${T.PASSOS.length} cenas · duração ${Math.round(total)} s`, inicios.map((x) => Math.round(x * 10) / 10));
-      if (inicios.length !== T.PASSOS.length) { $("#ctl .player")?.classList.add("cortes-errados"); return null; }
-      return inicios.map((ini, i) => ({ inicio: ini, fim: i + 1 < inicios.length ? inicios[i + 1] : total }));
+      if (!arquivos.length) return null;
+      const manual = arquivos.length === 1 ? await fetch(CORTES_MANUAL).then((x) => (x.ok ? x.json() : null)).catch(() => null) : null;
+      const lista = [];   // {arquivo, inicio, fim} por trecho falado, na ordem dos arquivos
+      for (const [arquivo, buf] of arquivos) {
+        const chave = "seven_campo_cortes:" + arquivo + ":" + buf.byteLength;
+        let inicios = Array.isArray(manual) && manual.length === T.PASSOS.length ? manual.map(Number) : null, total = 0;
+        const guardado = !inicios && localStorage.getItem(chave);
+        if (guardado) { const g = JSON.parse(guardado); inicios = g.inicios; total = g.total; }
+        if (!inicios || !total) {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const dados = await ctx.decodeAudioData(buf.slice(0));
+          total = dados.duration;
+          if (!inicios) inicios = detectarInicios(dados);
+          ctx.close?.();
+          localStorage.setItem(chave, JSON.stringify({ inicios, total }));
+        }
+        inicios.forEach((ini, i) => lista.push({ arquivo, inicio: ini, fim: i + 1 < inicios.length ? inicios[i + 1] : total }));
+      }
+      console.info(`Narração: ${lista.length} trechos em ${arquivos.length} arquivo(s) para ${T.PASSOS.length} cenas`, lista.map((c) => `${c.arquivo.replace(AUDIO_DIR, "")} ${Math.round(c.inicio)}–${Math.round(c.fim)}s`));
+      if (lista.length !== T.PASSOS.length) { console.warn(`Ajuste as pausas entre as cenas ou crie ${CORTES_MANUAL}.`); $("#ctl .player")?.classList.add("cortes-errados"); return null; }
+      return lista;
     })();
     return unicoPronto;
   }
@@ -129,7 +138,7 @@ window.PLAYER = (() => {
       const c = (cortes || (cortes = await prepararUnico()))?.[k];
       if (!tocando || cenaId !== p.id) return;
       if (!c) return relogio();
-      const u = new Audio(UNICO); audio = u; dur = c.fim - c.inicio;
+      const u = new Audio(c.arquivo || UNICO); audio = u; dur = c.fim - c.inicio;
       u.addEventListener("loadedmetadata", () => { u.currentTime = c.inicio; });
       u.addEventListener("timeupdate", () => { const seg = u.currentTime - c.inicio; tick(Math.max(0, seg)); if (u.currentTime >= c.fim - 0.05) { u.pause(); terminou(); } });
       u.addEventListener("ended", terminou);
